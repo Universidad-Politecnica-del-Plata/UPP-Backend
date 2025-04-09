@@ -1,6 +1,9 @@
 package com.upp.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -11,13 +14,29 @@ public class Alumno {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long matricula;
 
+  @Getter
+  @Setter
   private String nombre;
+  @Getter
+  @Setter
   private String apellido;
+  @Getter
+  @Setter
   private Long dni;
+  @Getter
+  @Setter
   private String email;
+  @Getter
+  @Setter
   private String direccion;
+  @Getter
+  @Setter
   private LocalDate fechaNacimiento;
+  @Getter
+  @Setter
   private LocalDate fechaIngreso;
+  @Getter
+  @Setter
   private LocalDate fechaEgreso;
 
   @ElementCollection(fetch = FetchType.EAGER)
@@ -53,11 +72,23 @@ public class Alumno {
     this.telefonos = telefonos;
   }
 
-  public Long getMatricula() {
-    return matricula;
-  }
-
-  public void setMatricula(Long matricula) {
-    this.matricula = matricula;
-  }
+  //inscripcionesService
+//
+//inscribirAlumnoEnMateria(materiaId, alumnoId):
+//alumno = alumnoRepo.find(alumnoId)
+//materia = materiaRepo.find(materiaId)
+//validarInscripcion(materia,alumno)
+//alumno.inscribirEnMateria(materia)
+//
+//
+//-->
+//inscribirEnMateria(materia)
+//
+//materias = this.getMaterias
+//materias.append(materia)
+//
+//
+//
+//
+//
 }
