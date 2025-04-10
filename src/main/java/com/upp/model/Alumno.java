@@ -8,35 +8,20 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
+@Getter @Setter
 public class Alumno {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long matricula;
 
-  @Getter
-  @Setter
   private String nombre;
-  @Getter
-  @Setter
   private String apellido;
-  @Getter
-  @Setter
   private Long dni;
-  @Getter
-  @Setter
   private String email;
-  @Getter
-  @Setter
   private String direccion;
-  @Getter
-  @Setter
   private LocalDate fechaNacimiento;
-  @Getter
-  @Setter
   private LocalDate fechaIngreso;
-  @Getter
-  @Setter
   private LocalDate fechaEgreso;
 
   @ElementCollection(fetch = FetchType.EAGER)

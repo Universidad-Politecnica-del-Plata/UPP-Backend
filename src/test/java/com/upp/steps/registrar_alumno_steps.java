@@ -2,10 +2,16 @@ package com.upp.steps;
 
 import com.upp.model.Alumno;
 import io.cucumber.java.ast.Cuando;
+import io.cucumber.java.es.Dado;
+import io.cucumber.java.es.Entonces;
+import jakarta.transaction.Transactional;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.reactive.server.FluxExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Flux;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -16,9 +22,10 @@ import static org.junit.jupiter.api.Assertions.*;
 public class registrar_alumno_steps {
     @Autowired
     private WebTestClient webTestClient;
+    private FluxExchangeResult<Alumno> result;
 
-    @Cuando("registra un nuevo alumno con DNI {long}, apellido {string}, nombre {string}, direccion {string}, telefono {int}, email {string}, fecha de nacimiento {string} y fecha de ingreso {string}")
-    public void registraAlumnoConDatos(Long dni, String apellido, String nombre, String direccion, Integer telefono, String email, String fechaNacimiento, String fechaIngreso) {
+    @Cuando("registra un nuevo alumno con DNI {long}, apellido {string}, nombre {string}, direccion {string}, telefono {string}, email {string}, fecha de nacimiento {string} y fecha de ingreso {string}")
+    public void registraAlumnoConDatos(Long dni, String apellido, String nombre, String direccion, String telefono, String email, String fechaNacimiento, String fechaIngreso) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
         Alumno alumnoEnviado = new Alumno();
@@ -31,16 +38,30 @@ public class registrar_alumno_steps {
         alumnoEnviado.setFechaNacimiento(LocalDate.parse(fechaNacimiento, formatter));
         alumnoEnviado.setFechaIngreso(LocalDate.parse(fechaIngreso, formatter));
 
-        Alumno alumnoRecibido = webTestClient.post()
+        this.result = webTestClient.post()
                 .uri("/api/alumnos")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(alumnoEnviado)
                 .exchange()
-                .expectStatus().isCreated()
-                .expectBody(Alumno.class)
-                .returnResult()
-                .getResponseBody();
+                .returnResult(Alumno.class);
+    }
 
-        assertNotNull(alumnoRecibido);
+    @Entonces("se registra el alumno exitosamente")
+    public void seRegistraElAlumnoExitosamente() {
+        assertEquals(HttpStatus.CREATED, result.getStatus());
+    }
+    @Dado("un alumno registrado con DNI {long}")
+    public void unAlumnoRegistradoConDni(Long dni) {
+        this.registraAlumnoConDatos(dni, "perez", "juan", "avenida libre 123", "12345678", "email@email.com", "01-01-1990", "01-01-1995");
+    }
+
+    @Entonces("no se registra el alumno")
+    public void noSeRegistraElAlumnoExitosamente() {
+        assertEquals(HttpStatus.CONFLICT, result.getStatus());
+    }
+
+    @Dado("un alumno registrado con email {string}")
+    public void unAlumnoRegistradoConEmail(String email) {
+        this.registraAlumnoConDatos(1111111L, "perez", "juan", "avenida libre 123", "12345678", email, "01-01-1990", "01-01-1995");
     }
 }
