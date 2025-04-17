@@ -5,10 +5,7 @@ import com.upp.model.Materia;
 import com.upp.repository.MateriaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -51,5 +48,77 @@ public class MateriaController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(materiaDTO);
     }
+
+    @PutMapping("/{codigo}")
+    public ResponseEntity<MateriaDTO> modificarMateria(
+            @PathVariable String codigo,
+            @RequestBody MateriaDTO materiaDTO)
+    {
+        Optional<Materia> materiaOpt = materiaRepository.findByCodigoDeMateria(codigo);
+
+        if (materiaOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        Materia materia = materiaOpt.get();
+        materia.setNombre(materiaDTO.getNombre());
+        materia.setContenidos(materiaDTO.getContenidos());
+        materia.setTipo(materiaDTO.getTipo());
+        materia.setCreditosQueOtorga(materiaDTO.getCreditosQueOtorga());
+        materia.setCreditosNecesarios(materiaDTO.getCreditosNecesarios());
+
+        if (materiaDTO.getCodigosCorrelativas() != null) {
+            List<Materia> correlativas = materiaDTO.getCodigosCorrelativas().stream()
+                    .map(materiaRepository::findByCodigoDeMateria)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .collect(Collectors.toList());
+
+            materia.setCorrelativas(correlativas);
+        }
+        materiaRepository.save(materia);
+        return ResponseEntity.status(HttpStatus.OK).body(materiaDTO);
+
+
+    }
+    @DeleteMapping("/{codigo}")
+    public ResponseEntity<Void> eliminarMateria(@PathVariable String codigo){
+        Optional<Materia> materiaOpt = materiaRepository.findByCodigoDeMateria(codigo);
+
+        if (materiaOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        Materia materia = materiaOpt.get();
+        List<Materia> materiasConCorrelativa = materiaRepository.findAll().stream()
+                .filter(m -> m.getCorrelativas().contains(materia))
+                .collect(Collectors.toList());
+
+        for (Materia m : materiasConCorrelativa) {
+            m.getCorrelativas().remove(materia);
+            materiaRepository.save(m);
+        }
+        materiaRepository.delete(materia);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+    @GetMapping("/{codigo}")
+    public ResponseEntity<MateriaDTO> obtenerMateriaPorCodigo(@PathVariable String codigo) {
+        Optional<Materia> materiaOpt = materiaRepository.findByCodigoDeMateria(codigo);
+
+        if (materiaOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        Materia materia = materiaOpt.get();
+
+        MateriaDTO materiaDTO = new MateriaDTO(
+                materia.getCodigoDeMateria(),
+                materia.getNombre(),
+                materia.getContenidos(),
+                materia.getCreditosQueOtorga(),
+                materia.getCreditosNecesarios(),
+                materia.getTipo(),
+                materia.getCodigosCorrelativas()
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(materiaDTO);    }
 
 }

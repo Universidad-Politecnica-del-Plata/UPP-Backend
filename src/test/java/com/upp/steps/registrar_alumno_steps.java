@@ -50,6 +50,7 @@ public class registrar_alumno_steps {
     public void seRegistraElAlumnoExitosamente() {
         assertEquals(HttpStatus.CREATED, result.getStatus());
     }
+
     @Dado("un alumno registrado con DNI {long}")
     public void unAlumnoRegistradoConDni(Long dni) {
         this.registraAlumnoConDatos(dni, "perez", "juan", "avenida libre 123", "12345678", "email@email.com", "01-01-1990", "01-01-1995");

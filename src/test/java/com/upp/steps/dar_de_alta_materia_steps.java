@@ -1,13 +1,10 @@
 package com.upp.steps;
 
 import com.upp.dto.MateriaDTO;
-import com.upp.model.Alumno;
-import com.upp.model.Materia;
 import com.upp.model.TipoMateria;
 import io.cucumber.java.ast.Cuando;
 import io.cucumber.java.es.Dado;
 import io.cucumber.java.es.Entonces;
-import jakarta.transaction.Transactional;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -56,5 +53,10 @@ public class dar_de_alta_materia_steps {
                 .bodyValue(materiaEnviada)
                 .exchange()
                 .returnResult(MateriaDTO.class);
+    }
+
+    @Entonces("no se registra la materia exitosamente")
+    public void noSeRegistraLaMateriaExitosamente() {
+        assertEquals(HttpStatus.CONFLICT, result.getStatus());
     }
 }
