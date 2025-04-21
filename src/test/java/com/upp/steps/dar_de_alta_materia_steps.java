@@ -32,6 +32,16 @@ public class dar_de_alta_materia_steps {
     @Entonces("se registra la materia exitosamente")
     public void seRegistraLaMateriaExitosamente() {
         assertEquals(HttpStatus.CREATED, result.getStatus());
+
+    }
+    @Entonces("se registra la materia {string} exitosamente")
+    public void seRegistraLaMateriaConCodigoExitosamente(String codigo) {
+        var resultGetMateria = webTestClient.get()
+                .uri("/api/materias/{codigo}", codigo)
+                .exchange()
+                .returnResult(MateriaDTO.class);
+        assertEquals(HttpStatus.OK, resultGetMateria.getStatus());
+
     }
 
     @Dado("que existe una materia con el código de materia {string} y nombre {string}")

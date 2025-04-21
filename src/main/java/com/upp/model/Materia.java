@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter @Setter
@@ -40,5 +41,10 @@ public class Materia {
 
     public Materia() {
 
+    }
+    public List<String> getCodigosCorrelativas() {
+        return correlativas.stream()
+                .map(Materia::getCodigoDeMateria)
+                .collect(Collectors.toList());
     }
 }
