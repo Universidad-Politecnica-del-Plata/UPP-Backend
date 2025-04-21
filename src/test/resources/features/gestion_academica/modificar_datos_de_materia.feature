@@ -9,5 +9,5 @@ Característica: Modificar datos de una materia
     Entonces la materia "123-M" tiene nombre "Literatura II", contenidos "Literatura Griega", cantidad de créditos que otorga 6 y créditos necesarios 4
 
   Escenario: : Modificar datos de una materia que no existe
-    Cuando a la materia con código de materia "123-M" se modifica nombre "Literatura II", contenidos "Literatura Griega", tipo de materia "Optativa", con correlativa "Analisis I", cantidad de créditos que otorga 6 y créditos necesarios 4
-    Entonces no existe la materia "123-M" en el registro
+    Cuando a la materia con código de materia "123-B" se modifica nombre "Literatura II", contenidos "Literatura Griega", tipo de materia "Optativa", con correlativa "Analisis I", cantidad de créditos que otorga 6 y créditos necesarios 4
+    Entonces no existe la materia "123-B" en el registro
