@@ -22,13 +22,20 @@ jobs:
 
     strategy:
       matrix:
-        java: [ 17 ]
+        java: [17]
     name: Run unit tests on Java ${{ matrix.java }}
+
+    env:
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_NAME: upp_db
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup java
+      - name: Setup Java
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
@@ -65,6 +72,13 @@ jobs:
           --health-retries 5
 
     name: Build, package and upload .jar artifact
+    env:
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_NAME: upp_db
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+
     steps:
       - uses: actions/checkout@v4
 
