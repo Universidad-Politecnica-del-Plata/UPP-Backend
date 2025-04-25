@@ -1,14 +1,14 @@
 package com.upp.model;
 
 import jakarta.persistence.*;
+import java.time.LocalDate;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
-import java.util.List;
-
 @Entity
-@Getter @Setter
+@Getter
+@Setter
 public class Alumno {
 
   @Id
@@ -57,23 +57,23 @@ public class Alumno {
     this.telefonos = telefonos;
   }
 
-  //inscripcionesService
-//
-//inscribirAlumnoEnMateria(materiaId, alumnoId):
-//alumno = alumnoRepo.find(alumnoId)
-//materia = materiaRepo.find(materiaId)
-//validarInscripcion(materia,alumno)
-//alumno.inscribirEnMateria(materia)
-//
-//
-//-->
-//inscribirEnMateria(materia)
-//
-//materias = this.getMaterias
-//materias.append(materia)
-//
-//
-//
-//
-//
+  // inscripcionesService
+  //
+  // inscribirAlumnoEnMateria(materiaId, alumnoId):
+  // alumno = alumnoRepo.find(alumnoId)
+  // materia = materiaRepo.find(materiaId)
+  // validarInscripcion(materia,alumno)
+  // alumno.inscribirEnMateria(materia)
+  //
+  //
+  // -->
+  // inscribirEnMateria(materia)
+  //
+  // materias = this.getMaterias
+  // materias.append(materia)
+  //
+  //
+  //
+  //
+  //
 }

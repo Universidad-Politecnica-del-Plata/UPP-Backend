@@ -40,6 +40,8 @@ jobs:
             echo "Waiting for postgres..."
             sleep 1
           done
+      - name: Run Spotless check
+        run: mvn spotless:check
 
       - name: Run tests
         run: mvn -f pom.xml clean test
