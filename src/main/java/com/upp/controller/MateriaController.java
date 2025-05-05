@@ -122,4 +122,20 @@ public class MateriaController {
 
     return ResponseEntity.status(HttpStatus.OK).body(materiaDTO);
   }
+  @GetMapping
+  public ResponseEntity<List<MateriaDTO>> obtenerTodasLasMaterias() {
+    List<MateriaDTO> materias = materiaRepository.findAll().stream()
+            .map(materia -> new MateriaDTO(
+                    materia.getCodigoDeMateria(),
+                    materia.getNombre(),
+                    materia.getContenidos(),
+                    materia.getCreditosQueOtorga(),
+                    materia.getCreditosNecesarios(),
+                    materia.getTipo(),
+                    materia.getCodigosCorrelativas()))
+            .toList();
+
+    return ResponseEntity.ok(materias);
+  }
+
 }

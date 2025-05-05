@@ -57,7 +57,42 @@ public class Alumno {
     this.telefonos = telefonos;
   }
 
-  // inscripcionesService
+  public Long getDni() {
+    return dni;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setDni(Long dni) {
+    this.dni = dni;
+  }
+
+  public void setApellido(String apellido) {
+    this.apellido = apellido;
+  }
+
+  public void setNombre(String nombre) {
+    this.nombre = nombre;
+  }
+
+  public void setDireccion(String direccion) {
+    this.direccion = direccion;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public void setFechaNacimiento(LocalDate fechaNacimiento) {
+    this.fechaNacimiento = fechaNacimiento;
+  }
+
+  public void setFechaIngreso(LocalDate fechaIngreso) {
+    this.fechaIngreso = fechaIngreso;
+  }
+// inscripcionesService
   //
   // inscribirAlumnoEnMateria(materiaId, alumnoId):
   // alumno = alumnoRepo.find(alumnoId)
