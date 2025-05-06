@@ -6,6 +6,9 @@ import com.upp.repository.MateriaRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,34 +23,39 @@ public class MateriaController {
   }
 
   @PostMapping
-  public ResponseEntity<MateriaDTO> crearMateria(@RequestBody MateriaDTO materiaDTO) {
+  public ResponseEntity<MateriaDTO> crearMateria(@Valid @RequestBody MateriaDTO materiaDTO) {
     if (materiaRepository.existsByCodigoDeMateria(materiaDTO.getCodigoDeMateria())) {
       return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
+    try {
+      Materia materia =
+              new Materia(
+                      materiaDTO.getCodigoDeMateria(),
+                      materiaDTO.getNombre(),
+                      materiaDTO.getContenidos(),
+                      materiaDTO.getCreditosQueOtorga(),
+                      materiaDTO.getCreditosNecesarios(),
+                      materiaDTO.getTipo());
+      // Buscar correlativas por código
+      if (materiaDTO.getCodigosCorrelativas() != null
+              && !materiaDTO.getCodigosCorrelativas().isEmpty()) {
+        List<Materia> correlativas =
+                materiaDTO.getCodigosCorrelativas().stream()
+                        .map(cod -> materiaRepository.findByCodigoDeMateria(cod))
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .collect(Collectors.toList());
 
-    Materia materia =
-        new Materia(
-            materiaDTO.getCodigoDeMateria(),
-            materiaDTO.getNombre(),
-            materiaDTO.getContenidos(),
-            materiaDTO.getCreditosQueOtorga(),
-            materiaDTO.getCreditosNecesarios(),
-            materiaDTO.getTipo());
-    // Buscar correlativas por código
-    if (materiaDTO.getCodigosCorrelativas() != null
-        && !materiaDTO.getCodigosCorrelativas().isEmpty()) {
-      List<Materia> correlativas =
-          materiaDTO.getCodigosCorrelativas().stream()
-              .map(cod -> materiaRepository.findByCodigoDeMateria(cod))
-              .filter(Optional::isPresent)
-              .map(Optional::get)
-              .collect(Collectors.toList());
+        materia.setCorrelativas(correlativas);
+      }
+      materiaRepository.save(materia);
 
-      materia.setCorrelativas(correlativas);
+
+      return ResponseEntity.status(HttpStatus.CREATED).body(materiaDTO);
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+
     }
-    materiaRepository.save(materia);
-
-    return ResponseEntity.status(HttpStatus.CREATED).body(materiaDTO);
   }
 
   @PutMapping("/{codigo}")
