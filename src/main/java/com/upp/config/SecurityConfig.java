@@ -13,19 +13,20 @@ public class SecurityConfig implements WebMvcConfigurer {
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.csrf()
-            .disable()
-            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll()) // Allow all requests
-            .cors(); // Enable CORS
+        .disable()
+        .authorizeHttpRequests(auth -> auth.anyRequest().permitAll()) // Allow all requests
+        .cors(); // Enable CORS
 
     return http.build();
   }
 
   @Override
   public void addCorsMappings(CorsRegistry registry) {
-    registry.addMapping("/**") // Permite todas las rutas
-            .allowedOrigins("http://localhost:3000") // Origen permitido
-            .allowedMethods("GET", "POST", "PUT", "DELETE") // Métodos permitidos
-            .allowedHeaders("*") // Permitir todos los encabezados
-            .allowCredentials(true); // Si tu backend necesita manejar cookies o sesiones
+    registry
+        .addMapping("/**") // Permite todas las rutas
+        .allowedOrigins("http://localhost:3000") // Origen permitido
+        .allowedMethods("GET", "POST", "PUT", "DELETE") // Métodos permitidos
+        .allowedHeaders("*") // Permitir todos los encabezados
+        .allowCredentials(true); // Si tu backend necesita manejar cookies o sesiones
   }
 }

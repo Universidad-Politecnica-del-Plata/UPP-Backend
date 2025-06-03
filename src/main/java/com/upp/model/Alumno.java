@@ -92,7 +92,7 @@ public class Alumno {
   public void setFechaIngreso(LocalDate fechaIngreso) {
     this.fechaIngreso = fechaIngreso;
   }
-// inscripcionesService
+  // inscripcionesService
   //
   // inscribirAlumnoEnMateria(materiaId, alumnoId):
   // alumno = alumnoRepo.find(alumnoId)

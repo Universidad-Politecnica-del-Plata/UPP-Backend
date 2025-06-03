@@ -1,12 +1,11 @@
 package com.upp.model;
 
 import jakarta.persistence.*;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,19 +13,17 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Materia {
-  @Id
-  @NotBlank
-  private String codigoDeMateria;
-  @NotBlank
-  private String nombre;
+  @Id @NotBlank private String codigoDeMateria;
+  @NotBlank private String nombre;
+
   @Column(columnDefinition = "TEXT", nullable = false)
   @NotBlank
   private String contenidos;
 
-
   @NotNull
   @Min(0)
   private Integer creditosQueOtorga;
+
   @NotNull
   @Min(0)
   private Integer creditosNecesarios;

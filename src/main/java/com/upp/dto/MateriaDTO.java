@@ -2,7 +2,6 @@ package com.upp.dto;
 
 import com.upp.model.TipoMateria;
 import java.util.List;
-
 import lombok.*;
 
 @Data
@@ -52,7 +51,14 @@ public class MateriaDTO {
     return codigosCorrelativas;
   }
 
-  public MateriaDTO(String codigoDeMateria, String nombre, String contenidos, Integer creditosQueOtorga, Integer creditosNecesarios, TipoMateria tipo, List<String> codigosCorrelativas) {
+  public MateriaDTO(
+      String codigoDeMateria,
+      String nombre,
+      String contenidos,
+      Integer creditosQueOtorga,
+      Integer creditosNecesarios,
+      TipoMateria tipo,
+      List<String> codigosCorrelativas) {
     this.codigoDeMateria = codigoDeMateria;
     this.nombre = nombre;
     this.contenidos = contenidos;
