@@ -19,8 +19,11 @@ public class Materia {
   private String codigoDeMateria;
   @NotBlank
   private String nombre;
+  @Column(columnDefinition = "TEXT", nullable = false)
   @NotBlank
   private String contenidos;
+
+
   @NotNull
   @Min(0)
   private Integer creditosQueOtorga;
