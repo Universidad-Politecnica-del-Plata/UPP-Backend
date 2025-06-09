@@ -2,9 +2,14 @@ package com.upp.service;
 
 import com.upp.dto.MateriaDTO;
 import com.upp.exception.MateriaExisteException;
+import com.upp.exception.MateriaNoExisteException;
 import com.upp.model.Materia;
 import com.upp.repository.MateriaRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,6 +50,32 @@ public class MateriaService {
         }
         materiaRepository.save(materia);
 
+        return materiaDTO;
+    }
+    public MateriaDTO modificarMateria(
+            String codigo, MateriaDTO materiaDTO) {
+        Optional<Materia> materiaOpt = materiaRepository.findByCodigoDeMateria(codigo);
+
+        if (materiaOpt.isEmpty()) {
+            throw new MateriaNoExisteException("No existe una materia con ese codigo.");}
+        Materia materia = materiaOpt.get();
+        materia.setNombre(materiaDTO.getNombre());
+        materia.setContenidos(materiaDTO.getContenidos());
+        materia.setTipo(materiaDTO.getTipo());
+        materia.setCreditosQueOtorga(materiaDTO.getCreditosQueOtorga());
+        materia.setCreditosNecesarios(materiaDTO.getCreditosNecesarios());
+
+        if (materiaDTO.getCodigosCorrelativas() != null) {
+            List<Materia> correlativas =
+                    materiaDTO.getCodigosCorrelativas().stream()
+                            .map(materiaRepository::findByCodigoDeMateria)
+                            .filter(Optional::isPresent)
+                            .map(Optional::get)
+                            .collect(Collectors.toList());
+
+            materia.setCorrelativas(correlativas);
+        }
+        materiaRepository.save(materia);
         return materiaDTO;
     }
 }

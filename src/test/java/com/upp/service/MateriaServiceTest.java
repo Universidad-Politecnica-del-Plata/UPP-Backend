@@ -2,6 +2,7 @@ package com.upp.service;
 
 import com.upp.dto.MateriaDTO;
 import com.upp.exception.MateriaExisteException;
+import com.upp.exception.MateriaNoExisteException;
 import com.upp.model.Materia;
 import com.upp.model.TipoMateria;
 import com.upp.repository.MateriaRepository;
@@ -98,5 +99,42 @@ public class MateriaServiceTest {
         verify(materiaRepository).save(any(Materia.class));
 
         assertEquals(dto, resultado);
+    }
+    @Test
+    void modificarMateriaDeberiaActualizarMateriaSiExiste() {
+
+        Materia existente = new Materia("MAT101", "Álgebra", "Contenidos viejos", 6, 0, TipoMateria.OBLIGATORIA);
+        Materia correlativa = new Materia("MAT100", "Intro", "Cont", 6, 0, TipoMateria.OBLIGATORIA);
+
+        MateriaDTO modificacion = new MateriaDTO(
+                "MAT101", "Álgebra Lineal", "Contenidos nuevos", 8, 0,
+                TipoMateria.OBLIGATORIA, Arrays.asList("MAT100")
+        );
+
+        when(materiaRepository.findByCodigoDeMateria("MAT101")).thenReturn(Optional.of(existente));
+        when(materiaRepository.findByCodigoDeMateria("MAT100")).thenReturn(Optional.of(correlativa));
+
+        MateriaDTO resultado = materiaService.modificarMateria("MAT101", modificacion);
+
+        assertEquals("Álgebra Lineal", resultado.getNombre());
+        ArgumentCaptor<Materia> captor = ArgumentCaptor.forClass(Materia.class);
+        verify(materiaRepository).save(captor.capture());
+
+        Materia guardada = captor.getValue();
+        assertEquals("Álgebra Lineal", guardada.getNombre());
+        assertEquals("Contenidos nuevos", guardada.getContenidos());
+        assertEquals(8, guardada.getCreditosQueOtorga());
+        assertEquals(1, guardada.getCorrelativas().size());
+        assertEquals("MAT100", guardada.getCorrelativas().get(0).getCodigoDeMateria());
+    }
+
+    @Test
+    void modificarMateriaDeberiaLanzarExcepcionSiNoExiste() {
+        when(materiaRepository.findByCodigoDeMateria("INEXISTENTE")).thenReturn(Optional.empty());
+
+        MateriaDTO dto = new MateriaDTO("INEXISTENTE", "Nombre", "Cont", 4, 0, TipoMateria.OPTATIVA, null);
+
+        assertThrows(MateriaNoExisteException.class, () ->
+                materiaService.modificarMateria("INEXISTENTE", dto));
     }
 }
