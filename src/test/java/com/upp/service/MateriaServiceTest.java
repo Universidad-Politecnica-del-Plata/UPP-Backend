@@ -10,7 +10,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -136,5 +138,50 @@ public class MateriaServiceTest {
 
         assertThrows(MateriaNoExisteException.class, () ->
                 materiaService.modificarMateria("INEXISTENTE", dto));
+    }
+    @Test
+    void eliminarMateriaLanzaExcepcionSiNoExisteMateriaConEseCodigo() {
+        String codigo = "MAT101";
+        when(materiaRepository.findByCodigoDeMateria(codigo)).thenReturn(Optional.empty());
+
+        MateriaNoExisteException ex = assertThrows(
+                MateriaNoExisteException.class,
+                () -> materiaService.eliminarMateria(codigo)
+        );
+        assertEquals("No existe una materia con ese codigo.", ex.getMessage());
+    }
+
+    @Test
+    void eliminaMateriaSinSerCorrelativaDeOtra() {
+        String codigo = "MAT101";
+        Materia materia = new Materia();
+        materia.setCodigoDeMateria(codigo);
+
+        when(materiaRepository.findByCodigoDeMateria(codigo)).thenReturn(Optional.of(materia));
+        when(materiaRepository.findAll()).thenReturn(List.of()); // No hay otras materias
+
+        materiaService.eliminarMateria(codigo);
+
+        verify(materiaRepository).delete(materia);
+    }
+
+    @Test
+    void eliminaMateriaYLaQuitaDeOtrasCorrelativas() {
+        String codigo = "MAT101";
+        Materia materia = new Materia();
+        materia.setCodigoDeMateria(codigo);
+
+        Materia otra = new Materia();
+        otra.setCodigoDeMateria("MAT102");
+        otra.setCorrelativas(new ArrayList<>(List.of(materia)));
+
+        when(materiaRepository.findByCodigoDeMateria(codigo)).thenReturn(Optional.of(materia));
+        when(materiaRepository.findAll()).thenReturn(List.of(otra));
+
+        materiaService.eliminarMateria(codigo);
+
+        assertFalse(otra.getCorrelativas().contains(materia));
+        verify(materiaRepository).save(otra);
+        verify(materiaRepository).delete(materia);
     }
 }

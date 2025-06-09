@@ -8,6 +8,7 @@ import com.upp.repository.MateriaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -77,5 +78,24 @@ public class MateriaService {
         }
         materiaRepository.save(materia);
         return materiaDTO;
+    }
+    public void eliminarMateria( String codigo) {
+        Optional<Materia> materiaOpt = materiaRepository.findByCodigoDeMateria(codigo);
+
+        if (materiaOpt.isEmpty()) {
+            throw new MateriaNoExisteException("No existe una materia con ese codigo.");
+        }
+
+        Materia materia = materiaOpt.get();
+        List<Materia> materiasConCorrelativa =
+                materiaRepository.findAll().stream()
+                        .filter(m -> m.getCorrelativas().contains(materia))
+                        .collect(Collectors.toList());
+
+        for (Materia m : materiasConCorrelativa) {
+            m.getCorrelativas().remove(materia);
+            materiaRepository.save(m);
+        }
+        materiaRepository.delete(materia);
     }
 }

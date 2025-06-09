@@ -45,27 +45,17 @@ public class MateriaController {
     }
   }
 
-//
-//  @DeleteMapping("/{codigo}")
-//  public ResponseEntity<Void> eliminarMateria(@PathVariable String codigo) {
-//    Optional<Materia> materiaOpt = materiaRepository.findByCodigoDeMateria(codigo);
-//
-//    if (materiaOpt.isEmpty()) {
-//      return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-//    }
-//    Materia materia = materiaOpt.get();
-//    List<Materia> materiasConCorrelativa =
-//        materiaRepository.findAll().stream()
-//            .filter(m -> m.getCorrelativas().contains(materia))
-//            .collect(Collectors.toList());
-//
-//    for (Materia m : materiasConCorrelativa) {
-//      m.getCorrelativas().remove(materia);
-//      materiaRepository.save(m);
-//    }
-//    materiaRepository.delete(materia);
-//    return ResponseEntity.status(HttpStatus.OK).build();
-//  }
+
+  @DeleteMapping("/{codigo}")
+  public ResponseEntity<Void> eliminarMateria(@PathVariable String codigo) {
+    try{
+      materiaService.eliminarMateria(codigo);
+      return ResponseEntity.status(HttpStatus.OK).build();
+
+    } catch (MateriaNoExisteException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+  }
 //
 //  @GetMapping("/{codigo}")
 //  public ResponseEntity<MateriaDTO> obtenerMateriaPorCodigo(@PathVariable String codigo) {
