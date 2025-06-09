@@ -56,29 +56,17 @@ public class MateriaController {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
   }
-//
-//  @GetMapping("/{codigo}")
-//  public ResponseEntity<MateriaDTO> obtenerMateriaPorCodigo(@PathVariable String codigo) {
-//    Optional<Materia> materiaOpt = materiaRepository.findByCodigoDeMateria(codigo);
-//
-//    if (materiaOpt.isEmpty()) {
-//      return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-//    }
-//
-//    Materia materia = materiaOpt.get();
-//
-//    MateriaDTO materiaDTO =
-//        new MateriaDTO(
-//            materia.getCodigoDeMateria(),
-//            materia.getNombre(),
-//            materia.getContenidos(),
-//            materia.getCreditosQueOtorga(),
-//            materia.getCreditosNecesarios(),
-//            materia.getTipo(),
-//            materia.getCodigosCorrelativas());
-//
-//    return ResponseEntity.status(HttpStatus.OK).body(materiaDTO);
-//  }
+
+  @GetMapping("/{codigo}")
+  public ResponseEntity<MateriaDTO> obtenerMateriaPorCodigo(@PathVariable String codigo) {
+    try{
+      MateriaDTO materia = materiaService.obtenerMateriaPorCodigo(codigo);
+      return ResponseEntity.status(HttpStatus.OK).body(materia);
+
+    } catch (MateriaNoExisteException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+  }
 //
 //  @GetMapping
 //  public ResponseEntity<List<MateriaDTO>> obtenerTodasLasMaterias() {

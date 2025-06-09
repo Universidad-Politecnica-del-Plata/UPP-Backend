@@ -184,4 +184,47 @@ public class MateriaServiceTest {
         verify(materiaRepository).save(otra);
         verify(materiaRepository).delete(materia);
     }
+    @Test
+    void obtenerMateriaPorCodigoLanzaExcepcionSiNoExiste() {
+        String codigo = "MAT101";
+        when(materiaRepository.findByCodigoDeMateria(codigo)).thenReturn(Optional.empty());
+
+        MateriaNoExisteException exception = assertThrows(
+                MateriaNoExisteException.class,
+                () -> materiaService.obtenerMateriaPorCodigo(codigo)
+        );
+
+        assertEquals("No existe una materia con ese codigo.", exception.getMessage());
+    }
+
+    @Test
+    void obtenerMateriaPorCodigoDevuelveDTOCorrectoSiExiste() {
+
+        String codigo = "MAT101";
+        Materia materia = new Materia();
+        materia.setCodigoDeMateria(codigo);
+        materia.setNombre("Matemática");
+        materia.setContenidos("Álgebra y análisis");
+        materia.setCreditosQueOtorga(6);
+        materia.setCreditosNecesarios(12);
+        materia.setTipo(TipoMateria.OBLIGATORIA);
+
+        Materia correlativa = new Materia();
+        correlativa.setCodigoDeMateria("MAT001");
+
+        materia.setCorrelativas(List.of(correlativa));
+
+        when(materiaRepository.findByCodigoDeMateria(codigo)).thenReturn(Optional.of(materia));
+
+        MateriaDTO dto = materiaService.obtenerMateriaPorCodigo(codigo);
+
+        assertNotNull(dto);
+        assertEquals("MAT101", dto.getCodigoDeMateria());
+        assertEquals("Matemática", dto.getNombre());
+        assertEquals("Álgebra y análisis", dto.getContenidos());
+        assertEquals(6, dto.getCreditosQueOtorga());
+        assertEquals(12, dto.getCreditosNecesarios());
+        assertEquals(TipoMateria.OBLIGATORIA, dto.getTipo());
+        assertEquals(List.of("MAT001"), dto.getCodigosCorrelativas());
+    }
 }

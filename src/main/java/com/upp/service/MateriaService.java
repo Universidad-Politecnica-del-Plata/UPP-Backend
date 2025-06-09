@@ -53,12 +53,14 @@ public class MateriaService {
 
         return materiaDTO;
     }
+
     public MateriaDTO modificarMateria(
             String codigo, MateriaDTO materiaDTO) {
         Optional<Materia> materiaOpt = materiaRepository.findByCodigoDeMateria(codigo);
 
         if (materiaOpt.isEmpty()) {
-            throw new MateriaNoExisteException("No existe una materia con ese codigo.");}
+            throw new MateriaNoExisteException("No existe una materia con ese codigo.");
+        }
         Materia materia = materiaOpt.get();
         materia.setNombre(materiaDTO.getNombre());
         materia.setContenidos(materiaDTO.getContenidos());
@@ -79,7 +81,8 @@ public class MateriaService {
         materiaRepository.save(materia);
         return materiaDTO;
     }
-    public void eliminarMateria( String codigo) {
+
+    public void eliminarMateria(String codigo) {
         Optional<Materia> materiaOpt = materiaRepository.findByCodigoDeMateria(codigo);
 
         if (materiaOpt.isEmpty()) {
@@ -97,5 +100,27 @@ public class MateriaService {
             materiaRepository.save(m);
         }
         materiaRepository.delete(materia);
+    }
+
+    public MateriaDTO obtenerMateriaPorCodigo(String codigo) {
+        Optional<Materia> materiaOpt = materiaRepository.findByCodigoDeMateria(codigo);
+
+        if (materiaOpt.isEmpty()) {
+            throw new MateriaNoExisteException("No existe una materia con ese codigo.");
+        }
+
+        Materia materia = materiaOpt.get();
+
+        MateriaDTO materiaDTO =
+                new MateriaDTO(
+                        materia.getCodigoDeMateria(),
+                        materia.getNombre(),
+                        materia.getContenidos(),
+                        materia.getCreditosQueOtorga(),
+                        materia.getCreditosNecesarios(),
+                        materia.getTipo(),
+                        materia.getCodigosCorrelativas());
+
+        return materiaDTO;
     }
 }
