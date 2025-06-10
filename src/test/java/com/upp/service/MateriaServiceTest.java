@@ -227,4 +227,56 @@ public class MateriaServiceTest {
         assertEquals(TipoMateria.OBLIGATORIA, dto.getTipo());
         assertEquals(List.of("MAT001"), dto.getCodigosCorrelativas());
     }
+    @Test
+    void obtenerTodasLasMateriasDevuelveListaDeDTOs() {
+        Materia materia1 = new Materia();
+        materia1.setCodigoDeMateria("MAT101");
+        materia1.setNombre("Matemática");
+        materia1.setContenidos("Álgebra");
+        materia1.setCreditosQueOtorga(6);
+        materia1.setCreditosNecesarios(12);
+        materia1.setTipo(TipoMateria.OBLIGATORIA);
+        materia1.setCorrelativas(List.of());
+
+        Materia materia2 = new Materia();
+        materia2.setCodigoDeMateria("FIS202");
+        materia2.setNombre("Física");
+        materia2.setContenidos("Mecánica");
+        materia2.setCreditosQueOtorga(5);
+        materia2.setCreditosNecesarios(10);
+        materia2.setTipo(TipoMateria.OPTATIVA);
+        materia2.setCorrelativas(new ArrayList<>(List.of(materia1)));
+
+        when(materiaRepository.findAll()).thenReturn(List.of(materia1, materia2));
+
+        List<MateriaDTO> resultado = materiaService.obtenerTodasLasMaterias();
+
+        assertEquals(2, resultado.size());
+
+        MateriaDTO dto1 = resultado.get(0);
+        assertEquals("MAT101", dto1.getCodigoDeMateria());
+        assertEquals("Matemática", dto1.getNombre());
+        assertEquals("Álgebra", dto1.getContenidos());
+        assertEquals(6, dto1.getCreditosQueOtorga());
+        assertEquals(12, dto1.getCreditosNecesarios());
+        assertEquals(TipoMateria.OBLIGATORIA, dto1.getTipo());
+
+        MateriaDTO dto2 = resultado.get(1);
+        assertEquals("FIS202", dto2.getCodigoDeMateria());
+        assertEquals("Física", dto2.getNombre());
+        assertEquals("Mecánica", dto2.getContenidos());
+        assertEquals(5, dto2.getCreditosQueOtorga());
+        assertEquals(10, dto2.getCreditosNecesarios());
+        assertEquals(TipoMateria.OPTATIVA, dto2.getTipo());
+    }
+
+    @Test
+    void obtenerTodasLasMateriasDevuelveListaVaciaSiNoHayMaterias() {
+        when(materiaRepository.findAll()).thenReturn(List.of());
+
+        List<MateriaDTO> resultado = materiaService.obtenerTodasLasMaterias();
+
+        assertNotNull(resultado);
+        assertTrue(resultado.isEmpty());
+    }
 }

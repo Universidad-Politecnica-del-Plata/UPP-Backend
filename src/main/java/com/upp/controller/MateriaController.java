@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/materias")
 public class MateriaController {
@@ -67,23 +69,11 @@ public class MateriaController {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
   }
-//
-//  @GetMapping
-//  public ResponseEntity<List<MateriaDTO>> obtenerTodasLasMaterias() {
-//    List<MateriaDTO> materias =
-//        materiaRepository.findAll().stream()
-//            .map(
-//                materia ->
-//                    new MateriaDTO(
-//                        materia.getCodigoDeMateria(),
-//                        materia.getNombre(),
-//                        materia.getContenidos(),
-//                        materia.getCreditosQueOtorga(),
-//                        materia.getCreditosNecesarios(),
-//                        materia.getTipo(),
-//                        materia.getCodigosCorrelativas()))
-//            .toList();
-//
-//    return ResponseEntity.ok(materias);
-//  }
+
+  @GetMapping
+  public ResponseEntity<List<MateriaDTO>> obtenerTodasLasMaterias() {
+    List<MateriaDTO> materias = materiaService.obtenerTodasLasMaterias();
+
+    return ResponseEntity.ok(materias);
+  }
 }
