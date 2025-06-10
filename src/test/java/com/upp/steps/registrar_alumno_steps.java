@@ -2,12 +2,13 @@ package com.upp.steps;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.upp.model.Alumno;
+import com.upp.dto.AlumnoDTO;
 import io.cucumber.java.ast.Cuando;
 import io.cucumber.java.es.Dado;
 import io.cucumber.java.es.Entonces;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -17,8 +18,9 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class registrar_alumno_steps {
+
   @Autowired private WebTestClient webTestClient;
-  private FluxExchangeResult<Alumno> result;
+  private FluxExchangeResult<AlumnoDTO> result;
 
   @Cuando(
       "registra un nuevo alumno con DNI {long}, apellido {string}, nombre {string}, direccion {string}, telefono {string}, email {string}, fecha de nacimiento {string} y fecha de ingreso {string}")
@@ -31,26 +33,27 @@ public class registrar_alumno_steps {
       String email,
       String fechaNacimiento,
       String fechaIngreso) {
+
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
-    Alumno alumnoEnviado = new Alumno();
-    alumnoEnviado.setDni(dni);
-    alumnoEnviado.setApellido(apellido);
-    alumnoEnviado.setNombre(nombre);
-    alumnoEnviado.setDireccion(direccion);
-    // alumnoEnviado.setTelefonos(List.of(telefono.toString()));
-    alumnoEnviado.setEmail(email);
-    alumnoEnviado.setFechaNacimiento(LocalDate.parse(fechaNacimiento, formatter));
-    alumnoEnviado.setFechaIngreso(LocalDate.parse(fechaIngreso, formatter));
+    AlumnoDTO alumnoDTO = new AlumnoDTO();
+    alumnoDTO.setDni(dni);
+    alumnoDTO.setApellido(apellido);
+    alumnoDTO.setNombre(nombre);
+    alumnoDTO.setDireccion(direccion);
+    alumnoDTO.setTelefonos(List.of(telefono));
+    alumnoDTO.setEmail(email);
+    alumnoDTO.setFechaNacimiento(LocalDate.parse(fechaNacimiento, formatter));
+    alumnoDTO.setFechaIngreso(LocalDate.parse(fechaIngreso, formatter));
 
     this.result =
         webTestClient
             .post()
             .uri("/api/alumnos")
             .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(alumnoEnviado)
+            .bodyValue(alumnoDTO)
             .exchange()
-            .returnResult(Alumno.class);
+            .returnResult(AlumnoDTO.class);
   }
 
   @Entonces("se registra el alumno exitosamente")
