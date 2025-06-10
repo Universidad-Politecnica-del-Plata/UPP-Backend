@@ -1,282 +1,288 @@
 package com.upp.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import com.upp.dto.MateriaDTO;
 import com.upp.exception.MateriaExisteException;
 import com.upp.exception.MateriaNoExisteException;
 import com.upp.model.Materia;
 import com.upp.model.TipoMateria;
 import com.upp.repository.MateriaRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
-
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @ActiveProfiles("test")
 public class MateriaServiceTest {
-    private MateriaRepository materiaRepository;
-    private MateriaService materiaService;
+  private MateriaRepository materiaRepository;
+  private MateriaService materiaService;
 
-    @BeforeEach
-    void setUp() {
-        materiaRepository = mock(MateriaRepository.class);
-        materiaService = new MateriaService(materiaRepository);
-    }
-    @Test
-    void crearMateriaConCodigoExistenteLanzaExcepcion() {
-        MateriaDTO dto = new MateriaDTO();
-        dto.setCodigoDeMateria("MAT101");
+  @BeforeEach
+  void setUp() {
+    materiaRepository = mock(MateriaRepository.class);
+    materiaService = new MateriaService(materiaRepository);
+  }
 
-        // Mockeamos que el código ya existe
-        when(materiaRepository.existsByCodigoDeMateria("MAT101")).thenReturn(true);
+  @Test
+  void crearMateriaConCodigoExistenteLanzaExcepcion() {
+    MateriaDTO dto = new MateriaDTO();
+    dto.setCodigoDeMateria("MAT101");
 
-        MateriaExisteException exception = assertThrows(MateriaExisteException.class,
-                () -> materiaService.crearMateria(dto));
+    // Mockeamos que el código ya existe
+    when(materiaRepository.existsByCodigoDeMateria("MAT101")).thenReturn(true);
 
-        assertEquals("Ya existe una materia con ese codigo.", exception.getMessage());
+    MateriaExisteException exception =
+        assertThrows(MateriaExisteException.class, () -> materiaService.crearMateria(dto));
 
-        // Verificamos que no haya llamado a save
-        verify(materiaRepository, never()).save(any());
-    }
+    assertEquals("Ya existe una materia con ese codigo.", exception.getMessage());
 
-    @Test
-    void crearMateriaConCodigoNuevoGuardaMateriaCorrectamente() {
-        MateriaDTO dto = new MateriaDTO();
-        dto.setCodigoDeMateria("MAT102");
-        dto.setNombre("Matemática");
-        dto.setContenidos("Álgebra, Geometría");
-        dto.setCreditosQueOtorga(4);
-        dto.setCreditosNecesarios(0);
-        dto.setTipo(TipoMateria.OBLIGATORIA);
-        dto.setCodigosCorrelativas(Arrays.asList("MAT100"));
+    // Verificamos que no haya llamado a save
+    verify(materiaRepository, never()).save(any());
+  }
 
-        // Mock: el código NO existe
-        when(materiaRepository.existsByCodigoDeMateria("MAT102")).thenReturn(false);
+  @Test
+  void crearMateriaConCodigoNuevoGuardaMateriaCorrectamente() {
+    MateriaDTO dto = new MateriaDTO();
+    dto.setCodigoDeMateria("MAT102");
+    dto.setNombre("Matemática");
+    dto.setContenidos("Álgebra, Geometría");
+    dto.setCreditosQueOtorga(4);
+    dto.setCreditosNecesarios(0);
+    dto.setTipo(TipoMateria.OBLIGATORIA);
+    dto.setCodigosCorrelativas(Arrays.asList("MAT100"));
 
-        // Mock: la correlativa MAT100 existe y se devuelve
-        Materia correlativa = new Materia();
-        correlativa.setCodigoDeMateria("MAT100");
-        when(materiaRepository.findByCodigoDeMateria("MAT100")).thenReturn(Optional.of(correlativa));
+    // Mock: el código NO existe
+    when(materiaRepository.existsByCodigoDeMateria("MAT102")).thenReturn(false);
 
-        // Ejecutamos
-        MateriaDTO resultado = materiaService.crearMateria(dto);
+    // Mock: la correlativa MAT100 existe y se devuelve
+    Materia correlativa = new Materia();
+    correlativa.setCodigoDeMateria("MAT100");
+    when(materiaRepository.findByCodigoDeMateria("MAT100")).thenReturn(Optional.of(correlativa));
 
-        // Capturamos el objeto Materia que se guardó
-        ArgumentCaptor<Materia> materiaCaptor = ArgumentCaptor.forClass(Materia.class);
-        verify(materiaRepository).save(materiaCaptor.capture());
+    // Ejecutamos
+    MateriaDTO resultado = materiaService.crearMateria(dto);
 
-        Materia materiaGuardada = materiaCaptor.getValue();
+    // Capturamos el objeto Materia que se guardó
+    ArgumentCaptor<Materia> materiaCaptor = ArgumentCaptor.forClass(Materia.class);
+    verify(materiaRepository).save(materiaCaptor.capture());
 
-        assertEquals("MAT102", materiaGuardada.getCodigoDeMateria());
-        assertEquals("Matemática", materiaGuardada.getNombre());
-        assertEquals(1, materiaGuardada.getCorrelativas().size());
-        assertEquals("MAT100", materiaGuardada.getCorrelativas().get(0).getCodigoDeMateria());
+    Materia materiaGuardada = materiaCaptor.getValue();
 
-        // También podemos validar que el DTO devuelto sea igual al de entrada
-        assertEquals(dto, resultado);
-    }
+    assertEquals("MAT102", materiaGuardada.getCodigoDeMateria());
+    assertEquals("Matemática", materiaGuardada.getNombre());
+    assertEquals(1, materiaGuardada.getCorrelativas().size());
+    assertEquals("MAT100", materiaGuardada.getCorrelativas().get(0).getCodigoDeMateria());
 
-    @Test
-    void crearMateriaSinCorrelativasGuardaMateriaCorrectamente() {
-        MateriaDTO dto = new MateriaDTO();
-        dto.setCodigoDeMateria("MAT103");
-        dto.setNombre("Física");
-        dto.setCodigosCorrelativas(null);
+    // También podemos validar que el DTO devuelto sea igual al de entrada
+    assertEquals(dto, resultado);
+  }
 
-        when(materiaRepository.existsByCodigoDeMateria("MAT103")).thenReturn(false);
+  @Test
+  void crearMateriaSinCorrelativasGuardaMateriaCorrectamente() {
+    MateriaDTO dto = new MateriaDTO();
+    dto.setCodigoDeMateria("MAT103");
+    dto.setNombre("Física");
+    dto.setCodigosCorrelativas(null);
 
-        MateriaDTO resultado = materiaService.crearMateria(dto);
+    when(materiaRepository.existsByCodigoDeMateria("MAT103")).thenReturn(false);
 
-        verify(materiaRepository).save(any(Materia.class));
+    MateriaDTO resultado = materiaService.crearMateria(dto);
 
-        assertEquals(dto, resultado);
-    }
-    @Test
-    void modificarMateriaDeberiaActualizarMateriaSiExiste() {
+    verify(materiaRepository).save(any(Materia.class));
 
-        Materia existente = new Materia("MAT101", "Álgebra", "Contenidos viejos", 6, 0, TipoMateria.OBLIGATORIA);
-        Materia correlativa = new Materia("MAT100", "Intro", "Cont", 6, 0, TipoMateria.OBLIGATORIA);
+    assertEquals(dto, resultado);
+  }
 
-        MateriaDTO modificacion = new MateriaDTO(
-                "MAT101", "Álgebra Lineal", "Contenidos nuevos", 8, 0,
-                TipoMateria.OBLIGATORIA, Arrays.asList("MAT100")
-        );
+  @Test
+  void modificarMateriaDeberiaActualizarMateriaSiExiste() {
 
-        when(materiaRepository.findByCodigoDeMateria("MAT101")).thenReturn(Optional.of(existente));
-        when(materiaRepository.findByCodigoDeMateria("MAT100")).thenReturn(Optional.of(correlativa));
+    Materia existente =
+        new Materia("MAT101", "Álgebra", "Contenidos viejos", 6, 0, TipoMateria.OBLIGATORIA);
+    Materia correlativa = new Materia("MAT100", "Intro", "Cont", 6, 0, TipoMateria.OBLIGATORIA);
 
-        MateriaDTO resultado = materiaService.modificarMateria("MAT101", modificacion);
+    MateriaDTO modificacion =
+        new MateriaDTO(
+            "MAT101",
+            "Álgebra Lineal",
+            "Contenidos nuevos",
+            8,
+            0,
+            TipoMateria.OBLIGATORIA,
+            Arrays.asList("MAT100"));
 
-        assertEquals("Álgebra Lineal", resultado.getNombre());
-        ArgumentCaptor<Materia> captor = ArgumentCaptor.forClass(Materia.class);
-        verify(materiaRepository).save(captor.capture());
+    when(materiaRepository.findByCodigoDeMateria("MAT101")).thenReturn(Optional.of(existente));
+    when(materiaRepository.findByCodigoDeMateria("MAT100")).thenReturn(Optional.of(correlativa));
 
-        Materia guardada = captor.getValue();
-        assertEquals("Álgebra Lineal", guardada.getNombre());
-        assertEquals("Contenidos nuevos", guardada.getContenidos());
-        assertEquals(8, guardada.getCreditosQueOtorga());
-        assertEquals(1, guardada.getCorrelativas().size());
-        assertEquals("MAT100", guardada.getCorrelativas().get(0).getCodigoDeMateria());
-    }
+    MateriaDTO resultado = materiaService.modificarMateria("MAT101", modificacion);
 
-    @Test
-    void modificarMateriaDeberiaLanzarExcepcionSiNoExiste() {
-        when(materiaRepository.findByCodigoDeMateria("INEXISTENTE")).thenReturn(Optional.empty());
+    assertEquals("Álgebra Lineal", resultado.getNombre());
+    ArgumentCaptor<Materia> captor = ArgumentCaptor.forClass(Materia.class);
+    verify(materiaRepository).save(captor.capture());
 
-        MateriaDTO dto = new MateriaDTO("INEXISTENTE", "Nombre", "Cont", 4, 0, TipoMateria.OPTATIVA, null);
+    Materia guardada = captor.getValue();
+    assertEquals("Álgebra Lineal", guardada.getNombre());
+    assertEquals("Contenidos nuevos", guardada.getContenidos());
+    assertEquals(8, guardada.getCreditosQueOtorga());
+    assertEquals(1, guardada.getCorrelativas().size());
+    assertEquals("MAT100", guardada.getCorrelativas().get(0).getCodigoDeMateria());
+  }
 
-        assertThrows(MateriaNoExisteException.class, () ->
-                materiaService.modificarMateria("INEXISTENTE", dto));
-    }
-    @Test
-    void eliminarMateriaLanzaExcepcionSiNoExisteMateriaConEseCodigo() {
-        String codigo = "MAT101";
-        when(materiaRepository.findByCodigoDeMateria(codigo)).thenReturn(Optional.empty());
+  @Test
+  void modificarMateriaDeberiaLanzarExcepcionSiNoExiste() {
+    when(materiaRepository.findByCodigoDeMateria("INEXISTENTE")).thenReturn(Optional.empty());
 
-        MateriaNoExisteException ex = assertThrows(
-                MateriaNoExisteException.class,
-                () -> materiaService.eliminarMateria(codigo)
-        );
-        assertEquals("No existe una materia con ese codigo.", ex.getMessage());
-    }
+    MateriaDTO dto =
+        new MateriaDTO("INEXISTENTE", "Nombre", "Cont", 4, 0, TipoMateria.OPTATIVA, null);
 
-    @Test
-    void eliminaMateriaSinSerCorrelativaDeOtra() {
-        String codigo = "MAT101";
-        Materia materia = new Materia();
-        materia.setCodigoDeMateria(codigo);
+    assertThrows(
+        MateriaNoExisteException.class, () -> materiaService.modificarMateria("INEXISTENTE", dto));
+  }
 
-        when(materiaRepository.findByCodigoDeMateria(codigo)).thenReturn(Optional.of(materia));
-        when(materiaRepository.findAll()).thenReturn(List.of()); // No hay otras materias
+  @Test
+  void eliminarMateriaLanzaExcepcionSiNoExisteMateriaConEseCodigo() {
+    String codigo = "MAT101";
+    when(materiaRepository.findByCodigoDeMateria(codigo)).thenReturn(Optional.empty());
 
-        materiaService.eliminarMateria(codigo);
+    MateriaNoExisteException ex =
+        assertThrows(MateriaNoExisteException.class, () -> materiaService.eliminarMateria(codigo));
+    assertEquals("No existe una materia con ese codigo.", ex.getMessage());
+  }
 
-        verify(materiaRepository).delete(materia);
-    }
+  @Test
+  void eliminaMateriaSinSerCorrelativaDeOtra() {
+    String codigo = "MAT101";
+    Materia materia = new Materia();
+    materia.setCodigoDeMateria(codigo);
 
-    @Test
-    void eliminaMateriaYLaQuitaDeOtrasCorrelativas() {
-        String codigo = "MAT101";
-        Materia materia = new Materia();
-        materia.setCodigoDeMateria(codigo);
+    when(materiaRepository.findByCodigoDeMateria(codigo)).thenReturn(Optional.of(materia));
+    when(materiaRepository.findAll()).thenReturn(List.of()); // No hay otras materias
 
-        Materia otra = new Materia();
-        otra.setCodigoDeMateria("MAT102");
-        otra.setCorrelativas(new ArrayList<>(List.of(materia)));
+    materiaService.eliminarMateria(codigo);
 
-        when(materiaRepository.findByCodigoDeMateria(codigo)).thenReturn(Optional.of(materia));
-        when(materiaRepository.findAll()).thenReturn(List.of(otra));
+    verify(materiaRepository).delete(materia);
+  }
 
-        materiaService.eliminarMateria(codigo);
+  @Test
+  void eliminaMateriaYLaQuitaDeOtrasCorrelativas() {
+    String codigo = "MAT101";
+    Materia materia = new Materia();
+    materia.setCodigoDeMateria(codigo);
 
-        assertFalse(otra.getCorrelativas().contains(materia));
-        verify(materiaRepository).save(otra);
-        verify(materiaRepository).delete(materia);
-    }
-    @Test
-    void obtenerMateriaPorCodigoLanzaExcepcionSiNoExiste() {
-        String codigo = "MAT101";
-        when(materiaRepository.findByCodigoDeMateria(codigo)).thenReturn(Optional.empty());
+    Materia otra = new Materia();
+    otra.setCodigoDeMateria("MAT102");
+    otra.setCorrelativas(new ArrayList<>(List.of(materia)));
 
-        MateriaNoExisteException exception = assertThrows(
-                MateriaNoExisteException.class,
-                () -> materiaService.obtenerMateriaPorCodigo(codigo)
-        );
+    when(materiaRepository.findByCodigoDeMateria(codigo)).thenReturn(Optional.of(materia));
+    when(materiaRepository.findAll()).thenReturn(List.of(otra));
 
-        assertEquals("No existe una materia con ese codigo.", exception.getMessage());
-    }
+    materiaService.eliminarMateria(codigo);
 
-    @Test
-    void obtenerMateriaPorCodigoDevuelveDTOCorrectoSiExiste() {
+    assertFalse(otra.getCorrelativas().contains(materia));
+    verify(materiaRepository).save(otra);
+    verify(materiaRepository).delete(materia);
+  }
 
-        String codigo = "MAT101";
-        Materia materia = new Materia();
-        materia.setCodigoDeMateria(codigo);
-        materia.setNombre("Matemática");
-        materia.setContenidos("Álgebra y análisis");
-        materia.setCreditosQueOtorga(6);
-        materia.setCreditosNecesarios(12);
-        materia.setTipo(TipoMateria.OBLIGATORIA);
+  @Test
+  void obtenerMateriaPorCodigoLanzaExcepcionSiNoExiste() {
+    String codigo = "MAT101";
+    when(materiaRepository.findByCodigoDeMateria(codigo)).thenReturn(Optional.empty());
 
-        Materia correlativa = new Materia();
-        correlativa.setCodigoDeMateria("MAT001");
+    MateriaNoExisteException exception =
+        assertThrows(
+            MateriaNoExisteException.class, () -> materiaService.obtenerMateriaPorCodigo(codigo));
 
-        materia.setCorrelativas(List.of(correlativa));
+    assertEquals("No existe una materia con ese codigo.", exception.getMessage());
+  }
 
-        when(materiaRepository.findByCodigoDeMateria(codigo)).thenReturn(Optional.of(materia));
+  @Test
+  void obtenerMateriaPorCodigoDevuelveDTOCorrectoSiExiste() {
 
-        MateriaDTO dto = materiaService.obtenerMateriaPorCodigo(codigo);
+    String codigo = "MAT101";
+    Materia materia = new Materia();
+    materia.setCodigoDeMateria(codigo);
+    materia.setNombre("Matemática");
+    materia.setContenidos("Álgebra y análisis");
+    materia.setCreditosQueOtorga(6);
+    materia.setCreditosNecesarios(12);
+    materia.setTipo(TipoMateria.OBLIGATORIA);
 
-        assertNotNull(dto);
-        assertEquals("MAT101", dto.getCodigoDeMateria());
-        assertEquals("Matemática", dto.getNombre());
-        assertEquals("Álgebra y análisis", dto.getContenidos());
-        assertEquals(6, dto.getCreditosQueOtorga());
-        assertEquals(12, dto.getCreditosNecesarios());
-        assertEquals(TipoMateria.OBLIGATORIA, dto.getTipo());
-        assertEquals(List.of("MAT001"), dto.getCodigosCorrelativas());
-    }
-    @Test
-    void obtenerTodasLasMateriasDevuelveListaDeDTOs() {
-        Materia materia1 = new Materia();
-        materia1.setCodigoDeMateria("MAT101");
-        materia1.setNombre("Matemática");
-        materia1.setContenidos("Álgebra");
-        materia1.setCreditosQueOtorga(6);
-        materia1.setCreditosNecesarios(12);
-        materia1.setTipo(TipoMateria.OBLIGATORIA);
-        materia1.setCorrelativas(List.of());
+    Materia correlativa = new Materia();
+    correlativa.setCodigoDeMateria("MAT001");
 
-        Materia materia2 = new Materia();
-        materia2.setCodigoDeMateria("FIS202");
-        materia2.setNombre("Física");
-        materia2.setContenidos("Mecánica");
-        materia2.setCreditosQueOtorga(5);
-        materia2.setCreditosNecesarios(10);
-        materia2.setTipo(TipoMateria.OPTATIVA);
-        materia2.setCorrelativas(new ArrayList<>(List.of(materia1)));
+    materia.setCorrelativas(List.of(correlativa));
 
-        when(materiaRepository.findAll()).thenReturn(List.of(materia1, materia2));
+    when(materiaRepository.findByCodigoDeMateria(codigo)).thenReturn(Optional.of(materia));
 
-        List<MateriaDTO> resultado = materiaService.obtenerTodasLasMaterias();
+    MateriaDTO dto = materiaService.obtenerMateriaPorCodigo(codigo);
 
-        assertEquals(2, resultado.size());
+    assertNotNull(dto);
+    assertEquals("MAT101", dto.getCodigoDeMateria());
+    assertEquals("Matemática", dto.getNombre());
+    assertEquals("Álgebra y análisis", dto.getContenidos());
+    assertEquals(6, dto.getCreditosQueOtorga());
+    assertEquals(12, dto.getCreditosNecesarios());
+    assertEquals(TipoMateria.OBLIGATORIA, dto.getTipo());
+    assertEquals(List.of("MAT001"), dto.getCodigosCorrelativas());
+  }
 
-        MateriaDTO dto1 = resultado.get(0);
-        assertEquals("MAT101", dto1.getCodigoDeMateria());
-        assertEquals("Matemática", dto1.getNombre());
-        assertEquals("Álgebra", dto1.getContenidos());
-        assertEquals(6, dto1.getCreditosQueOtorga());
-        assertEquals(12, dto1.getCreditosNecesarios());
-        assertEquals(TipoMateria.OBLIGATORIA, dto1.getTipo());
+  @Test
+  void obtenerTodasLasMateriasDevuelveListaDeDTOs() {
+    Materia materia1 = new Materia();
+    materia1.setCodigoDeMateria("MAT101");
+    materia1.setNombre("Matemática");
+    materia1.setContenidos("Álgebra");
+    materia1.setCreditosQueOtorga(6);
+    materia1.setCreditosNecesarios(12);
+    materia1.setTipo(TipoMateria.OBLIGATORIA);
+    materia1.setCorrelativas(List.of());
 
-        MateriaDTO dto2 = resultado.get(1);
-        assertEquals("FIS202", dto2.getCodigoDeMateria());
-        assertEquals("Física", dto2.getNombre());
-        assertEquals("Mecánica", dto2.getContenidos());
-        assertEquals(5, dto2.getCreditosQueOtorga());
-        assertEquals(10, dto2.getCreditosNecesarios());
-        assertEquals(TipoMateria.OPTATIVA, dto2.getTipo());
-    }
+    Materia materia2 = new Materia();
+    materia2.setCodigoDeMateria("FIS202");
+    materia2.setNombre("Física");
+    materia2.setContenidos("Mecánica");
+    materia2.setCreditosQueOtorga(5);
+    materia2.setCreditosNecesarios(10);
+    materia2.setTipo(TipoMateria.OPTATIVA);
+    materia2.setCorrelativas(new ArrayList<>(List.of(materia1)));
 
-    @Test
-    void obtenerTodasLasMateriasDevuelveListaVaciaSiNoHayMaterias() {
-        when(materiaRepository.findAll()).thenReturn(List.of());
+    when(materiaRepository.findAll()).thenReturn(List.of(materia1, materia2));
 
-        List<MateriaDTO> resultado = materiaService.obtenerTodasLasMaterias();
+    List<MateriaDTO> resultado = materiaService.obtenerTodasLasMaterias();
 
-        assertNotNull(resultado);
-        assertTrue(resultado.isEmpty());
-    }
+    assertEquals(2, resultado.size());
+
+    MateriaDTO dto1 = resultado.get(0);
+    assertEquals("MAT101", dto1.getCodigoDeMateria());
+    assertEquals("Matemática", dto1.getNombre());
+    assertEquals("Álgebra", dto1.getContenidos());
+    assertEquals(6, dto1.getCreditosQueOtorga());
+    assertEquals(12, dto1.getCreditosNecesarios());
+    assertEquals(TipoMateria.OBLIGATORIA, dto1.getTipo());
+
+    MateriaDTO dto2 = resultado.get(1);
+    assertEquals("FIS202", dto2.getCodigoDeMateria());
+    assertEquals("Física", dto2.getNombre());
+    assertEquals("Mecánica", dto2.getContenidos());
+    assertEquals(5, dto2.getCreditosQueOtorga());
+    assertEquals(10, dto2.getCreditosNecesarios());
+    assertEquals(TipoMateria.OPTATIVA, dto2.getTipo());
+  }
+
+  @Test
+  void obtenerTodasLasMateriasDevuelveListaVaciaSiNoHayMaterias() {
+    when(materiaRepository.findAll()).thenReturn(List.of());
+
+    List<MateriaDTO> resultado = materiaService.obtenerTodasLasMaterias();
+
+    assertNotNull(resultado);
+    assertTrue(resultado.isEmpty());
+  }
 }

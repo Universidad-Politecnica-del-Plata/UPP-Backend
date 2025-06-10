@@ -5,11 +5,10 @@ import com.upp.exception.MateriaExisteException;
 import com.upp.exception.MateriaNoExisteException;
 import com.upp.service.MateriaService;
 import jakarta.validation.Valid;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/materias")
@@ -38,7 +37,7 @@ public class MateriaController {
   public ResponseEntity<MateriaDTO> modificarMateria(
       @PathVariable String codigo, @RequestBody MateriaDTO materiaDTO) {
 
-    try{
+    try {
       MateriaDTO resultado = materiaService.modificarMateria(codigo, materiaDTO);
       return ResponseEntity.status(HttpStatus.OK).body(resultado);
 
@@ -47,10 +46,9 @@ public class MateriaController {
     }
   }
 
-
   @DeleteMapping("/{codigo}")
   public ResponseEntity<Void> eliminarMateria(@PathVariable String codigo) {
-    try{
+    try {
       materiaService.eliminarMateria(codigo);
       return ResponseEntity.status(HttpStatus.OK).build();
 
@@ -61,7 +59,7 @@ public class MateriaController {
 
   @GetMapping("/{codigo}")
   public ResponseEntity<MateriaDTO> obtenerMateriaPorCodigo(@PathVariable String codigo) {
-    try{
+    try {
       MateriaDTO materia = materiaService.obtenerMateriaPorCodigo(codigo);
       return ResponseEntity.status(HttpStatus.OK).body(materia);
 
