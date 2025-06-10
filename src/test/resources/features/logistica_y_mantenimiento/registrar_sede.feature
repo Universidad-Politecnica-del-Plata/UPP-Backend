@@ -1,4 +1,5 @@
 #language: es
+@todo
 Característica: Registrar sede
 
   Escenario: : Registrar sede es exitoso

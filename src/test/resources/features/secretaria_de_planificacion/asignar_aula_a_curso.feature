@@ -1,4 +1,5 @@
 #language: es
+@todo
 Característica: Asignar aula a curso
 
   Escenario: : Asignar aula a curso es exitoso

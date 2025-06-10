@@ -1,4 +1,5 @@
 #language: es
+@todo
 Característica: Consultar cursos disponibles
 
   Escenario: : Consultar cursos disponibles exitoso

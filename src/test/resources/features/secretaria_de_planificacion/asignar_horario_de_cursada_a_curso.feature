@@ -1,4 +1,5 @@
 #language: es
+@todo
 Característica: Asignar horario de cursada a curso
 
   Escenario: : Asignar horario de cursada a curso es exitoso

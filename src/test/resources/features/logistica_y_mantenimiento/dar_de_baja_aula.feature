@@ -1,4 +1,5 @@
 #language: es
+@todo
 Característica: Dar de baja aula
 
   Escenario: : Dar de baja aula es exitoso

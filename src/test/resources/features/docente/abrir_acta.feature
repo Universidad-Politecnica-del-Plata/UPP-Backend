@@ -1,4 +1,5 @@
 #language: es
+@todo
 Característica: Abrir acta
 
 #  Hacer tabla con valores Cursada y Final

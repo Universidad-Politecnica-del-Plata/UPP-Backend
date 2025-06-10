@@ -1,4 +1,5 @@
 #language: es
+@todo
 Característica: Asignar curso a cuatrimestre
 
   Escenario: : Asignar curso a cuatrimestre es exitoso

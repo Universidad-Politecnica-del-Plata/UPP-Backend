@@ -1,4 +1,5 @@
 #language: es
+@todo
 Característica: Consultar cursos de materia
 
   Escenario: : Consultar cursos de materia es exitoso

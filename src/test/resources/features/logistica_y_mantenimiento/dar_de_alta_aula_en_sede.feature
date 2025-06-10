@@ -1,4 +1,5 @@
 #language: es
+@todo
 Característica: Dar de alta aula en sede
 
   Escenario: : Dar de alta un aula en una sede exitoso
