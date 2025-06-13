@@ -5,12 +5,14 @@ import com.upp.exception.AlumnoExisteException;
 import com.upp.service.AlumnoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@PreAuthorize("hasRole('GESTION_ESTUDIANTIL')")
 @RequestMapping("/api/alumnos")
 public class AlumnoController {
   private final AlumnoService alumnoService;

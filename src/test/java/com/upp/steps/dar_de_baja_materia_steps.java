@@ -4,9 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.upp.dto.MateriaDTO;
 import com.upp.steps.shared.TokenHolder;
-import io.cucumber.java.es.Entonces;
 import io.cucumber.java.ast.Cuando;
-
+import io.cucumber.java.es.Entonces;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -23,23 +22,23 @@ public class dar_de_baja_materia_steps {
   public void seDaDeBajaLaMateria(String codigo) {
 
     this.result =
-            webTestClient
-                    .delete()
-                    .uri("/api/materias/{codigo}", codigo)
-                    .header("Authorization", "Bearer " + tokenHolder.getToken())
-                    .exchange()
-                    .returnResult(MateriaDTO.class);
+        webTestClient
+            .delete()
+            .uri("/api/materias/{codigo}", codigo)
+            .header("Authorization", "Bearer " + tokenHolder.getToken())
+            .exchange()
+            .returnResult(MateriaDTO.class);
   }
 
   @Entonces("no existe la materia {string} en el registro")
   public void noExisteLaMateriaEnElRegistro(String codigo) {
     var resultGetMateria =
-            webTestClient
-                    .get()
-                    .uri("/api/materias/{codigo}", codigo)
-                    .header("Authorization", "Bearer " + tokenHolder.getToken())
-                    .exchange()
-                    .returnResult(MateriaDTO.class);
+        webTestClient
+            .get()
+            .uri("/api/materias/{codigo}", codigo)
+            .header("Authorization", "Bearer " + tokenHolder.getToken())
+            .exchange()
+            .returnResult(MateriaDTO.class);
     assertEquals(HttpStatus.NOT_FOUND, resultGetMateria.getStatus());
   }
 }

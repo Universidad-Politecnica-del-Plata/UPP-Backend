@@ -3,12 +3,19 @@ package com.upp.steps;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.upp.dto.AlumnoDTO;
+import com.upp.model.Rol;
+import com.upp.model.Usuario;
+import com.upp.repository.RolRepository;
+import com.upp.repository.UsuarioRepository;
+import com.upp.steps.shared.TokenHolder;
+import io.cucumber.java.Before;
 import io.cucumber.java.ast.Cuando;
 import io.cucumber.java.es.Dado;
 import io.cucumber.java.es.Entonces;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -20,7 +27,65 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 public class registrar_alumno_steps {
 
   @Autowired private WebTestClient webTestClient;
+  @Autowired private UsuarioRepository usuarioRepository;
+  @Autowired private RolRepository rolRepository;
+  @Autowired private TokenHolder tokenHolder;
+
   private FluxExchangeResult<AlumnoDTO> result;
+
+  @Before
+  public void setupUsuarioYLogin() {
+    // Crear rol si no existe
+    Rol rolGestion =
+        rolRepository
+            .findById("ROLE_GESTION_ESTUDIANTIL")
+            .orElseGet(
+                () -> {
+                  Rol nuevo = new Rol("ROLE_GESTION_ESTUDIANTIL");
+                  return rolRepository.save(nuevo);
+                });
+
+    // Crear usuario si no existe
+    Usuario usuarioExistente =
+        usuarioRepository.findByUsername("admin_gestion_estudiantil").orElse(null);
+
+    if (usuarioExistente == null) {
+      Map<String, Object> registroData =
+          Map.of(
+              "username", "admin_gestion_estudiantil",
+              "password", "password",
+              "roles", List.of("ROLE_GESTION_ESTUDIANTIL"));
+
+      webTestClient
+          .post()
+          .uri("/api/auth/register")
+          .contentType(MediaType.APPLICATION_JSON)
+          .bodyValue(registroData)
+          .exchange()
+          .expectStatus()
+          .isCreated();
+    }
+
+    Map<String, String> loginData =
+        Map.of("username", "admin_gestion_estudiantil", "password", "password");
+
+    String token =
+        webTestClient
+            .post()
+            .uri("/api/auth/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(loginData)
+            .exchange()
+            .expectStatus()
+            .isOk()
+            .returnResult(Map.class)
+            .getResponseBody()
+            .blockFirst()
+            .get("token")
+            .toString();
+
+    tokenHolder.setToken(token);
+  }
 
   @Cuando(
       "registra un nuevo alumno con DNI {long}, apellido {string}, nombre {string}, direccion {string}, telefono {string}, email {string}, fecha de nacimiento {string} y fecha de ingreso {string}")
@@ -50,6 +115,7 @@ public class registrar_alumno_steps {
         webTestClient
             .post()
             .uri("/api/alumnos")
+            .header("Authorization", "Bearer " + tokenHolder.getToken())
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(alumnoDTO)
             .exchange()

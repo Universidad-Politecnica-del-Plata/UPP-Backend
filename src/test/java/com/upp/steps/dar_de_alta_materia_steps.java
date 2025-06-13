@@ -13,11 +13,9 @@ import io.cucumber.java.Before;
 import io.cucumber.java.ast.Cuando;
 import io.cucumber.java.es.Dado;
 import io.cucumber.java.es.Entonces;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -36,32 +34,38 @@ public class dar_de_alta_materia_steps {
 
   @Before
   public void setupUsuarioYLogin() {
-    Rol rolGestion = rolRepository.findById("ROLE_GESTION_ACADEMICA").orElseGet(() -> {
-      Rol nuevo = new Rol("ROLE_GESTION_ACADEMICA");
-      return rolRepository.save(nuevo);
-    });
+    Rol rolGestion =
+        rolRepository
+            .findById("ROLE_GESTION_ACADEMICA")
+            .orElseGet(
+                () -> {
+                  Rol nuevo = new Rol("ROLE_GESTION_ACADEMICA");
+                  return rolRepository.save(nuevo);
+                });
 
     Usuario usuarioExistente = usuarioRepository.findByUsername("admin_gestion").orElse(null);
 
     if (usuarioExistente == null) {
-      Map<String, Object> registroData = Map.of(
+      Map<String, Object> registroData =
+          Map.of(
               "username", "admin_gestion",
               "password", "password",
-              "roles", List.of("ROLE_GESTION_ACADEMICA")
-      );
+              "roles", List.of("ROLE_GESTION_ACADEMICA"));
 
-      webTestClient.post()
-              .uri("/api/auth/register")
-              .contentType(MediaType.APPLICATION_JSON)
-              .bodyValue(registroData)
-              .exchange()
-              .expectStatus()
-              .isCreated();
+      webTestClient
+          .post()
+          .uri("/api/auth/register")
+          .contentType(MediaType.APPLICATION_JSON)
+          .bodyValue(registroData)
+          .exchange()
+          .expectStatus()
+          .isCreated();
     }
 
     Map<String, String> loginData = Map.of("username", "admin_gestion", "password", "password");
 
-    String token = webTestClient
+    String token =
+        webTestClient
             .post()
             .uri("/api/auth/login")
             .contentType(MediaType.APPLICATION_JSON)
@@ -79,17 +83,17 @@ public class dar_de_alta_materia_steps {
   }
 
   @Cuando(
-          "se registra una materia con código de materia {string}, nombre {string}, contenidos {string}, tipo de materia {string}, cantidad de créditos que otorga {int} y créditos necesarios {int}")
+      "se registra una materia con código de materia {string}, nombre {string}, contenidos {string}, tipo de materia {string}, cantidad de créditos que otorga {int} y créditos necesarios {int}")
   public void darDeAltaMateria(
-          String codigo,
-          String nombre,
-          String contenidos,
-          String tipoMateria,
-          Integer creditosOtorga,
-          Integer creditosNecesarios) {
+      String codigo,
+      String nombre,
+      String contenidos,
+      String tipoMateria,
+      Integer creditosOtorga,
+      Integer creditosNecesarios) {
 
     this.darDeAltaMateriaConCorrelativa(
-            codigo, nombre, contenidos, tipoMateria, "", creditosOtorga, creditosNecesarios);
+        codigo, nombre, contenidos, tipoMateria, "", creditosOtorga, creditosNecesarios);
   }
 
   @Entonces("se registra la materia exitosamente")
@@ -100,12 +104,12 @@ public class dar_de_alta_materia_steps {
   @Entonces("se registra la materia {string} exitosamente")
   public void seRegistraLaMateriaConCodigoExitosamente(String codigo) {
     var resultGetMateria =
-            webTestClient
-                    .get()
-                    .uri("/api/materias/{codigo}", codigo)
-                    .header("Authorization", "Bearer " + tokenHolder.getToken())
-                    .exchange()
-                    .returnResult(MateriaDTO.class);
+        webTestClient
+            .get()
+            .uri("/api/materias/{codigo}", codigo)
+            .header("Authorization", "Bearer " + tokenHolder.getToken())
+            .exchange()
+            .returnResult(MateriaDTO.class);
 
     assertEquals(HttpStatus.OK, resultGetMateria.getStatus());
   }
@@ -116,42 +120,42 @@ public class dar_de_alta_materia_steps {
   }
 
   @Cuando(
-          "se registra una materia con código de materia {string}, nombre {string}, contenidos {string}, tipo de materia {string}, con correlativa {string}, cantidad de créditos que otorga {int} y créditos necesarios {int}")
+      "se registra una materia con código de materia {string}, nombre {string}, contenidos {string}, tipo de materia {string}, con correlativa {string}, cantidad de créditos que otorga {int} y créditos necesarios {int}")
   public void darDeAltaMateriaConCorrelativa(
-          String codigo,
-          String nombre,
-          String contenidos,
-          String tipoMateria,
-          String correlativas,
-          Integer creditosOtorga,
-          Integer creditosNecesarios) {
+      String codigo,
+      String nombre,
+      String contenidos,
+      String tipoMateria,
+      String correlativas,
+      Integer creditosOtorga,
+      Integer creditosNecesarios) {
     List<String> listaDeCorrelativas =
-            correlativas == null || correlativas.isBlank()
-                    ? List.of()
-                    : Arrays.stream(correlativas.split(","))
-                    .map(String::trim)
-                    .filter(s -> !s.isEmpty())
-                    .toList();
+        correlativas == null || correlativas.isBlank()
+            ? List.of()
+            : Arrays.stream(correlativas.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .toList();
 
     MateriaDTO materiaEnviada =
-            new MateriaDTO(
-                    codigo,
-                    nombre,
-                    contenidos,
-                    creditosOtorga,
-                    creditosNecesarios,
-                    TipoMateria.valueOf(tipoMateria.toUpperCase()),
-                    listaDeCorrelativas);
+        new MateriaDTO(
+            codigo,
+            nombre,
+            contenidos,
+            creditosOtorga,
+            creditosNecesarios,
+            TipoMateria.valueOf(tipoMateria.toUpperCase()),
+            listaDeCorrelativas);
 
     this.result =
-            webTestClient
-                    .post()
-                    .uri("/api/materias")
-                    .header("Authorization", "Bearer " + tokenHolder.getToken())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(materiaEnviada)
-                    .exchange()
-                    .returnResult(MateriaDTO.class);
+        webTestClient
+            .post()
+            .uri("/api/materias")
+            .header("Authorization", "Bearer " + tokenHolder.getToken())
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(materiaEnviada)
+            .exchange()
+            .returnResult(MateriaDTO.class);
   }
 
   @Entonces("no se registra la materia exitosamente")

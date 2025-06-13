@@ -3,15 +3,26 @@ package com.upp.service;
 import com.upp.dto.AlumnoDTO;
 import com.upp.exception.AlumnoExisteException;
 import com.upp.model.Alumno;
+import com.upp.model.Rol;
 import com.upp.repository.AlumnoRepository;
+import com.upp.repository.RolRepository;
+import java.util.Set;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AlumnoService {
   private final AlumnoRepository alumnoRepository;
+  private final RolRepository rolRepository;
+  private final PasswordEncoder passwordEncoder;
 
-  public AlumnoService(AlumnoRepository alumnoRepository) {
+  public AlumnoService(
+      AlumnoRepository alumnoRepository,
+      RolRepository rolRepository,
+      PasswordEncoder passwordEncoder) {
     this.alumnoRepository = alumnoRepository;
+    this.rolRepository = rolRepository;
+    this.passwordEncoder = passwordEncoder;
   }
 
   public AlumnoDTO crearAlumno(AlumnoDTO alumnoDTO) {
@@ -35,6 +46,17 @@ public class AlumnoService {
 
     Long ultimaMatricula = obtenerUltimaMatricula();
     alumno.setMatricula(ultimaMatricula + 1);
+    alumno.setUsername(alumnoDTO.getDni().toString());
+    alumno.setPassword(passwordEncoder.encode(alumnoDTO.getDni().toString()));
+    Rol rolAlumno =
+        rolRepository
+            .findById("ROLE_ALUMNO")
+            .orElseGet(
+                () -> {
+                  Rol nuevo = new Rol("ROLE_ALUMNO");
+                  return rolRepository.save(nuevo);
+                });
+    alumno.setRoles(Set.of(rolAlumno));
     Alumno alumnoGuardado = alumnoRepository.save(alumno);
 
     AlumnoDTO alumnoGuardadoDTO =

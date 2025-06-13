@@ -12,10 +12,8 @@ public class Rol {
   @Id private String nombre;
 
   public Rol(String nombre) {
-        this.nombre = nombre;
-}
-
-  public Rol() {
-
+    this.nombre = nombre;
   }
+
+  public Rol() {}
 }
