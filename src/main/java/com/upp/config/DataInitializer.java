@@ -14,10 +14,10 @@ public class DataInitializer {
     private final RolRepository rolRepository;
 
     private static final List<String> ROLES_INICIALES = List.of(
-            "GESTION_ACADEMICA",
-            "GESTION_ESTUDIANTIL",
-            "DOCENTE",
-            "ESTUDIANTE"
+            "ROLE_GESTION_ACADEMICA",
+            "ROLE_GESTION_ESTUDIANTIL",
+            "ROLE_DOCENTE",
+            "ROLE_ESTUDIANTE"
     );
 
     @PostConstruct
