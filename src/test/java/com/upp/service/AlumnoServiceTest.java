@@ -42,7 +42,6 @@ class AlumnoServiceTest {
         .thenReturn(false);
 
     Alumno alumnoGuardado = new Alumno();
-    alumnoGuardado.setMatricula(1L);
     alumnoGuardado.setNombre(alumnoDTO.getNombre());
     alumnoGuardado.setApellido(alumnoDTO.getApellido());
     alumnoGuardado.setDni(alumnoDTO.getDni());
@@ -53,6 +52,7 @@ class AlumnoServiceTest {
     alumnoGuardado.setTelefonos(alumnoDTO.getTelefonos());
     alumnoGuardado.setCarreras(alumnoDTO.getCodigosCarreras());
     alumnoGuardado.setPlanesDeEstudio(alumnoDTO.getCodigosPlanesDeEstudio());
+    alumnoGuardado.setMatricula(1L);
 
     when(alumnoRepository.save(any(Alumno.class))).thenReturn(alumnoGuardado);
     AlumnoDTO resultado = alumnoService.crearAlumno(alumnoDTO);

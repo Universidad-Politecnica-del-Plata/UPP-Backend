@@ -32,7 +32,11 @@ public class AlumnoService {
     alumno.setCarreras(alumnoDTO.getCodigosCarreras());
     //        TODO: mapear a objeto Plan de estudios
     alumno.setPlanesDeEstudio(alumnoDTO.getCodigosPlanesDeEstudio());
+
+    Long ultimaMatricula = obtenerUltimaMatricula();
+    alumno.setMatricula(ultimaMatricula + 1);
     Alumno alumnoGuardado = alumnoRepository.save(alumno);
+
     AlumnoDTO alumnoGuardadoDTO =
         new AlumnoDTO(
             alumnoGuardado.getMatricula(),
@@ -49,5 +53,13 @@ public class AlumnoService {
             alumnoGuardado.getPlanesDeEstudio());
 
     return alumnoGuardadoDTO;
+  }
+
+  private Long obtenerUltimaMatricula() {
+    Long ultimaMatricula = alumnoRepository.findMaxMatricula();
+    if (ultimaMatricula == null) {
+      ultimaMatricula = 100000L;
+    }
+    return ultimaMatricula;
   }
 }

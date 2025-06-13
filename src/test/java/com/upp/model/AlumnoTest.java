@@ -20,7 +20,8 @@ public class AlumnoTest {
 
   @Test
   void crearConParametros() {
-
+    String username = "juan";
+    String password = "123456";
     String nombre = "Juan";
     String apellido = "Perez";
     Long dni = 123456789L;
@@ -34,7 +35,16 @@ public class AlumnoTest {
 
     Alumno alumno =
         new Alumno(
-            dni, nombre, apellido, email, direccion, fechaNacimiento, fechaIngreso, telefonos);
+            username,
+            password,
+            dni,
+            nombre,
+            apellido,
+            email,
+            direccion,
+            fechaNacimiento,
+            fechaIngreso,
+            telefonos);
     assertNotNull(alumno);
   }
 }
