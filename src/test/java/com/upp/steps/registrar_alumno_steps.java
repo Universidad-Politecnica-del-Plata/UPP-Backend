@@ -30,7 +30,7 @@ public class registrar_alumno_steps {
   @Autowired private UsuarioRepository usuarioRepository;
   @Autowired private RolRepository rolRepository;
   @Autowired private TokenHolder tokenHolder;
-
+  private String token;
   private FluxExchangeResult<AlumnoDTO> result;
 
   @Before
@@ -46,13 +46,16 @@ public class registrar_alumno_steps {
                 });
 
     // Crear usuario si no existe
+    usuarioRepository
+        .findByUsername("admin_gestion_estudiantil2")
+        .ifPresent(usuarioRepository::delete);
     Usuario usuarioExistente =
-        usuarioRepository.findByUsername("admin_gestion_estudiantil").orElse(null);
+        usuarioRepository.findByUsername("admin_gestion_estudiantil2").orElse(null);
 
     if (usuarioExistente == null) {
       Map<String, Object> registroData =
           Map.of(
-              "username", "admin_gestion_estudiantil",
+              "username", "admin_gestion_estudiantil2",
               "password", "password",
               "roles", List.of("ROLE_GESTION_ESTUDIANTIL"));
 
@@ -67,7 +70,7 @@ public class registrar_alumno_steps {
     }
 
     Map<String, String> loginData =
-        Map.of("username", "admin_gestion_estudiantil", "password", "password");
+        Map.of("username", "admin_gestion_estudiantil2", "password", "password");
 
     String token =
         webTestClient
@@ -83,8 +86,8 @@ public class registrar_alumno_steps {
             .blockFirst()
             .get("token")
             .toString();
-
     tokenHolder.setToken(token);
+    this.token = token;
   }
 
   @Cuando(
@@ -115,7 +118,7 @@ public class registrar_alumno_steps {
         webTestClient
             .post()
             .uri("/api/alumnos")
-            .header("Authorization", "Bearer " + tokenHolder.getToken())
+            .header("Authorization", "Bearer " + token)
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(alumnoDTO)
             .exchange()

@@ -23,6 +23,7 @@ public class AlumnoController {
 
   @PostMapping
   public ResponseEntity<AlumnoDTO> crearAlumno(@RequestBody AlumnoDTO alumnoDTO) {
+
     try {
       AlumnoDTO alumnoCreado = alumnoService.crearAlumno(alumnoDTO);
       return ResponseEntity.status(HttpStatus.CREATED).body(alumnoCreado);
