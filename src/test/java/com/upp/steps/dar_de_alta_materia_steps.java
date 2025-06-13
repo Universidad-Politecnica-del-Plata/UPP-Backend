@@ -3,12 +3,19 @@ package com.upp.steps;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.upp.dto.MateriaDTO;
+import com.upp.model.Rol;
 import com.upp.model.TipoMateria;
+import com.upp.model.Usuario;
+import com.upp.repository.RolRepository;
+import com.upp.repository.UsuarioRepository;
+import io.cucumber.java.Before;
 import io.cucumber.java.ast.Cuando;
 import io.cucumber.java.es.Dado;
 import io.cucumber.java.es.Entonces;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -19,7 +26,52 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class dar_de_alta_materia_steps {
   @Autowired private WebTestClient webTestClient;
+  @Autowired private UsuarioRepository usuarioRepository;
+
+  @Autowired private RolRepository rolRepository;
+
+  private String token;
   private FluxExchangeResult<MateriaDTO> result;
+
+  @Before
+  public void setupUsuarioYLogin() {
+    // Crear rol si no existe
+    Rol rolGestion = rolRepository.findById("GESTION_ACADEMICA").orElse(null);
+    if (rolGestion == null) {
+      rolGestion = new Rol("GESTION_ACADEMICA");
+      rolRepository.save(rolGestion);
+    }
+
+    // Crear usuario si no existe
+    Usuario usuario = usuarioRepository.findByUsername("admin_gestion").orElse(null);
+    if (usuario == null) {
+      usuario = new Usuario();
+      usuario.setUsername("admin_gestion");
+      usuario.setPassword("{noop}password");
+      usuario.setHabilitado(true);
+      usuario.getRoles().add(rolGestion);
+      usuarioRepository.save(usuario);
+    }
+
+    // Login para obtener token
+    Map<String, String> loginData = Map.of("username", "admin_gestion", "password", "password");
+
+    token =
+            webTestClient
+                    .post()
+                    .uri("/api/auth/login")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(loginData)
+                    .exchange()
+                    .expectStatus()
+                    .isOk()
+                    .returnResult(Map.class)
+                    .getResponseBody()
+                    .blockFirst()
+                    .get("token")
+                    .toString();
+  }
+
 
   @Cuando(
       "se registra una materia con código de materia {string}, nombre {string}, contenidos {string}, tipo de materia {string}, cantidad de créditos que otorga {int} y créditos necesarios {int}")
@@ -83,6 +135,7 @@ public class dar_de_alta_materia_steps {
         webTestClient
             .post()
             .uri("/api/materias")
+            .header("Authorization", "Bearer " + token)
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(materiaEnviada)
             .exchange()

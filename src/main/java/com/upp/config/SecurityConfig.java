@@ -1,6 +1,7 @@
 package com.upp.config;
 
 import com.upp.security.JwtAuthenticationFilter;
+import com.upp.security.JwtTokenProvider;
 import com.upp.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -23,26 +24,27 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class SecurityConfig implements WebMvcConfigurer {
 
   private final CustomUserDetailsService userDetailsService;
-  private final JwtAuthenticationFilter jwtTokenFilter;
+  private final JwtTokenProvider jwtTokenProvider;
+  private final PasswordEncoder passwordEncoder;
+
+  @Bean
+  public JwtAuthenticationFilter jwtAuthenticationFilter() {
+    return new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService);
+  }
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.csrf()
-        .disable()
-        .cors()
-        .and()
-        .sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // sin sesión, porque usamos JWT
-        .and()
-        .authorizeHttpRequests(
-            auth ->
-                auth.requestMatchers("/api/auth/**", "/api/ping")
-                    .permitAll()
-                    .anyRequest()
-                    .authenticated() // el resto requiere autenticación
-            )
-        .authenticationProvider(authenticationProvider())
-        .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+            .disable()
+            .cors()
+            .and()
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .authorizeHttpRequests(auth ->
+                    auth.requestMatchers("/api/auth/**", "/api/ping").permitAll().anyRequest().authenticated())
+            .authenticationProvider(authenticationProvider())
+            .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
   }
@@ -51,28 +53,24 @@ public class SecurityConfig implements WebMvcConfigurer {
   public AuthenticationProvider authenticationProvider() {
     DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
     authProvider.setUserDetailsService(userDetailsService);
-    authProvider.setPasswordEncoder(passwordEncoder());
+    authProvider.setPasswordEncoder(passwordEncoder);
     return authProvider;
   }
 
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
+
 
   @Bean
   public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
-      throws Exception {
+          throws Exception {
     return config.getAuthenticationManager();
   }
 
   @Override
   public void addCorsMappings(CorsRegistry registry) {
-    registry
-        .addMapping("/**")
-        .allowedOrigins("http://localhost:3000")
-        .allowedMethods("GET", "POST", "PUT", "DELETE")
-        .allowedHeaders("*")
-        .allowCredentials(true);
+    registry.addMapping("/**")
+            .allowedOrigins("http://localhost:3000")
+            .allowedMethods("GET", "POST", "PUT", "DELETE")
+            .allowedHeaders("*")
+            .allowCredentials(true);
   }
 }

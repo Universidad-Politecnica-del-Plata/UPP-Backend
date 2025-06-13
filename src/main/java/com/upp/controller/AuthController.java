@@ -1,5 +1,6 @@
 package com.upp.controller;
 
+import com.upp.dto.UsuarioDTO;
 import com.upp.security.JwtTokenProvider;
 import com.upp.service.CustomUserDetailsService;
 import java.util.Map;
@@ -44,4 +45,15 @@ public class AuthController {
       return ResponseEntity.status(401).body("Credenciales inválidas");
     }
   }
+
+  @PostMapping("/register")
+  public ResponseEntity<?> register(@RequestBody UsuarioDTO dto) {
+    try {
+      userDetailsService.crearUsuario(dto);
+      return ResponseEntity.status(201).body("Usuario creado exitosamente");
+    } catch (RuntimeException e) {
+      return ResponseEntity.status(400).body(e.getMessage());
+    }
+  }
+
 }
