@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.upp.dto.MateriaDTO;
 import com.upp.model.TipoMateria;
+import com.upp.steps.shared.TokenHolder;
 import io.cucumber.java.ast.Cuando;
 import io.cucumber.java.es.Entonces;
 import java.util.Arrays;
@@ -18,39 +19,44 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class modificar_datos_de_materia_steps {
   @Autowired private WebTestClient webTestClient;
+  @Autowired private TokenHolder tokenHolder;
+
   private FluxExchangeResult<MateriaDTO> result;
 
   @Cuando(
-      "a la materia con código de materia {string} se modifica nombre {string}, contenidos {string}, tipo de materia {string}, con correlativa {string}, cantidad de créditos que otorga {int} y créditos necesarios {int}")
+          "a la materia con código de materia {string} se modifica nombre {string}, contenidos {string}, tipo de materia {string}, con correlativa {string}, cantidad de créditos que otorga {int} y créditos necesarios {int}")
   public void modificarDatosDeMateria(
-      String codigo,
-      String nombre,
-      String contenidos,
-      String tipoMateria,
-      String correlativas,
-      Integer creditosOtorga,
-      Integer creditosNecesarios) {
+          String codigo,
+          String nombre,
+          String contenidos,
+          String tipoMateria,
+          String correlativas,
+          Integer creditosOtorga,
+          Integer creditosNecesarios) {
     List<String> listaDeCorrelativas =
-        Arrays.stream(correlativas.split(",")).map(String::trim).toList();
+            correlativas == null || correlativas.isBlank()
+                    ? List.of()
+                    : Arrays.stream(correlativas.split(",")).map(String::trim).toList();
 
     MateriaDTO materiaEnviada =
-        new MateriaDTO(
-            codigo,
-            nombre,
-            contenidos,
-            creditosOtorga,
-            creditosNecesarios,
-            TipoMateria.valueOf(tipoMateria.toUpperCase()),
-            listaDeCorrelativas);
+            new MateriaDTO(
+                    codigo,
+                    nombre,
+                    contenidos,
+                    creditosOtorga,
+                    creditosNecesarios,
+                    TipoMateria.valueOf(tipoMateria.toUpperCase()),
+                    listaDeCorrelativas);
 
     this.result =
-        webTestClient
-            .put()
-            .uri("/api/materias/{codigo}", codigo)
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(materiaEnviada)
-            .exchange()
-            .returnResult(MateriaDTO.class);
+            webTestClient
+                    .put()
+                    .uri("/api/materias/{codigo}", codigo)
+                    .header("Authorization", "Bearer " + tokenHolder.getToken())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(materiaEnviada)
+                    .exchange()
+                    .returnResult(MateriaDTO.class);
   }
 
   @Entonces("se actualiza la información de la materia exitosamente")
@@ -64,15 +70,16 @@ public class modificar_datos_de_materia_steps {
   }
 
   @Entonces(
-      "la materia {string} tiene nombre {string}, contenidos {string}, cantidad de créditos que otorga {int} y créditos necesarios {int}")
+          "la materia {string} tiene nombre {string}, contenidos {string}, cantidad de créditos que otorga {int} y créditos necesarios {int}")
   public void laMateriaTieneLosDatosEsperados(
-      String codigo, String nombre, String contenidos, int creditosOtorga, int creditosNecesarios) {
+          String codigo, String nombre, String contenidos, int creditosOtorga, int creditosNecesarios) {
     var response =
-        webTestClient
-            .get()
-            .uri("/api/materias/{codigo}", codigo)
-            .exchange()
-            .returnResult(MateriaDTO.class);
+            webTestClient
+                    .get()
+                    .uri("/api/materias/{codigo}", codigo)
+                    .header("Authorization", "Bearer " + tokenHolder.getToken())
+                    .exchange()
+                    .returnResult(MateriaDTO.class);
 
     assertEquals(HttpStatus.OK, response.getStatus());
 

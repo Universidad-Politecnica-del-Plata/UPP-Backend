@@ -8,10 +8,12 @@ import com.upp.model.TipoMateria;
 import com.upp.model.Usuario;
 import com.upp.repository.RolRepository;
 import com.upp.repository.UsuarioRepository;
+import com.upp.steps.shared.TokenHolder;
 import io.cucumber.java.Before;
 import io.cucumber.java.ast.Cuando;
 import io.cucumber.java.es.Dado;
 import io.cucumber.java.es.Entonces;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.reactive.server.FluxExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -28,12 +29,9 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 public class dar_de_alta_materia_steps {
   @Autowired private WebTestClient webTestClient;
   @Autowired private UsuarioRepository usuarioRepository;
-  @Autowired
-  private PasswordEncoder passwordEncoder;
-
   @Autowired private RolRepository rolRepository;
+  @Autowired private TokenHolder tokenHolder;
 
-  private String token;
   private FluxExchangeResult<MateriaDTO> result;
 
   @Before
@@ -60,9 +58,10 @@ public class dar_de_alta_materia_steps {
               .expectStatus()
               .isCreated();
     }
+
     Map<String, String> loginData = Map.of("username", "admin_gestion", "password", "password");
 
-    token = webTestClient
+    String token = webTestClient
             .post()
             .uri("/api/auth/login")
             .contentType(MediaType.APPLICATION_JSON)
@@ -75,23 +74,22 @@ public class dar_de_alta_materia_steps {
             .blockFirst()
             .get("token")
             .toString();
-    System.out.println("JWT TOKEN = " + token);
 
+    tokenHolder.setToken(token);
   }
 
-
   @Cuando(
-      "se registra una materia con código de materia {string}, nombre {string}, contenidos {string}, tipo de materia {string}, cantidad de créditos que otorga {int} y créditos necesarios {int}")
+          "se registra una materia con código de materia {string}, nombre {string}, contenidos {string}, tipo de materia {string}, cantidad de créditos que otorga {int} y créditos necesarios {int}")
   public void darDeAltaMateria(
-      String codigo,
-      String nombre,
-      String contenidos,
-      String tipoMateria,
-      Integer creditosOtorga,
-      Integer creditosNecesarios) {
+          String codigo,
+          String nombre,
+          String contenidos,
+          String tipoMateria,
+          Integer creditosOtorga,
+          Integer creditosNecesarios) {
 
     this.darDeAltaMateriaConCorrelativa(
-        codigo, nombre, contenidos, tipoMateria, "", creditosOtorga, creditosNecesarios);
+            codigo, nombre, contenidos, tipoMateria, "", creditosOtorga, creditosNecesarios);
   }
 
   @Entonces("se registra la materia exitosamente")
@@ -105,13 +103,12 @@ public class dar_de_alta_materia_steps {
             webTestClient
                     .get()
                     .uri("/api/materias/{codigo}", codigo)
-                    .header("Authorization", "Bearer " + token)
+                    .header("Authorization", "Bearer " + tokenHolder.getToken())
                     .exchange()
                     .returnResult(MateriaDTO.class);
 
     assertEquals(HttpStatus.OK, resultGetMateria.getStatus());
   }
-
 
   @Dado("que existe una materia con el código de materia {string} y nombre {string}")
   public void queExisteUnaMateria(String codigo, String nombre) {
@@ -150,7 +147,7 @@ public class dar_de_alta_materia_steps {
             webTestClient
                     .post()
                     .uri("/api/materias")
-                    .header("Authorization", "Bearer " + token)
+                    .header("Authorization", "Bearer " + tokenHolder.getToken())
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(materiaEnviada)
                     .exchange()
