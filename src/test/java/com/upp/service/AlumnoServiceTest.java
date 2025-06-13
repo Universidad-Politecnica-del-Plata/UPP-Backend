@@ -1,21 +1,28 @@
 package com.upp.service;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import com.upp.dto.AlumnoDTO;
 import com.upp.exception.AlumnoExisteException;
 import com.upp.model.Alumno;
+import com.upp.model.Rol;
 import com.upp.repository.AlumnoRepository;
+import com.upp.repository.RolRepository;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 class AlumnoServiceTest {
 
   @Mock private AlumnoRepository alumnoRepository;
+  @Mock private RolRepository rolRepository;
+  @Mock private PasswordEncoder passwordEncoder;
 
   @InjectMocks private AlumnoService alumnoService;
 
@@ -41,6 +48,10 @@ class AlumnoServiceTest {
     when(alumnoRepository.existsByDniOrEmail(alumnoDTO.getDni(), alumnoDTO.getEmail()))
         .thenReturn(false);
 
+    when(passwordEncoder.encode(any(CharSequence.class))).thenReturn("passwordEncriptado");
+
+    when(rolRepository.findById("ROLE_ALUMNO")).thenReturn(Optional.of(new Rol("ROLE_ALUMNO")));
+
     Alumno alumnoGuardado = new Alumno();
     alumnoGuardado.setNombre(alumnoDTO.getNombre());
     alumnoGuardado.setApellido(alumnoDTO.getApellido());
@@ -55,10 +66,13 @@ class AlumnoServiceTest {
     alumnoGuardado.setMatricula(1L);
 
     when(alumnoRepository.save(any(Alumno.class))).thenReturn(alumnoGuardado);
+
     AlumnoDTO resultado = alumnoService.crearAlumno(alumnoDTO);
+
     assertNotNull(resultado);
     assertEquals(1L, resultado.getMatricula());
     assertEquals("Juan", resultado.getNombre());
+
     verify(alumnoRepository, times(1)).existsByDniOrEmail(alumnoDTO.getDni(), alumnoDTO.getEmail());
     verify(alumnoRepository, times(1)).save(any(Alumno.class));
   }
@@ -71,6 +85,7 @@ class AlumnoServiceTest {
 
     when(alumnoRepository.existsByDniOrEmail(alumnoDTO.getDni(), alumnoDTO.getEmail()))
         .thenReturn(true);
+
     assertThrows(
         AlumnoExisteException.class,
         () -> {
