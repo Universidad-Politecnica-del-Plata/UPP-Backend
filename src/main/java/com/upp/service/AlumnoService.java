@@ -15,6 +15,7 @@ public class AlumnoService {
   private final AlumnoRepository alumnoRepository;
   private final RolRepository rolRepository;
   private final PasswordEncoder passwordEncoder;
+  private static final String ID_ROL_ALUMNO = "ROLE_ALUMNO";
 
   public AlumnoService(
       AlumnoRepository alumnoRepository,
@@ -48,15 +49,8 @@ public class AlumnoService {
     alumno.setMatricula(ultimaMatricula + 1);
     alumno.setUsername(alumnoDTO.getDni().toString());
     alumno.setPassword(passwordEncoder.encode(alumnoDTO.getDni().toString()));
-    Rol rolAlumno =
-        rolRepository
-            .findById("ROLE_ALUMNO")
-            .orElseGet(
-                () -> {
-                  Rol nuevo = new Rol("ROLE_ALUMNO");
-                  return rolRepository.save(nuevo);
-                });
-    alumno.setRoles(Set.of(rolAlumno));
+
+    alumno.setRoles(Set.of(obtenerRolAlumno()));
     Alumno alumnoGuardado = alumnoRepository.save(alumno);
 
     AlumnoDTO alumnoGuardadoDTO =
@@ -83,5 +77,15 @@ public class AlumnoService {
       ultimaMatricula = 100000L;
     }
     return ultimaMatricula;
+  }
+
+  private Rol obtenerRolAlumno() {
+    return rolRepository
+        .findById(ID_ROL_ALUMNO)
+        .orElseGet(
+            () -> {
+              Rol nuevo = new Rol(ID_ROL_ALUMNO);
+              return rolRepository.save(nuevo);
+            });
   }
 }

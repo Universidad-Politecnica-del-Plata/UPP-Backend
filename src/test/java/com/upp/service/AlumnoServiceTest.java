@@ -47,10 +47,9 @@ class AlumnoServiceTest {
 
     when(alumnoRepository.existsByDniOrEmail(alumnoDTO.getDni(), alumnoDTO.getEmail()))
         .thenReturn(false);
+    when(rolRepository.findById("ROLE_ALUMNO")).thenReturn(Optional.of(new Rol("ROLE_ALUMNO")));
 
     when(passwordEncoder.encode(any(CharSequence.class))).thenReturn("passwordEncriptado");
-
-    when(rolRepository.findById("ROLE_ALUMNO")).thenReturn(Optional.of(new Rol("ROLE_ALUMNO")));
 
     Alumno alumnoGuardado = new Alumno();
     alumnoGuardado.setNombre(alumnoDTO.getNombre());
