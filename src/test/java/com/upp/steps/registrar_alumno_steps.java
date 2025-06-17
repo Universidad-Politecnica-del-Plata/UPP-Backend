@@ -8,7 +8,6 @@ import com.upp.model.Usuario;
 import com.upp.repository.RolRepository;
 import com.upp.repository.UsuarioRepository;
 import com.upp.steps.shared.TokenHolder;
-import io.cucumber.java.Before;
 import io.cucumber.java.ast.Cuando;
 import io.cucumber.java.es.Dado;
 import io.cucumber.java.es.Entonces;
@@ -33,8 +32,8 @@ public class registrar_alumno_steps {
   private String token;
   private FluxExchangeResult<AlumnoDTO> result;
 
-  @Before
-  public void setupUsuarioYLogin() {
+  @Dado("que hay un gestor estudiantil logueado")
+  public void gestorEstudiantilLogueado() {
     // Crear rol si no existe
     Rol rolGestion =
         rolRepository
@@ -118,7 +117,8 @@ public class registrar_alumno_steps {
         webTestClient
             .post()
             .uri("/api/alumnos")
-            .header("Authorization", "Bearer " + token)
+            //            .header("Authorization", "Bearer " + token)
+            .header("Authorization", "Bearer " + tokenHolder.getToken())
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(alumnoDTO)
             .exchange()

@@ -9,7 +9,6 @@ import com.upp.model.Usuario;
 import com.upp.repository.RolRepository;
 import com.upp.repository.UsuarioRepository;
 import com.upp.steps.shared.TokenHolder;
-import io.cucumber.java.Before;
 import io.cucumber.java.ast.Cuando;
 import io.cucumber.java.es.Dado;
 import io.cucumber.java.es.Entonces;
@@ -31,56 +30,6 @@ public class dar_de_alta_materia_steps {
   @Autowired private TokenHolder tokenHolder;
 
   private FluxExchangeResult<MateriaDTO> result;
-
-  @Before
-  public void setupUsuarioYLogin() {
-    Rol rolGestion =
-        rolRepository
-            .findById("ROLE_GESTION_ACADEMICA")
-            .orElseGet(
-                () -> {
-                  Rol nuevo = new Rol("ROLE_GESTION_ACADEMICA");
-                  return rolRepository.save(nuevo);
-                });
-
-    Usuario usuarioExistente = usuarioRepository.findByUsername("admin_gestion").orElse(null);
-
-    if (usuarioExistente == null) {
-      Map<String, Object> registroData =
-          Map.of(
-              "username", "admin_gestion",
-              "password", "password",
-              "roles", List.of("ROLE_GESTION_ACADEMICA"));
-
-      webTestClient
-          .post()
-          .uri("/api/auth/register")
-          .contentType(MediaType.APPLICATION_JSON)
-          .bodyValue(registroData)
-          .exchange()
-          .expectStatus()
-          .isCreated();
-    }
-
-    Map<String, String> loginData = Map.of("username", "admin_gestion", "password", "password");
-
-    String token =
-        webTestClient
-            .post()
-            .uri("/api/auth/login")
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(loginData)
-            .exchange()
-            .expectStatus()
-            .isOk()
-            .returnResult(Map.class)
-            .getResponseBody()
-            .blockFirst()
-            .get("token")
-            .toString();
-
-    tokenHolder.setToken(token);
-  }
 
   @Cuando(
       "se registra una materia con código de materia {string}, nombre {string}, contenidos {string}, tipo de materia {string}, cantidad de créditos que otorga {int} y créditos necesarios {int}")
@@ -161,5 +110,57 @@ public class dar_de_alta_materia_steps {
   @Entonces("no se registra la materia exitosamente")
   public void noSeRegistraLaMateriaExitosamente() {
     assertEquals(HttpStatus.CONFLICT, result.getStatus());
+  }
+
+  @Dado("que hay un gestor academico logueado")
+  public void queHayUnGestorAcademicoLogueado() {
+    {
+      Rol rolGestion =
+          rolRepository
+              .findById("ROLE_GESTION_ACADEMICA")
+              .orElseGet(
+                  () -> {
+                    Rol nuevo = new Rol("ROLE_GESTION_ACADEMICA");
+                    return rolRepository.save(nuevo);
+                  });
+
+      Usuario usuarioExistente = usuarioRepository.findByUsername("admin_gestion").orElse(null);
+
+      if (usuarioExistente == null) {
+        Map<String, Object> registroData =
+            Map.of(
+                "username", "admin_gestion",
+                "password", "password",
+                "roles", List.of("ROLE_GESTION_ACADEMICA"));
+
+        webTestClient
+            .post()
+            .uri("/api/auth/register")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(registroData)
+            .exchange()
+            .expectStatus()
+            .isCreated();
+      }
+
+      Map<String, String> loginData = Map.of("username", "admin_gestion", "password", "password");
+
+      String token =
+          webTestClient
+              .post()
+              .uri("/api/auth/login")
+              .contentType(MediaType.APPLICATION_JSON)
+              .bodyValue(loginData)
+              .exchange()
+              .expectStatus()
+              .isOk()
+              .returnResult(Map.class)
+              .getResponseBody()
+              .blockFirst()
+              .get("token")
+              .toString();
+
+      tokenHolder.setToken(token);
+    }
   }
 }

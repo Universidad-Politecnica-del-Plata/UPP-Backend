@@ -1,6 +1,7 @@
 #language: es
 Característica: Dar de alta materia
-
+  Antecedentes:
+    Dado que hay un gestor academico logueado
   Escenario:  Dar de alta materia sin correlativa es exitoso
     Cuando se registra una materia con código de materia "123-M", nombre "Literatura I", contenidos "Literatura Neoclasica", tipo de materia "Optativa", cantidad de créditos que otorga 4 y créditos necesarios 0
     Entonces se registra la materia "123-M" exitosamente
