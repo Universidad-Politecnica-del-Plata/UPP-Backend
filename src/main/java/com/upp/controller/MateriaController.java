@@ -45,6 +45,8 @@ public class MateriaController {
 
     } catch (MateriaNoExisteException e) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
   }
 
