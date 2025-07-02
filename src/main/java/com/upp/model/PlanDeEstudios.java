@@ -4,12 +4,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -27,10 +25,14 @@ public class PlanDeEstudios {
 
   private LocalDate fechaEntradaEnVigencia;
   private LocalDate fechaVencimiento;
-  @OneToMany
-  private List<Materia> materias;
+  @OneToMany private List<Materia> materias;
 
-  public PlanDeEstudios(String codigoDePlanDeEstudios, Integer creditosElectivos, LocalDate fechaEntradaEnVigencia, List<Materia> materias, LocalDate fechaVencimiento) {
+  public PlanDeEstudios(
+      String codigoDePlanDeEstudios,
+      Integer creditosElectivos,
+      LocalDate fechaEntradaEnVigencia,
+      List<Materia> materias,
+      LocalDate fechaVencimiento) {
     this.codigoDePlanDeEstudios = codigoDePlanDeEstudios;
     this.creditosElectivos = creditosElectivos;
     this.fechaEntradaEnVigencia = fechaEntradaEnVigencia;
@@ -39,9 +41,7 @@ public class PlanDeEstudios {
     this.creditosObligatorios = _calcularCreditosObligatorios();
   }
 
-  public PlanDeEstudios() {
-
-  }
+  public PlanDeEstudios() {}
 
   public void setMaterias(List<Materia> materias) {
     this.materias = materias;
@@ -50,9 +50,8 @@ public class PlanDeEstudios {
 
   private int _calcularCreditosObligatorios() {
     return materias.stream()
-            .filter(Materia::esObligatoria)
-            .mapToInt(Materia::getCreditosQueOtorga)
-            .sum();
+        .filter(Materia::esObligatoria)
+        .mapToInt(Materia::getCreditosQueOtorga)
+        .sum();
   }
 }
-

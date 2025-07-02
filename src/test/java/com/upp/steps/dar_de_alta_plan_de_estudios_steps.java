@@ -10,15 +10,12 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class dar_de_alta_plan_de_estudios_steps {
-    @Autowired
-    private WebTestClient webTestClient;
-    @Autowired private UsuarioRepository usuarioRepository;
-    @Autowired private RolRepository rolRepository;
-    @Autowired private TokenHolder tokenHolder;
+  @Autowired private WebTestClient webTestClient;
+  @Autowired private UsuarioRepository usuarioRepository;
+  @Autowired private RolRepository rolRepository;
+  @Autowired private TokenHolder tokenHolder;
 
-    @Cuando(
-            "se registra un nuevo plan de estudios en el sistema con codigo {string}, fecha de entrada en vigencia {string}, fecha de vencimiento {string}, materias en el plan {string}, {string} y {string} y total de créditos optativos {int}")
-    public void darDeAltaPlanDeEstudios(){
-
-    }
+  @Cuando(
+      "se registra un nuevo plan de estudios en el sistema con codigo {string}, fecha de entrada en vigencia {string}, fecha de vencimiento {string}, materias en el plan {string}, {string} y {string} y total de créditos optativos {int}")
+  public void darDeAltaPlanDeEstudios() {}
 }
