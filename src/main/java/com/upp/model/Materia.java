@@ -59,4 +59,7 @@ public class Materia {
   public List<String> getCodigosCorrelativas() {
     return correlativas.stream().map(Materia::getCodigoDeMateria).collect(Collectors.toList());
   }
+  public Boolean esObligatoria(){
+    return this.tipo == TipoMateria.OBLIGATORIA;
+  }
 }
