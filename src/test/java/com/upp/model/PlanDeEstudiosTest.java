@@ -41,6 +41,8 @@ public class PlanDeEstudiosTest {
             fechaVencimiento);
     assertNotNull(planDeEstudios);
     assertEquals(8, planDeEstudios.getCreditosObligatorios());
+    assertEquals("123-M", planDeEstudios.getMaterias().get(0).getCodigoDeMateria());
+
   }
 
   @Test

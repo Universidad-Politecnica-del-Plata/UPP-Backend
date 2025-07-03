@@ -7,8 +7,8 @@ Característica: Dar de alta plan de estudios
     Y que existe una materia con el código de materia "124-M" y nombre "Algebra I"
     Y que existe una materia con el código de materia "125-M" y nombre "Algoritmos y Programacion I"
 
-  Escenario: : Dar de alta plan de estudios es exitoso
+  Escenario: Dar de alta plan de estudios es exitoso
 
-    Cuando se registra un nuevo plan de estudios en el sistema con codigo "P1-2025", fecha de entrada en vigencia 01-01-2025, fecha de vencimiento 31-12-2035, materias en el plan "", "" y "" y total de créditos optativos 20
+    Cuando se registra un nuevo plan de estudios con codigo "P1-2025", fecha de entrada en vigencia "01-01-2025", fecha de vencimiento "31-12-2035", materias en el plan "123-M", "124-M" y "125-M" y total de créditos optativos 20
     Entonces se registra el plan de estudios "P1-2025" exitosamente
 

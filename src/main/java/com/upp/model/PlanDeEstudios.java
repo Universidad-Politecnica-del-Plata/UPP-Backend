@@ -37,8 +37,8 @@ public class PlanDeEstudios {
     this.creditosElectivos = creditosElectivos;
     this.fechaEntradaEnVigencia = fechaEntradaEnVigencia;
     this.materias = materias;
-    this.fechaVencimiento = fechaVencimiento;
     this.creditosObligatorios = _calcularCreditosObligatorios();
+    this.fechaVencimiento = fechaVencimiento;
   }
 
   public PlanDeEstudios() {}
