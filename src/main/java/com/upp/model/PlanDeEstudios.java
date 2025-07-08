@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -53,5 +55,8 @@ public class PlanDeEstudios {
         .filter(Materia::esObligatoria)
         .mapToInt(Materia::getCreditosQueOtorga)
         .sum();
+  }
+  public List<String> getCodigosMaterias() {
+    return materias.stream().map(Materia::getCodigoDeMateria).collect(Collectors.toList());
   }
 }

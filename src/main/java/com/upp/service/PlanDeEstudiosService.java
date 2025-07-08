@@ -61,7 +61,7 @@ public class PlanDeEstudiosService {
 
     PlanDeEstudios planDeEstudios = planDeEstudiosOpt.get();
     List<String> codigosMaterias =
-        planDeEstudios.getMaterias().stream().map(Materia::getCodigoDeMateria).toList();
+        planDeEstudios.getCodigosMaterias();
 
     return new PlanDeEstudiosResponseDTO(
         planDeEstudios.getCodigoDePlanDeEstudios(),
@@ -93,12 +93,11 @@ public class PlanDeEstudiosService {
                             planDeEstudios ->
                                     new PlanDeEstudiosResponseDTO(
                                             planDeEstudios.getCodigoDePlanDeEstudios(),
-                                            materia.getNombre(),
-                                            materia.getContenidos(),
-                                            materia.getCreditosQueOtorga(),
-                                            materia.getCreditosNecesarios(),
-                                            materia.getTipo(),
-                                            materia.getCodigosCorrelativas()))
+                                            planDeEstudios.getCreditosElectivos(),
+                                            planDeEstudios.getFechaEntradaEnVigencia(),
+                                            planDeEstudios.getFechaVencimiento(),
+                                            planDeEstudios.getCodigosMaterias(),
+                                            planDeEstudios.getCreditosObligatorios()))
                     .toList();
 
     return planesDeEstudios;
