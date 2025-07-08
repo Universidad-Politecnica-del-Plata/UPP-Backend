@@ -1,12 +1,11 @@
 package com.upp.dto;
 
+import java.time.LocalDate;
+import java.util.List;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDate;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -43,7 +42,12 @@ public class PlanDeEstudiosRequestDTO {
     return codigosMaterias;
   }
 
-  public PlanDeEstudiosRequestDTO(String codigoDePlanDeEstudios, Integer creditosElectivos, LocalDate fechaEntradaEnVigencia, LocalDate fechaVencimiento, List<String> codigosMaterias) {
+  public PlanDeEstudiosRequestDTO(
+      String codigoDePlanDeEstudios,
+      Integer creditosElectivos,
+      LocalDate fechaEntradaEnVigencia,
+      LocalDate fechaVencimiento,
+      List<String> codigosMaterias) {
     this.codigoDePlanDeEstudios = codigoDePlanDeEstudios;
     this.creditosElectivos = creditosElectivos;
     this.fechaEntradaEnVigencia = fechaEntradaEnVigencia;
