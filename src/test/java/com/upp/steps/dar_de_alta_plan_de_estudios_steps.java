@@ -73,4 +73,9 @@ public class dar_de_alta_plan_de_estudios_steps {
 
     assertEquals(HttpStatus.OK, resultGetPlanDeEstudios.getStatus());
   }
+
+  @Entonces("no se registra el plan de estudios exitosamente")
+  public void noSeRegistraElPlanDeEstudiosExitosamente() {
+    assertEquals(HttpStatus.CONFLICT, result.getStatus());
+  }
 }

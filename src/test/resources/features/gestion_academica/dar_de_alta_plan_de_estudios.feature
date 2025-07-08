@@ -11,3 +11,8 @@ Característica: Dar de alta plan de estudios
     Cuando se registra un nuevo plan de estudios con codigo "P1-2025", fecha de entrada en vigencia "01-01-2025", fecha de vencimiento "31-12-2035", materias en el plan "997-M", "998-M" y "999-M" y total de créditos optativos 20
     Entonces se registra el plan de estudios "P1-2025" exitosamente
 
+  Escenario:  Dar de alta plan de estudios con codigo ya en uso fracasa
+    Dado se registra un nuevo plan de estudios con codigo "P1-2025", fecha de entrada en vigencia "01-01-2025", fecha de vencimiento "31-12-2035", materias en el plan "997-M", "998-M" y "999-M" y total de créditos optativos 20
+    Cuando se registra un nuevo plan de estudios con codigo "P1-2025", fecha de entrada en vigencia "31-01-2025", fecha de vencimiento "31-12-2055", materias en el plan "997-M", "998-M" y "999-M" y total de créditos optativos 5
+    Entonces no se registra el plan de estudios exitosamente
+
