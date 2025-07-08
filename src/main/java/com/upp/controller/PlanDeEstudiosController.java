@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/planDeEstudios")
 @PreAuthorize("hasRole('GESTION_ACADEMICA')")
@@ -49,5 +51,12 @@ public class PlanDeEstudiosController {
     } catch (PlanDeEstudiosNoExisteException e) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
+  }
+
+  @GetMapping
+  public ResponseEntity<List<PlanDeEstudiosResponseDTO>> obtenerTodosLosPlanesDeEstudio() {
+    List<PlanDeEstudiosResponseDTO> planes = planDeEstudiosService.obtenerTodosLosPlanesDeEstudios();
+
+    return ResponseEntity.ok(planes);
   }
 }

@@ -1,5 +1,6 @@
 package com.upp.service;
 
+import com.upp.dto.MateriaDTO;
 import com.upp.dto.PlanDeEstudiosRequestDTO;
 import com.upp.dto.PlanDeEstudiosResponseDTO;
 import com.upp.exception.MateriaNoExisteException;
@@ -84,5 +85,22 @@ public class PlanDeEstudiosService {
       materias.add(materia);
     }
     return materias;
+  }
+  public List<PlanDeEstudiosResponseDTO> obtenerTodosLosPlanesDeEstudios() {
+    List<PlanDeEstudiosResponseDTO> planesDeEstudios =
+            planDeEstudiosRepository.findAll().stream()
+                    .map(
+                            planDeEstudios ->
+                                    new PlanDeEstudiosResponseDTO(
+                                            planDeEstudios.getCodigoDePlanDeEstudios(),
+                                            materia.getNombre(),
+                                            materia.getContenidos(),
+                                            materia.getCreditosQueOtorga(),
+                                            materia.getCreditosNecesarios(),
+                                            materia.getTipo(),
+                                            materia.getCodigosCorrelativas()))
+                    .toList();
+
+    return planesDeEstudios;
   }
 }
