@@ -47,9 +47,9 @@ public class PlanDeEstudiosServiceTest {
     when(planDeEstudiosRepository.existsByCodigoDePlanDeEstudios("P-2025")).thenReturn(true);
 
     PlanDeEstudiosExisteException exception =
-        assertThrows(
-            PlanDeEstudiosExisteException.class,
-            () -> planDeEstudiosService.crearPlanDeEstudios(dto));
+            assertThrows(
+                    PlanDeEstudiosExisteException.class,
+                    () -> planDeEstudiosService.crearPlanDeEstudios(dto));
 
     assertEquals("Ya existe un plan de estudios con ese codigo.", exception.getMessage());
 
@@ -81,7 +81,7 @@ public class PlanDeEstudiosServiceTest {
 
     // Capturamos el objeto Plan de Estudios que se guardó
     ArgumentCaptor<PlanDeEstudios> planDeEstudiosCaptor =
-        ArgumentCaptor.forClass(PlanDeEstudios.class);
+            ArgumentCaptor.forClass(PlanDeEstudios.class);
     verify(planDeEstudiosRepository).save(planDeEstudiosCaptor.capture());
 
     PlanDeEstudios planDeEstudiosGuardado = planDeEstudiosCaptor.getValue();
@@ -95,12 +95,12 @@ public class PlanDeEstudiosServiceTest {
   void obtenerPlanDeEstudiosPorCodigoLanzaExcepcionSiNoExiste() {
     String codigo = "P-2025";
     when(planDeEstudiosRepository.findByCodigoDePlanDeEstudios(codigo))
-        .thenReturn(Optional.empty());
+            .thenReturn(Optional.empty());
 
     PlanDeEstudiosNoExisteException exception =
-        assertThrows(
-            PlanDeEstudiosNoExisteException.class,
-            () -> planDeEstudiosService.obtenerPlanDeEstudiosPorCodigo(codigo));
+            assertThrows(
+                    PlanDeEstudiosNoExisteException.class,
+                    () -> planDeEstudiosService.obtenerPlanDeEstudiosPorCodigo(codigo));
 
     assertEquals("No existe un plan de estudios con ese codigo.", exception.getMessage());
   }
@@ -123,7 +123,7 @@ public class PlanDeEstudiosServiceTest {
     planDeEstudios.setMaterias(materias);
 
     when(planDeEstudiosRepository.findByCodigoDePlanDeEstudios(codigo))
-        .thenReturn(Optional.of(planDeEstudios));
+            .thenReturn(Optional.of(planDeEstudios));
     PlanDeEstudiosResponseDTO dto = planDeEstudiosService.obtenerPlanDeEstudiosPorCodigo(codigo);
 
     assertNotNull(dto);

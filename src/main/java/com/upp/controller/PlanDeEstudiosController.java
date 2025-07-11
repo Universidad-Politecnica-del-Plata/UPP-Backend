@@ -59,4 +59,14 @@ public class PlanDeEstudiosController {
 
     return ResponseEntity.ok(planes);
   }
+  @DeleteMapping("/{codigo}")
+  public ResponseEntity<Void> eliminarPlanDeEstudios(@PathVariable String codigo) {
+    try {
+      planDeEstudiosService.eliminarPlanDeEstudios(codigo);
+      return ResponseEntity.status(HttpStatus.OK).build();
+
+    } catch (PlanDeEstudiosNoExisteException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+  }
 }
