@@ -41,4 +41,9 @@ public class dar_de_baja_materia_steps {
             .returnResult(MateriaDTO.class);
     assertEquals(HttpStatus.NOT_FOUND, resultGetMateria.getStatus());
   }
+
+  @Entonces("no se elimina la materia y se lanza error")
+  public void noSeEliminaLaMateriaYSeLanzaError() {
+    assertEquals(HttpStatus.NOT_FOUND, result.getStatus());
+  }
 }

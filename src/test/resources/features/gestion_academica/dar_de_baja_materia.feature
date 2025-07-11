@@ -9,4 +9,4 @@ Característica: Dar de baja materia
 
   Escenario: : Dar de baja materia que no existe
     Cuando se da de baja la materia "123-B"
-    Entonces no existe la materia "123-B" en el registro
+    Entonces no se elimina la materia y se lanza error

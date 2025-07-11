@@ -7,12 +7,11 @@ import com.upp.exception.PlanDeEstudiosExisteException;
 import com.upp.exception.PlanDeEstudiosNoExisteException;
 import com.upp.service.PlanDeEstudiosService;
 import jakarta.validation.Valid;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/planDeEstudios")
@@ -25,7 +24,7 @@ public class PlanDeEstudiosController {
   }
 
   @PostMapping
-  public ResponseEntity<PlanDeEstudiosResponseDTO> crearPlanDeEstidios(
+  public ResponseEntity<PlanDeEstudiosResponseDTO> crearPlanDeEstudios(
       @Valid @RequestBody PlanDeEstudiosRequestDTO planDeEstudiosRequestDTO) {
     try {
       PlanDeEstudiosResponseDTO resultado =
@@ -55,10 +54,12 @@ public class PlanDeEstudiosController {
 
   @GetMapping
   public ResponseEntity<List<PlanDeEstudiosResponseDTO>> obtenerTodosLosPlanesDeEstudio() {
-    List<PlanDeEstudiosResponseDTO> planes = planDeEstudiosService.obtenerTodosLosPlanesDeEstudios();
+    List<PlanDeEstudiosResponseDTO> planes =
+        planDeEstudiosService.obtenerTodosLosPlanesDeEstudios();
 
     return ResponseEntity.ok(planes);
   }
+
   @DeleteMapping("/{codigo}")
   public ResponseEntity<Void> eliminarPlanDeEstudios(@PathVariable String codigo) {
     try {

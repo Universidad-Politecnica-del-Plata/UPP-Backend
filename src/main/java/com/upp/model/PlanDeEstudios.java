@@ -7,7 +7,6 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,11 +29,11 @@ public class PlanDeEstudios {
   @OneToMany private List<Materia> materias;
 
   public PlanDeEstudios(
-          String codigoDePlanDeEstudios,
-          Integer creditosElectivos,
-          LocalDate fechaEntradaEnVigencia,
-          List<Materia> materias,
-          LocalDate fechaVencimiento) {
+      String codigoDePlanDeEstudios,
+      Integer creditosElectivos,
+      LocalDate fechaEntradaEnVigencia,
+      List<Materia> materias,
+      LocalDate fechaVencimiento) {
     this.codigoDePlanDeEstudios = codigoDePlanDeEstudios;
     this.creditosElectivos = creditosElectivos;
     this.fechaEntradaEnVigencia = fechaEntradaEnVigencia;
@@ -52,10 +51,11 @@ public class PlanDeEstudios {
 
   private int _calcularCreditosObligatorios() {
     return materias.stream()
-            .filter(Materia::esObligatoria)
-            .mapToInt(Materia::getCreditosQueOtorga)
-            .sum();
+        .filter(Materia::esObligatoria)
+        .mapToInt(Materia::getCreditosQueOtorga)
+        .sum();
   }
+
   public List<String> getCodigosMaterias() {
     return materias.stream().map(Materia::getCodigoDeMateria).collect(Collectors.toList());
   }

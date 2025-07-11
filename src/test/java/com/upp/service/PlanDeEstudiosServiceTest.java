@@ -3,7 +3,6 @@ package com.upp.service;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import com.upp.dto.MateriaDTO;
 import com.upp.dto.PlanDeEstudiosRequestDTO;
 import com.upp.dto.PlanDeEstudiosResponseDTO;
 import com.upp.exception.PlanDeEstudiosExisteException;
@@ -47,9 +46,9 @@ public class PlanDeEstudiosServiceTest {
     when(planDeEstudiosRepository.existsByCodigoDePlanDeEstudios("P-2025")).thenReturn(true);
 
     PlanDeEstudiosExisteException exception =
-            assertThrows(
-                    PlanDeEstudiosExisteException.class,
-                    () -> planDeEstudiosService.crearPlanDeEstudios(dto));
+        assertThrows(
+            PlanDeEstudiosExisteException.class,
+            () -> planDeEstudiosService.crearPlanDeEstudios(dto));
 
     assertEquals("Ya existe un plan de estudios con ese codigo.", exception.getMessage());
 
@@ -81,7 +80,7 @@ public class PlanDeEstudiosServiceTest {
 
     // Capturamos el objeto Plan de Estudios que se guardó
     ArgumentCaptor<PlanDeEstudios> planDeEstudiosCaptor =
-            ArgumentCaptor.forClass(PlanDeEstudios.class);
+        ArgumentCaptor.forClass(PlanDeEstudios.class);
     verify(planDeEstudiosRepository).save(planDeEstudiosCaptor.capture());
 
     PlanDeEstudios planDeEstudiosGuardado = planDeEstudiosCaptor.getValue();
@@ -95,12 +94,12 @@ public class PlanDeEstudiosServiceTest {
   void obtenerPlanDeEstudiosPorCodigoLanzaExcepcionSiNoExiste() {
     String codigo = "P-2025";
     when(planDeEstudiosRepository.findByCodigoDePlanDeEstudios(codigo))
-            .thenReturn(Optional.empty());
+        .thenReturn(Optional.empty());
 
     PlanDeEstudiosNoExisteException exception =
-            assertThrows(
-                    PlanDeEstudiosNoExisteException.class,
-                    () -> planDeEstudiosService.obtenerPlanDeEstudiosPorCodigo(codigo));
+        assertThrows(
+            PlanDeEstudiosNoExisteException.class,
+            () -> planDeEstudiosService.obtenerPlanDeEstudiosPorCodigo(codigo));
 
     assertEquals("No existe un plan de estudios con ese codigo.", exception.getMessage());
   }
@@ -123,7 +122,7 @@ public class PlanDeEstudiosServiceTest {
     planDeEstudios.setMaterias(materias);
 
     when(planDeEstudiosRepository.findByCodigoDePlanDeEstudios(codigo))
-            .thenReturn(Optional.of(planDeEstudios));
+        .thenReturn(Optional.of(planDeEstudios));
     PlanDeEstudiosResponseDTO dto = planDeEstudiosService.obtenerPlanDeEstudiosPorCodigo(codigo);
 
     assertNotNull(dto);
@@ -150,12 +149,12 @@ public class PlanDeEstudiosServiceTest {
     when(materiaRepository.findByCodigoDeMateria("MAT100")).thenReturn(Optional.of(materia));
 
     PlanDeEstudios planDeEstudios =
-            new PlanDeEstudios(
-                    dto.getCodigoDePlanDeEstudios(),
-                    dto.getCreditosElectivos(),
-                    dto.getFechaEntradaEnVigencia(),
-                    List.of(materia),
-                    dto.getFechaVencimiento());
+        new PlanDeEstudios(
+            dto.getCodigoDePlanDeEstudios(),
+            dto.getCreditosElectivos(),
+            dto.getFechaEntradaEnVigencia(),
+            List.of(materia),
+            dto.getFechaVencimiento());
 
     // Ejecutamos
     PlanDeEstudiosResponseDTO resultado = planDeEstudiosService.crearPlanDeEstudios(dto);
@@ -178,20 +177,22 @@ public class PlanDeEstudiosServiceTest {
     when(materiaRepository.findByCodigoDeMateria("MAT101")).thenReturn(Optional.of(materia2));
 
     PlanDeEstudios planDeEstudios2 =
-            new PlanDeEstudios(
-                    dto2.getCodigoDePlanDeEstudios(),
-                    dto2.getCreditosElectivos(),
-                    dto2.getFechaEntradaEnVigencia(),
-                    Arrays.asList(materia, materia2),
-                    dto2.getFechaVencimiento());
+        new PlanDeEstudios(
+            dto2.getCodigoDePlanDeEstudios(),
+            dto2.getCreditosElectivos(),
+            dto2.getFechaEntradaEnVigencia(),
+            Arrays.asList(materia, materia2),
+            dto2.getFechaVencimiento());
 
     // Ejecutamos
     PlanDeEstudiosResponseDTO resultado2 = planDeEstudiosService.crearPlanDeEstudios(dto2);
 
-    //Validamos
-    when(planDeEstudiosRepository.findAll()).thenReturn(Arrays.asList(planDeEstudios, planDeEstudios2));
+    // Validamos
+    when(planDeEstudiosRepository.findAll())
+        .thenReturn(Arrays.asList(planDeEstudios, planDeEstudios2));
 
-    List<PlanDeEstudiosResponseDTO> planesGuardados = planDeEstudiosService.obtenerTodosLosPlanesDeEstudios();
+    List<PlanDeEstudiosResponseDTO> planesGuardados =
+        planDeEstudiosService.obtenerTodosLosPlanesDeEstudios();
     assertEquals(2, planesGuardados.size());
 
     PlanDeEstudiosResponseDTO plan1 = planesGuardados.get(0);
@@ -202,12 +203,39 @@ public class PlanDeEstudiosServiceTest {
     assertEquals(6, plan1.getCreditosObligatorios());
     assertEquals(12, plan2.getCreditosObligatorios());
   }
+
   @Test
   void obtenerTodosLosPlanesDevuelveListaVaciaSiNoHayPlanes() {
     when(planDeEstudiosRepository.findAll()).thenReturn(List.of());
 
-    List<PlanDeEstudiosResponseDTO> resultado = planDeEstudiosService.obtenerTodosLosPlanesDeEstudios();
+    List<PlanDeEstudiosResponseDTO> resultado =
+        planDeEstudiosService.obtenerTodosLosPlanesDeEstudios();
     assertNotNull(resultado);
     assertTrue(resultado.isEmpty());
+  }
+
+  @Test
+  void eliminarPlanLanzaExcepcionSiNoExistePlanConEseCodigo() {
+    String codigo = "P-2025";
+    when(planDeEstudiosRepository.findByCodigoDePlanDeEstudios(codigo))
+        .thenReturn(Optional.empty());
+
+    PlanDeEstudiosNoExisteException ex =
+        assertThrows(
+            PlanDeEstudiosNoExisteException.class,
+            () -> planDeEstudiosService.eliminarPlanDeEstudios(codigo));
+    assertEquals("No existe un plan de estudios con ese codigo.", ex.getMessage());
+  }
+
+  @Test
+  void eliminaPlanDeEstudios() {
+    String codigo = "P-2025";
+    PlanDeEstudios planDeEstudios = new PlanDeEstudios();
+    planDeEstudios.setCodigoDePlanDeEstudios(codigo);
+
+    when(planDeEstudiosRepository.findByCodigoDePlanDeEstudios(codigo))
+        .thenReturn(Optional.of(planDeEstudios));
+    planDeEstudiosService.eliminarPlanDeEstudios(codigo);
+    verify(planDeEstudiosRepository).delete(planDeEstudios);
   }
 }
