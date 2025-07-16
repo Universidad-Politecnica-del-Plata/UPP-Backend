@@ -102,6 +102,37 @@ public class PlanDeEstudiosService {
     return planesDeEstudios;
   }
 
+  public PlanDeEstudiosResponseDTO modificarPlanDeEstudios(
+      String codigo, PlanDeEstudiosRequestDTO planDeEstudiosRequestDTO) {
+    Optional<PlanDeEstudios> planDeEstudiosOpt =
+        planDeEstudiosRepository.findByCodigoDePlanDeEstudios(codigo);
+
+    if (planDeEstudiosOpt.isEmpty()) {
+      throw new PlanDeEstudiosNoExisteException("No existe un plan de estudios con ese codigo.");
+    }
+
+    PlanDeEstudios planDeEstudios = planDeEstudiosOpt.get();
+
+    ArrayList<Materia> materias = obtenerMaterias(planDeEstudiosRequestDTO);
+
+    planDeEstudios.setCreditosElectivos(planDeEstudiosRequestDTO.getCreditosElectivos());
+    planDeEstudios.setFechaEntradaEnVigencia(planDeEstudiosRequestDTO.getFechaEntradaEnVigencia());
+    planDeEstudios.setFechaVencimiento(planDeEstudiosRequestDTO.getFechaVencimiento());
+    planDeEstudios.setMaterias(materias);
+
+    planDeEstudiosRepository.save(planDeEstudios);
+
+    List<String> codigosMaterias = materias.stream().map(Materia::getCodigoDeMateria).toList();
+
+    return new PlanDeEstudiosResponseDTO(
+        planDeEstudios.getCodigoDePlanDeEstudios(),
+        planDeEstudios.getCreditosElectivos(),
+        planDeEstudios.getFechaEntradaEnVigencia(),
+        planDeEstudios.getFechaVencimiento(),
+        codigosMaterias,
+        planDeEstudios.getCreditosObligatorios());
+  }
+
   public void eliminarPlanDeEstudios(String codigo) {
     Optional<PlanDeEstudios> planDeEstudiosOpt =
         planDeEstudiosRepository.findByCodigoDePlanDeEstudios(codigo);

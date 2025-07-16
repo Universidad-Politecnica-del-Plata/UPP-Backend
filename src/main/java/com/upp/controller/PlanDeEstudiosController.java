@@ -60,6 +60,24 @@ public class PlanDeEstudiosController {
     return ResponseEntity.ok(planes);
   }
 
+  @PutMapping("/{codigo}")
+  public ResponseEntity<PlanDeEstudiosResponseDTO> modificarPlanDeEstudios(
+      @PathVariable String codigo, @RequestBody PlanDeEstudiosRequestDTO planDeEstudiosRequestDTO) {
+
+    try {
+      PlanDeEstudiosResponseDTO resultado =
+          planDeEstudiosService.modificarPlanDeEstudios(codigo, planDeEstudiosRequestDTO);
+      return ResponseEntity.status(HttpStatus.OK).body(resultado);
+
+    } catch (PlanDeEstudiosNoExisteException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    } catch (MateriaNoExisteException e) {
+      return ResponseEntity.status(HttpStatus.CONFLICT).build();
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+  }
+
   @DeleteMapping("/{codigo}")
   public ResponseEntity<Void> eliminarPlanDeEstudios(@PathVariable String codigo) {
     try {
