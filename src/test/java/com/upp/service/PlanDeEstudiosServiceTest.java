@@ -238,4 +238,149 @@ public class PlanDeEstudiosServiceTest {
     planDeEstudiosService.eliminarPlanDeEstudios(codigo);
     verify(planDeEstudiosRepository).delete(planDeEstudios);
   }
+
+  @Test
+  void modificarPlanDeEstudiosLanzaExcepcionSiNoExiste() {
+    String codigo = "P-2025";
+    PlanDeEstudiosRequestDTO dto = new PlanDeEstudiosRequestDTO();
+    dto.setCodigoDePlanDeEstudios(codigo);
+    dto.setCreditosElectivos(15);
+    dto.setFechaEntradaEnVigencia(LocalDate.of(2025, 2, 1));
+    dto.setFechaVencimiento(LocalDate.of(2035, 12, 31));
+    dto.setCodigosMaterias(Arrays.asList("MAT100", "MAT101"));
+
+    when(planDeEstudiosRepository.findByCodigoDePlanDeEstudios(codigo))
+        .thenReturn(Optional.empty());
+
+    PlanDeEstudiosNoExisteException exception =
+        assertThrows(
+            PlanDeEstudiosNoExisteException.class,
+            () -> planDeEstudiosService.modificarPlanDeEstudios(codigo, dto));
+
+    assertEquals("No existe un plan de estudios con ese codigo.", exception.getMessage());
+    verify(planDeEstudiosRepository, never()).save(any());
+  }
+
+  @Test
+  void modificarPlanDeEstudiosActualizaCorrectamenteTodosLosCampos() {
+    String codigo = "P-2025";
+    
+    // Plan de estudios existente
+    Materia materiaOriginal = new Materia();
+    materiaOriginal.setCodigoDeMateria("MAT100");
+    materiaOriginal.setCreditosQueOtorga(4);
+    materiaOriginal.setTipo(TipoMateria.OBLIGATORIA);
+    
+    PlanDeEstudios planExistente = new PlanDeEstudios();
+    planExistente.setCodigoDePlanDeEstudios(codigo);
+    planExistente.setCreditosElectivos(10);
+    planExistente.setFechaEntradaEnVigencia(LocalDate.of(2025, 1, 1));
+    planExistente.setFechaVencimiento(LocalDate.of(2035, 1, 1));
+    planExistente.setMaterias(List.of(materiaOriginal));
+
+    // DTO con nuevos datos
+    PlanDeEstudiosRequestDTO dto = new PlanDeEstudiosRequestDTO();
+    dto.setCodigoDePlanDeEstudios(codigo);
+    dto.setCreditosElectivos(20);
+    dto.setFechaEntradaEnVigencia(LocalDate.of(2025, 3, 1));
+    dto.setFechaVencimiento(LocalDate.of(2036, 12, 31));
+    dto.setCodigosMaterias(Arrays.asList("MAT101", "MAT102"));
+
+    // Nuevas materias
+    Materia materia1 = new Materia();
+    materia1.setCodigoDeMateria("MAT101");
+    materia1.setCreditosQueOtorga(6);
+    materia1.setTipo(TipoMateria.OBLIGATORIA);
+    
+    Materia materia2 = new Materia();
+    materia2.setCodigoDeMateria("MAT102");
+    materia2.setCreditosQueOtorga(5);
+    materia2.setTipo(TipoMateria.OPTATIVA);
+
+    // Mocks
+    when(planDeEstudiosRepository.findByCodigoDePlanDeEstudios(codigo))
+        .thenReturn(Optional.of(planExistente));
+    when(materiaRepository.findByCodigoDeMateria("MAT101"))
+        .thenReturn(Optional.of(materia1));
+    when(materiaRepository.findByCodigoDeMateria("MAT102"))
+        .thenReturn(Optional.of(materia2));
+
+    // Ejecutar
+    PlanDeEstudiosResponseDTO resultado = 
+        planDeEstudiosService.modificarPlanDeEstudios(codigo, dto);
+
+    // Verificar que se guardó el plan modificado
+    ArgumentCaptor<PlanDeEstudios> planCaptor = ArgumentCaptor.forClass(PlanDeEstudios.class);
+    verify(planDeEstudiosRepository).save(planCaptor.capture());
+    
+    PlanDeEstudios planGuardado = planCaptor.getValue();
+    
+    // Verificar que todos los campos se actualizaron
+    assertEquals(codigo, planGuardado.getCodigoDePlanDeEstudios());
+    assertEquals(20, planGuardado.getCreditosElectivos());
+    assertEquals(LocalDate.of(2025, 3, 1), planGuardado.getFechaEntradaEnVigencia());
+    assertEquals(LocalDate.of(2036, 12, 31), planGuardado.getFechaVencimiento());
+    assertEquals(2, planGuardado.getMaterias().size());
+    assertEquals(6, planGuardado.getCreditosObligatorios()); // Solo MAT101 es obligatoria
+    
+    // Verificar el DTO de respuesta
+    assertNotNull(resultado);
+    assertEquals(codigo, resultado.getCodigoDePlanDeEstudios());
+    assertEquals(20, resultado.getCreditosElectivos());
+    assertEquals(LocalDate.of(2025, 3, 1), resultado.getFechaEntradaEnVigencia());
+    assertEquals(LocalDate.of(2036, 12, 31), resultado.getFechaVencimiento());
+    assertEquals(2, resultado.getCodigosMaterias().size());
+    assertTrue(resultado.getCodigosMaterias().contains("MAT101"));
+    assertTrue(resultado.getCodigosMaterias().contains("MAT102"));
+    assertEquals(6, resultado.getCreditosObligatorios());
+  }
+
+  @Test
+  void modificarPlanDeEstudiosConMateriasVacias() {
+    String codigo = "P-2025";
+    
+    // Plan de estudios existente
+    Materia materiaOriginal = new Materia();
+    materiaOriginal.setCodigoDeMateria("MAT100");
+    materiaOriginal.setCreditosQueOtorga(4);
+    materiaOriginal.setTipo(TipoMateria.OBLIGATORIA);
+    
+    PlanDeEstudios planExistente = new PlanDeEstudios();
+    planExistente.setCodigoDePlanDeEstudios(codigo);
+    planExistente.setCreditosElectivos(10);
+    planExistente.setFechaEntradaEnVigencia(LocalDate.of(2025, 1, 1));
+    planExistente.setFechaVencimiento(LocalDate.of(2035, 1, 1));
+    planExistente.setMaterias(List.of(materiaOriginal));
+
+    // DTO sin materias
+    PlanDeEstudiosRequestDTO dto = new PlanDeEstudiosRequestDTO();
+    dto.setCodigoDePlanDeEstudios(codigo);
+    dto.setCreditosElectivos(15);
+    dto.setFechaEntradaEnVigencia(LocalDate.of(2025, 2, 1));
+    dto.setFechaVencimiento(LocalDate.of(2035, 12, 31));
+    dto.setCodigosMaterias(List.of()); // Lista vacía
+
+    // Mocks
+    when(planDeEstudiosRepository.findByCodigoDePlanDeEstudios(codigo))
+        .thenReturn(Optional.of(planExistente));
+
+    // Ejecutar
+    PlanDeEstudiosResponseDTO resultado = 
+        planDeEstudiosService.modificarPlanDeEstudios(codigo, dto);
+
+    // Verificar
+    ArgumentCaptor<PlanDeEstudios> planCaptor = ArgumentCaptor.forClass(PlanDeEstudios.class);
+    verify(planDeEstudiosRepository).save(planCaptor.capture());
+    
+    PlanDeEstudios planGuardado = planCaptor.getValue();
+    
+    assertEquals(codigo, planGuardado.getCodigoDePlanDeEstudios());
+    assertEquals(15, planGuardado.getCreditosElectivos());
+    assertEquals(0, planGuardado.getMaterias().size());
+    assertEquals(0, planGuardado.getCreditosObligatorios());
+    
+    assertNotNull(resultado);
+    assertEquals(0, resultado.getCodigosMaterias().size());
+    assertEquals(0, resultado.getCreditosObligatorios());
+  }
 }
