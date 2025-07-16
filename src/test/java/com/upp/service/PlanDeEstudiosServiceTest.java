@@ -264,13 +264,13 @@ public class PlanDeEstudiosServiceTest {
   @Test
   void modificarPlanDeEstudiosActualizaCorrectamenteTodosLosCampos() {
     String codigo = "P-2025";
-    
+
     // Plan de estudios existente
     Materia materiaOriginal = new Materia();
     materiaOriginal.setCodigoDeMateria("MAT100");
     materiaOriginal.setCreditosQueOtorga(4);
     materiaOriginal.setTipo(TipoMateria.OBLIGATORIA);
-    
+
     PlanDeEstudios planExistente = new PlanDeEstudios();
     planExistente.setCodigoDePlanDeEstudios(codigo);
     planExistente.setCreditosElectivos(10);
@@ -291,7 +291,7 @@ public class PlanDeEstudiosServiceTest {
     materia1.setCodigoDeMateria("MAT101");
     materia1.setCreditosQueOtorga(6);
     materia1.setTipo(TipoMateria.OBLIGATORIA);
-    
+
     Materia materia2 = new Materia();
     materia2.setCodigoDeMateria("MAT102");
     materia2.setCreditosQueOtorga(5);
@@ -300,21 +300,19 @@ public class PlanDeEstudiosServiceTest {
     // Mocks
     when(planDeEstudiosRepository.findByCodigoDePlanDeEstudios(codigo))
         .thenReturn(Optional.of(planExistente));
-    when(materiaRepository.findByCodigoDeMateria("MAT101"))
-        .thenReturn(Optional.of(materia1));
-    when(materiaRepository.findByCodigoDeMateria("MAT102"))
-        .thenReturn(Optional.of(materia2));
+    when(materiaRepository.findByCodigoDeMateria("MAT101")).thenReturn(Optional.of(materia1));
+    when(materiaRepository.findByCodigoDeMateria("MAT102")).thenReturn(Optional.of(materia2));
 
     // Ejecutar
-    PlanDeEstudiosResponseDTO resultado = 
+    PlanDeEstudiosResponseDTO resultado =
         planDeEstudiosService.modificarPlanDeEstudios(codigo, dto);
 
     // Verificar que se guardó el plan modificado
     ArgumentCaptor<PlanDeEstudios> planCaptor = ArgumentCaptor.forClass(PlanDeEstudios.class);
     verify(planDeEstudiosRepository).save(planCaptor.capture());
-    
+
     PlanDeEstudios planGuardado = planCaptor.getValue();
-    
+
     // Verificar que todos los campos se actualizaron
     assertEquals(codigo, planGuardado.getCodigoDePlanDeEstudios());
     assertEquals(20, planGuardado.getCreditosElectivos());
@@ -322,7 +320,7 @@ public class PlanDeEstudiosServiceTest {
     assertEquals(LocalDate.of(2036, 12, 31), planGuardado.getFechaVencimiento());
     assertEquals(2, planGuardado.getMaterias().size());
     assertEquals(6, planGuardado.getCreditosObligatorios()); // Solo MAT101 es obligatoria
-    
+
     // Verificar el DTO de respuesta
     assertNotNull(resultado);
     assertEquals(codigo, resultado.getCodigoDePlanDeEstudios());
@@ -338,13 +336,13 @@ public class PlanDeEstudiosServiceTest {
   @Test
   void modificarPlanDeEstudiosConMateriasVacias() {
     String codigo = "P-2025";
-    
+
     // Plan de estudios existente
     Materia materiaOriginal = new Materia();
     materiaOriginal.setCodigoDeMateria("MAT100");
     materiaOriginal.setCreditosQueOtorga(4);
     materiaOriginal.setTipo(TipoMateria.OBLIGATORIA);
-    
+
     PlanDeEstudios planExistente = new PlanDeEstudios();
     planExistente.setCodigoDePlanDeEstudios(codigo);
     planExistente.setCreditosElectivos(10);
@@ -365,20 +363,20 @@ public class PlanDeEstudiosServiceTest {
         .thenReturn(Optional.of(planExistente));
 
     // Ejecutar
-    PlanDeEstudiosResponseDTO resultado = 
+    PlanDeEstudiosResponseDTO resultado =
         planDeEstudiosService.modificarPlanDeEstudios(codigo, dto);
 
     // Verificar
     ArgumentCaptor<PlanDeEstudios> planCaptor = ArgumentCaptor.forClass(PlanDeEstudios.class);
     verify(planDeEstudiosRepository).save(planCaptor.capture());
-    
+
     PlanDeEstudios planGuardado = planCaptor.getValue();
-    
+
     assertEquals(codigo, planGuardado.getCodigoDePlanDeEstudios());
     assertEquals(15, planGuardado.getCreditosElectivos());
     assertEquals(0, planGuardado.getMaterias().size());
     assertEquals(0, planGuardado.getCreditosObligatorios());
-    
+
     assertNotNull(resultado);
     assertEquals(0, resultado.getCodigosMaterias().size());
     assertEquals(0, resultado.getCreditosObligatorios());
