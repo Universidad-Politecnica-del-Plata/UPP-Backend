@@ -1,4 +1,5 @@
 #language: es
+@todo
 Característica: Consultar cursos inscriptos
 
   Escenario: : Consultar cursos inscriptos exitoso

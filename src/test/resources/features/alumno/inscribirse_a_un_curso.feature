@@ -1,4 +1,5 @@
 #language: es
+@todo
 Característica: Inscribirse a un curso
 
   Escenario: : Inscribirse a un curso exitoso

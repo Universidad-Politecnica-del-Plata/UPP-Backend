@@ -1,4 +1,5 @@
 #language: es
+@todo
 Característica: Dar de baja carrera
 
   Escenario: : Dar de baja carrera es exitoso

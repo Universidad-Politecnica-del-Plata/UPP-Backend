@@ -1,6 +1,7 @@
 #language: es
 Característica: Dar de baja materia
-
+  Antecedentes:
+    Dado que hay un gestor academico logueado
   Escenario: : Dar de baja materia es exitoso
     Dado que existe una materia con el código de materia "123-M" y nombre "Analisis I"
     Cuando se da de baja la materia "123-M"
@@ -8,4 +9,4 @@ Característica: Dar de baja materia
 
   Escenario: : Dar de baja materia que no existe
     Cuando se da de baja la materia "123-B"
-    Entonces no existe la materia "123-B" en el registro
+    Entonces no se elimina la materia y se lanza error

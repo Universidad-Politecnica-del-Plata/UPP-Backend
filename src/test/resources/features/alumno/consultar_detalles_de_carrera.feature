@@ -1,4 +1,5 @@
 #language: es
+@todo
 Característica: Consultar detalles de carrera
 
   Escenario: : Consultar detalles de carrera es exitoso

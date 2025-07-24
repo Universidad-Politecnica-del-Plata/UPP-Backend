@@ -1,54 +1,35 @@
 package com.upp.controller;
 
 import com.upp.dto.MateriaDTO;
-import com.upp.model.Materia;
-import com.upp.repository.MateriaRepository;
+import com.upp.exception.MateriaExisteException;
+import com.upp.exception.MateriaNoExisteException;
+import com.upp.service.MateriaService;
 import jakarta.validation.Valid;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/materias")
+@PreAuthorize("hasRole('GESTION_ACADEMICA')")
 public class MateriaController {
-  private final MateriaRepository materiaRepository;
+  private final MateriaService materiaService;
 
-  public MateriaController(MateriaRepository materiaRepository) {
-    this.materiaRepository = materiaRepository;
+  public MateriaController(MateriaService materiaService) {
+    this.materiaService = materiaService;
   }
 
   @PostMapping
   public ResponseEntity<MateriaDTO> crearMateria(@Valid @RequestBody MateriaDTO materiaDTO) {
-    if (materiaRepository.existsByCodigoDeMateria(materiaDTO.getCodigoDeMateria())) {
-      return ResponseEntity.status(HttpStatus.CONFLICT).build();
-    }
     try {
-      Materia materia =
-          new Materia(
-              materiaDTO.getCodigoDeMateria(),
-              materiaDTO.getNombre(),
-              materiaDTO.getContenidos(),
-              materiaDTO.getCreditosQueOtorga(),
-              materiaDTO.getCreditosNecesarios(),
-              materiaDTO.getTipo());
-      // Buscar correlativas por código
-      if (materiaDTO.getCodigosCorrelativas() != null
-          && !materiaDTO.getCodigosCorrelativas().isEmpty()) {
-        List<Materia> correlativas =
-            materiaDTO.getCodigosCorrelativas().stream()
-                .map(cod -> materiaRepository.findByCodigoDeMateria(cod))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList());
+      MateriaDTO resultado = materiaService.crearMateria(materiaDTO);
+      return ResponseEntity.status(HttpStatus.CREATED).body(resultado);
 
-        materia.setCorrelativas(correlativas);
-      }
-      materiaRepository.save(materia);
+    } catch (MateriaExisteException e) {
+      return ResponseEntity.status(HttpStatus.CONFLICT).build();
 
-      return ResponseEntity.status(HttpStatus.CREATED).body(materiaDTO);
     } catch (Exception e) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
@@ -57,91 +38,43 @@ public class MateriaController {
   @PutMapping("/{codigo}")
   public ResponseEntity<MateriaDTO> modificarMateria(
       @PathVariable String codigo, @RequestBody MateriaDTO materiaDTO) {
-    Optional<Materia> materiaOpt = materiaRepository.findByCodigoDeMateria(codigo);
 
-    if (materiaOpt.isEmpty()) {
+    try {
+      MateriaDTO resultado = materiaService.modificarMateria(codigo, materiaDTO);
+      return ResponseEntity.status(HttpStatus.OK).body(resultado);
+
+    } catch (MateriaNoExisteException e) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
-    Materia materia = materiaOpt.get();
-    materia.setNombre(materiaDTO.getNombre());
-    materia.setContenidos(materiaDTO.getContenidos());
-    materia.setTipo(materiaDTO.getTipo());
-    materia.setCreditosQueOtorga(materiaDTO.getCreditosQueOtorga());
-    materia.setCreditosNecesarios(materiaDTO.getCreditosNecesarios());
-
-    if (materiaDTO.getCodigosCorrelativas() != null) {
-      List<Materia> correlativas =
-          materiaDTO.getCodigosCorrelativas().stream()
-              .map(materiaRepository::findByCodigoDeMateria)
-              .filter(Optional::isPresent)
-              .map(Optional::get)
-              .collect(Collectors.toList());
-
-      materia.setCorrelativas(correlativas);
-    }
-    materiaRepository.save(materia);
-    return ResponseEntity.status(HttpStatus.OK).body(materiaDTO);
   }
 
   @DeleteMapping("/{codigo}")
   public ResponseEntity<Void> eliminarMateria(@PathVariable String codigo) {
-    Optional<Materia> materiaOpt = materiaRepository.findByCodigoDeMateria(codigo);
+    try {
+      materiaService.eliminarMateria(codigo);
+      return ResponseEntity.status(HttpStatus.OK).build();
 
-    if (materiaOpt.isEmpty()) {
+    } catch (MateriaNoExisteException e) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
-    Materia materia = materiaOpt.get();
-    List<Materia> materiasConCorrelativa =
-        materiaRepository.findAll().stream()
-            .filter(m -> m.getCorrelativas().contains(materia))
-            .collect(Collectors.toList());
-
-    for (Materia m : materiasConCorrelativa) {
-      m.getCorrelativas().remove(materia);
-      materiaRepository.save(m);
-    }
-    materiaRepository.delete(materia);
-    return ResponseEntity.status(HttpStatus.OK).build();
   }
 
   @GetMapping("/{codigo}")
   public ResponseEntity<MateriaDTO> obtenerMateriaPorCodigo(@PathVariable String codigo) {
-    Optional<Materia> materiaOpt = materiaRepository.findByCodigoDeMateria(codigo);
+    try {
+      MateriaDTO materia = materiaService.obtenerMateriaPorCodigo(codigo);
+      return ResponseEntity.status(HttpStatus.OK).body(materia);
 
-    if (materiaOpt.isEmpty()) {
+    } catch (MateriaNoExisteException e) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
-
-    Materia materia = materiaOpt.get();
-
-    MateriaDTO materiaDTO =
-        new MateriaDTO(
-            materia.getCodigoDeMateria(),
-            materia.getNombre(),
-            materia.getContenidos(),
-            materia.getCreditosQueOtorga(),
-            materia.getCreditosNecesarios(),
-            materia.getTipo(),
-            materia.getCodigosCorrelativas());
-
-    return ResponseEntity.status(HttpStatus.OK).body(materiaDTO);
   }
 
   @GetMapping
   public ResponseEntity<List<MateriaDTO>> obtenerTodasLasMaterias() {
-    List<MateriaDTO> materias =
-        materiaRepository.findAll().stream()
-            .map(
-                materia ->
-                    new MateriaDTO(
-                        materia.getCodigoDeMateria(),
-                        materia.getNombre(),
-                        materia.getContenidos(),
-                        materia.getCreditosQueOtorga(),
-                        materia.getCreditosNecesarios(),
-                        materia.getTipo(),
-                        materia.getCodigosCorrelativas()))
-            .toList();
+    List<MateriaDTO> materias = materiaService.obtenerTodasLasMaterias();
 
     return ResponseEntity.ok(materias);
   }

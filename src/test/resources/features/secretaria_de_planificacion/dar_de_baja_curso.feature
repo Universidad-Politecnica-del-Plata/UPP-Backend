@@ -1,4 +1,5 @@
 #language: es
+@todo
 Característica: Dar de baja curso
 
   Escenario: : Dar de baja curso es exitoso

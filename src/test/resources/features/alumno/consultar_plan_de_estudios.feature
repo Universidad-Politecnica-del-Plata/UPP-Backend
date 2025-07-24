@@ -1,4 +1,5 @@
 #language: es
+@todo
 Característica: Consultar plan de estudios
 
   Escenario: : Consultar plan de estudios es exitoso

@@ -6,7 +6,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
+@SpringBootTest
+@ActiveProfiles("test")
 public class AlumnoTest {
   @Test
   void crearSinParametros() {
@@ -16,7 +20,8 @@ public class AlumnoTest {
 
   @Test
   void crearConParametros() {
-
+    String username = "juan";
+    String password = "123456";
     String nombre = "Juan";
     String apellido = "Perez";
     Long dni = 123456789L;
@@ -30,13 +35,16 @@ public class AlumnoTest {
 
     Alumno alumno =
         new Alumno(
-            dni, nombre, apellido, email, direccion, fechaNacimiento, fechaIngreso, telefonos);
+            username,
+            password,
+            dni,
+            nombre,
+            apellido,
+            email,
+            direccion,
+            fechaNacimiento,
+            fechaIngreso,
+            telefonos);
     assertNotNull(alumno);
   }
-  //    @Test
-  //    void crearSinFechaEgreso() {
-  //
-  //        new Alumno();
-  //    }
-
 }

@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.upp.dto.MateriaDTO;
 import com.upp.model.TipoMateria;
+import com.upp.steps.shared.TokenHolder;
 import io.cucumber.java.ast.Cuando;
 import io.cucumber.java.es.Entonces;
 import java.util.Arrays;
@@ -18,6 +19,8 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class modificar_datos_de_materia_steps {
   @Autowired private WebTestClient webTestClient;
+  @Autowired private TokenHolder tokenHolder;
+
   private FluxExchangeResult<MateriaDTO> result;
 
   @Cuando(
@@ -31,7 +34,9 @@ public class modificar_datos_de_materia_steps {
       Integer creditosOtorga,
       Integer creditosNecesarios) {
     List<String> listaDeCorrelativas =
-        Arrays.stream(correlativas.split(",")).map(String::trim).toList();
+        correlativas == null || correlativas.isBlank()
+            ? List.of()
+            : Arrays.stream(correlativas.split(",")).map(String::trim).toList();
 
     MateriaDTO materiaEnviada =
         new MateriaDTO(
@@ -47,6 +52,7 @@ public class modificar_datos_de_materia_steps {
         webTestClient
             .put()
             .uri("/api/materias/{codigo}", codigo)
+            .header("Authorization", "Bearer " + tokenHolder.getToken())
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(materiaEnviada)
             .exchange()
@@ -71,6 +77,7 @@ public class modificar_datos_de_materia_steps {
         webTestClient
             .get()
             .uri("/api/materias/{codigo}", codigo)
+            .header("Authorization", "Bearer " + tokenHolder.getToken())
             .exchange()
             .returnResult(MateriaDTO.class);
 

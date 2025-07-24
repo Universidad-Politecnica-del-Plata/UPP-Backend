@@ -1,6 +1,8 @@
 #language: es
 Característica: Registrar alumno
 
+  Antecedentes:
+    Dado que hay un gestor estudiantil logueado
   Escenario:  Registrar alumno es exitoso
     Cuando registra un nuevo alumno con DNI 12345678, apellido "Perez", nombre "Juan", direccion "Calle Falsa 123", telefono "1234", email "juan@mail.com", fecha de nacimiento "01-01-1990" y fecha de ingreso "01-03-2015"
     Entonces se registra el alumno exitosamente

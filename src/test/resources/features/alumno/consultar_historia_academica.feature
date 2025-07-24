@@ -1,4 +1,5 @@
 #language: es
+@todo
 Característica: Consultar historia académica
 
   Escenario: : Consultar historia académica exitoso

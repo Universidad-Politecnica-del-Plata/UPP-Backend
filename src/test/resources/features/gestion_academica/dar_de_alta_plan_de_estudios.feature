@@ -1,9 +1,18 @@
 #language: es
 Característica: Dar de alta plan de estudios
+  Antecedentes:
+    Dado que hay un gestor academico logueado
+    Y que existe una materia con el código de materia "997-M" y nombre "Analisis I"
+    Y que existe una materia con el código de materia "998-M" y nombre "Algebra I"
+    Y que existe una materia con el código de materia "999-M" y nombre "Algoritmos y Programacion I"
 
-  Escenario: : Dar de alta plan de estudios es exitoso
-    Dado que existe un responsable de Gestión Académica
-    Y existe un plan de estudios
-    Cuando se registra un nuevo plan de estudios en el sistema con "código de plan de estudios", "carrera correspondiente", "fecha de entrada en vigencia", "fecha de vencimiento", "total de créditos académicos obligatorios" y "total de créditos académicos optativos"
-    Entonces se registra el plan de estudios
+  Escenario: Dar de alta plan de estudios es exitoso
+
+    Cuando se registra un nuevo plan de estudios con codigo "P1-2025", fecha de entrada en vigencia "01-01-2025", fecha de vencimiento "31-12-2035", materias en el plan "997-M", "998-M" y "999-M" y total de créditos optativos 20
+    Entonces se registra el plan de estudios "P1-2025" exitosamente
+
+  Escenario:  Dar de alta plan de estudios con codigo ya en uso fracasa
+    Dado se registra un nuevo plan de estudios con codigo "P1-2025", fecha de entrada en vigencia "01-01-2025", fecha de vencimiento "31-12-2035", materias en el plan "997-M", "998-M" y "999-M" y total de créditos optativos 20
+    Cuando se registra un nuevo plan de estudios con codigo "P1-2025", fecha de entrada en vigencia "31-01-2025", fecha de vencimiento "31-12-2055", materias en el plan "997-M", "998-M" y "999-M" y total de créditos optativos 5
+    Entonces no se registra el plan de estudios exitosamente
 

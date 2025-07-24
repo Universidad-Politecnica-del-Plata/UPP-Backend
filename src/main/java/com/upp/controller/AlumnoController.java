@@ -1,32 +1,34 @@
 package com.upp.controller;
 
-import com.upp.model.Alumno;
-import com.upp.repository.AlumnoRepository;
+import com.upp.dto.AlumnoDTO;
+import com.upp.exception.AlumnoExisteException;
+import com.upp.service.AlumnoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@PreAuthorize("hasRole('GESTION_ESTUDIANTIL')")
 @RequestMapping("/api/alumnos")
 public class AlumnoController {
-  private final AlumnoRepository alumnoRepository;
+  private final AlumnoService alumnoService;
 
-  public AlumnoController(AlumnoRepository alumnoRepository) {
-    this.alumnoRepository = alumnoRepository;
+  public AlumnoController(AlumnoService alumnoService) {
+    this.alumnoService = alumnoService;
   }
 
   @PostMapping
-  public ResponseEntity<Alumno> crearAlumno(@RequestBody Alumno alumno) {
-    boolean alumnoExistente =
-        alumnoRepository.existsByDniOrEmail(alumno.getDni(), alumno.getEmail());
-    if (alumnoExistente) {
-      return new ResponseEntity<>(HttpStatus.CONFLICT);
-    }
+  public ResponseEntity<AlumnoDTO> crearAlumno(@RequestBody AlumnoDTO alumnoDTO) {
 
-    Alumno guardado = alumnoRepository.save(alumno);
-    return ResponseEntity.status(HttpStatus.CREATED).body(guardado);
+    try {
+      AlumnoDTO alumnoCreado = alumnoService.crearAlumno(alumnoDTO);
+      return ResponseEntity.status(HttpStatus.CREATED).body(alumnoCreado);
+    } catch (AlumnoExisteException ex) {
+      return ResponseEntity.status(HttpStatus.CONFLICT).build();
+    }
   }
 }

@@ -3,12 +3,18 @@ package com.upp.steps;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.upp.dto.MateriaDTO;
+import com.upp.model.Rol;
 import com.upp.model.TipoMateria;
+import com.upp.model.Usuario;
+import com.upp.repository.RolRepository;
+import com.upp.repository.UsuarioRepository;
+import com.upp.steps.shared.TokenHolder;
 import io.cucumber.java.ast.Cuando;
 import io.cucumber.java.es.Dado;
 import io.cucumber.java.es.Entonces;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -19,6 +25,10 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class dar_de_alta_materia_steps {
   @Autowired private WebTestClient webTestClient;
+  @Autowired private UsuarioRepository usuarioRepository;
+  @Autowired private RolRepository rolRepository;
+  @Autowired private TokenHolder tokenHolder;
+
   private FluxExchangeResult<MateriaDTO> result;
 
   @Cuando(
@@ -46,8 +56,10 @@ public class dar_de_alta_materia_steps {
         webTestClient
             .get()
             .uri("/api/materias/{codigo}", codigo)
+            .header("Authorization", "Bearer " + tokenHolder.getToken())
             .exchange()
             .returnResult(MateriaDTO.class);
+
     assertEquals(HttpStatus.OK, resultGetMateria.getStatus());
   }
 
@@ -67,7 +79,12 @@ public class dar_de_alta_materia_steps {
       Integer creditosOtorga,
       Integer creditosNecesarios) {
     List<String> listaDeCorrelativas =
-        Arrays.stream(correlativas.split(",")).map(String::trim).toList();
+        correlativas == null || correlativas.isBlank()
+            ? List.of()
+            : Arrays.stream(correlativas.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .toList();
 
     MateriaDTO materiaEnviada =
         new MateriaDTO(
@@ -83,6 +100,7 @@ public class dar_de_alta_materia_steps {
         webTestClient
             .post()
             .uri("/api/materias")
+            .header("Authorization", "Bearer " + tokenHolder.getToken())
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(materiaEnviada)
             .exchange()
@@ -92,5 +110,57 @@ public class dar_de_alta_materia_steps {
   @Entonces("no se registra la materia exitosamente")
   public void noSeRegistraLaMateriaExitosamente() {
     assertEquals(HttpStatus.CONFLICT, result.getStatus());
+  }
+
+  @Dado("que hay un gestor academico logueado")
+  public void queHayUnGestorAcademicoLogueado() {
+    {
+      Rol rolGestion =
+          rolRepository
+              .findById("ROLE_GESTION_ACADEMICA")
+              .orElseGet(
+                  () -> {
+                    Rol nuevo = new Rol("ROLE_GESTION_ACADEMICA");
+                    return rolRepository.save(nuevo);
+                  });
+
+      Usuario usuarioExistente = usuarioRepository.findByUsername("admin_gestion").orElse(null);
+
+      if (usuarioExistente == null) {
+        Map<String, Object> registroData =
+            Map.of(
+                "username", "admin_gestion",
+                "password", "password",
+                "roles", List.of("ROLE_GESTION_ACADEMICA"));
+
+        webTestClient
+            .post()
+            .uri("/api/auth/register")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(registroData)
+            .exchange()
+            .expectStatus()
+            .isCreated();
+      }
+
+      Map<String, String> loginData = Map.of("username", "admin_gestion", "password", "password");
+
+      String token =
+          webTestClient
+              .post()
+              .uri("/api/auth/login")
+              .contentType(MediaType.APPLICATION_JSON)
+              .bodyValue(loginData)
+              .exchange()
+              .expectStatus()
+              .isOk()
+              .returnResult(Map.class)
+              .getResponseBody()
+              .blockFirst()
+              .get("token")
+              .toString();
+
+      tokenHolder.setToken(token);
+    }
   }
 }
