@@ -45,6 +45,11 @@ public class PlanDeEstudios {
   public PlanDeEstudios() {}
 
   public void setMaterias(List<Materia> materias) {
+    // Limpiar relaciones bidireccionales existentes
+    if (this.materias != null) {
+      this.materias.forEach(materia -> materia.setPlanDeEstudios(null));
+    }
+    
     this.materias = materias;
     // Establecer la relación bidireccional
     if (materias != null) {
