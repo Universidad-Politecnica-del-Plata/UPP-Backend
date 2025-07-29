@@ -21,11 +21,11 @@ public class MateriaDTO {
   private Integer creditosNecesarios;
 
   private TipoMateria tipo;
-  
+
   private Integer cuatrimestre;
-  
+
   private String codigoPlanDeEstudios;
-  
+
   private List<String> codigosCorrelativas;
 
   public String getCodigoDeMateria() {

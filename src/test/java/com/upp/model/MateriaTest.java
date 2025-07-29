@@ -32,8 +32,11 @@ public class MateriaTest {
             codigoDeMateria, nombre, contenidos, creditosQueOtorga, creditosNecesarios, tipo);
     assertNotNull(materia);
     // Los nuevos campos deberían ser null por defecto
-    assertNotNull(materia.getCuatrimestre() == null || materia.getCuatrimestre() instanceof Integer);
-    assertNotNull(materia.getPlanDeEstudios() == null || materia.getPlanDeEstudios() instanceof PlanDeEstudios);
+    assertNotNull(
+        materia.getCuatrimestre() == null || materia.getCuatrimestre() instanceof Integer);
+    assertNotNull(
+        materia.getPlanDeEstudios() == null
+            || materia.getPlanDeEstudios() instanceof PlanDeEstudios);
   }
 
   @Test

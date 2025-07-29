@@ -26,6 +26,7 @@ public class PlanDeEstudios {
 
   private LocalDate fechaEntradaEnVigencia;
   private LocalDate fechaVencimiento;
+
   @OneToMany(mappedBy = "planDeEstudios", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private List<Materia> materias;
 
@@ -49,7 +50,7 @@ public class PlanDeEstudios {
     if (this.materias != null) {
       this.materias.forEach(materia -> materia.setPlanDeEstudios(null));
     }
-    
+
     this.materias = materias;
     // Establecer la relación bidireccional
     if (materias != null) {

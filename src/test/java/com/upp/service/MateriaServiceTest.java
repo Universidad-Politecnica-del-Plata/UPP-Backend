@@ -144,7 +144,8 @@ public class MateriaServiceTest {
     when(materiaRepository.findByCodigoDeMateria("INEXISTENTE")).thenReturn(Optional.empty());
 
     MateriaDTO dto =
-        new MateriaDTO("INEXISTENTE", "Nombre", "Cont", 4, 0, TipoMateria.OPTATIVA, null, null, null);
+        new MateriaDTO(
+            "INEXISTENTE", "Nombre", "Cont", 4, 0, TipoMateria.OPTATIVA, null, null, null);
 
     assertThrows(
         MateriaNoExisteException.class, () -> materiaService.modificarMateria("INEXISTENTE", dto));

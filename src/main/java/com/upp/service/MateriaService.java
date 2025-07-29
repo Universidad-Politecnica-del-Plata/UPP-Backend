@@ -114,7 +114,9 @@ public class MateriaService {
             materia.getCreditosNecesarios(),
             materia.getTipo(),
             materia.getCuatrimestre(),
-            materia.getPlanDeEstudios() != null ? materia.getPlanDeEstudios().getCodigoDePlanDeEstudios() : null,
+            materia.getPlanDeEstudios() != null
+                ? materia.getPlanDeEstudios().getCodigoDePlanDeEstudios()
+                : null,
             materia.getCodigosCorrelativas());
 
     return materiaDTO;
@@ -133,7 +135,9 @@ public class MateriaService {
                         materia.getCreditosNecesarios(),
                         materia.getTipo(),
                         materia.getCuatrimestre(),
-                        materia.getPlanDeEstudios() != null ? materia.getPlanDeEstudios().getCodigoDePlanDeEstudios() : null,
+                        materia.getPlanDeEstudios() != null
+                            ? materia.getPlanDeEstudios().getCodigoDePlanDeEstudios()
+                            : null,
                         materia.getCodigosCorrelativas()))
             .toList();
 
