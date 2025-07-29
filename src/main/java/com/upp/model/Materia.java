@@ -32,6 +32,13 @@ public class Materia {
   @NotNull
   private TipoMateria tipo;
 
+  @Column
+  private Integer cuatrimestre;
+
+  @ManyToOne
+  @JoinColumn(name = "plan_de_estudios_codigo")
+  private PlanDeEstudios planDeEstudios;
+
   @ManyToMany
   @JoinTable(
       name = "materia_correlativas",

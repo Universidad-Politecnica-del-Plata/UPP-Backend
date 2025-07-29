@@ -30,6 +30,7 @@ public class MateriaService {
             materiaDTO.getCreditosQueOtorga(),
             materiaDTO.getCreditosNecesarios(),
             materiaDTO.getTipo());
+    materia.setCuatrimestre(materiaDTO.getCuatrimestre());
     // Buscar correlativas por código
     if (materiaDTO.getCodigosCorrelativas() != null
         && !materiaDTO.getCodigosCorrelativas().isEmpty()) {
@@ -59,6 +60,7 @@ public class MateriaService {
     materia.setTipo(materiaDTO.getTipo());
     materia.setCreditosQueOtorga(materiaDTO.getCreditosQueOtorga());
     materia.setCreditosNecesarios(materiaDTO.getCreditosNecesarios());
+    materia.setCuatrimestre(materiaDTO.getCuatrimestre());
 
     if (materiaDTO.getCodigosCorrelativas() != null) {
       List<Materia> correlativas =
@@ -111,6 +113,8 @@ public class MateriaService {
             materia.getCreditosQueOtorga(),
             materia.getCreditosNecesarios(),
             materia.getTipo(),
+            materia.getCuatrimestre(),
+            materia.getPlanDeEstudios() != null ? materia.getPlanDeEstudios().getCodigoDePlanDeEstudios() : null,
             materia.getCodigosCorrelativas());
 
     return materiaDTO;
@@ -128,6 +132,8 @@ public class MateriaService {
                         materia.getCreditosQueOtorga(),
                         materia.getCreditosNecesarios(),
                         materia.getTipo(),
+                        materia.getCuatrimestre(),
+                        materia.getPlanDeEstudios() != null ? materia.getPlanDeEstudios().getCodigoDePlanDeEstudios() : null,
                         materia.getCodigosCorrelativas()))
             .toList();
 

@@ -94,6 +94,8 @@ public class dar_de_alta_materia_steps {
             creditosOtorga,
             creditosNecesarios,
             TipoMateria.valueOf(tipoMateria.toUpperCase()),
+            null, // cuatrimestre
+            null, // codigoPlanDeEstudios
             listaDeCorrelativas);
 
     this.result =

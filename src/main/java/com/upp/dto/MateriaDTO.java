@@ -21,6 +21,11 @@ public class MateriaDTO {
   private Integer creditosNecesarios;
 
   private TipoMateria tipo;
+  
+  private Integer cuatrimestre;
+  
+  private String codigoPlanDeEstudios;
+  
   private List<String> codigosCorrelativas;
 
   public String getCodigoDeMateria() {
@@ -58,6 +63,8 @@ public class MateriaDTO {
       Integer creditosQueOtorga,
       Integer creditosNecesarios,
       TipoMateria tipo,
+      Integer cuatrimestre,
+      String codigoPlanDeEstudios,
       List<String> codigosCorrelativas) {
     this.codigoDeMateria = codigoDeMateria;
     this.nombre = nombre;
@@ -65,6 +72,8 @@ public class MateriaDTO {
     this.creditosQueOtorga = creditosQueOtorga;
     this.creditosNecesarios = creditosNecesarios;
     this.tipo = tipo;
+    this.cuatrimestre = cuatrimestre;
+    this.codigoPlanDeEstudios = codigoPlanDeEstudios;
     this.codigosCorrelativas = codigosCorrelativas;
   }
 }

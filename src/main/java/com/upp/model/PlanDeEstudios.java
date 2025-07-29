@@ -26,7 +26,8 @@ public class PlanDeEstudios {
 
   private LocalDate fechaEntradaEnVigencia;
   private LocalDate fechaVencimiento;
-  @OneToMany private List<Materia> materias;
+  @OneToMany(mappedBy = "planDeEstudios", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private List<Materia> materias;
 
   public PlanDeEstudios(
       String codigoDePlanDeEstudios,
@@ -37,8 +38,7 @@ public class PlanDeEstudios {
     this.codigoDePlanDeEstudios = codigoDePlanDeEstudios;
     this.creditosElectivos = creditosElectivos;
     this.fechaEntradaEnVigencia = fechaEntradaEnVigencia;
-    this.materias = materias;
-    this.creditosObligatorios = _calcularCreditosObligatorios();
+    this.setMaterias(materias); // Usar setter para establecer relación bidireccional
     this.fechaVencimiento = fechaVencimiento;
   }
 
@@ -46,10 +46,15 @@ public class PlanDeEstudios {
 
   public void setMaterias(List<Materia> materias) {
     this.materias = materias;
+    // Establecer la relación bidireccional
+    if (materias != null) {
+      materias.forEach(materia -> materia.setPlanDeEstudios(this));
+    }
     this.creditosObligatorios = _calcularCreditosObligatorios();
   }
 
   private int _calcularCreditosObligatorios() {
+    if (materias == null) return 0;
     return materias.stream()
         .filter(Materia::esObligatoria)
         .mapToInt(Materia::getCreditosQueOtorga)
@@ -57,6 +62,7 @@ public class PlanDeEstudios {
   }
 
   public List<String> getCodigosMaterias() {
+    if (materias == null) return List.of();
     return materias.stream().map(Materia::getCodigoDeMateria).collect(Collectors.toList());
   }
 }

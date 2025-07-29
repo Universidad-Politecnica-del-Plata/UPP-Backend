@@ -46,6 +46,8 @@ public class modificar_datos_de_materia_steps {
             creditosOtorga,
             creditosNecesarios,
             TipoMateria.valueOf(tipoMateria.toUpperCase()),
+            null, // cuatrimestre
+            null, // codigoPlanDeEstudios
             listaDeCorrelativas);
 
     this.result =
