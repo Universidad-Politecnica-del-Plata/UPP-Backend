@@ -30,6 +30,10 @@ public class PlanDeEstudios {
   @OneToMany(mappedBy = "planDeEstudios", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private List<Materia> materias;
 
+  @ManyToOne
+  @JoinColumn(name = "carrera_codigo")
+  private Carrera carrera;
+
   public PlanDeEstudios(
       String codigoDePlanDeEstudios,
       Integer creditosElectivos,
