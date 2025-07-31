@@ -57,7 +57,8 @@ public class CarreraServiceTest {
     dto.setCodigosPlanesDeEstudio(Arrays.asList("P-2025"));
 
     when(carreraRepository.existsByCodigoDeCarrera("ING-SIS")).thenReturn(false);
-    when(planDeEstudiosRepository.findByCodigoDePlanDeEstudios("P-2025")).thenReturn(Optional.empty());
+    when(planDeEstudiosRepository.findByCodigoDePlanDeEstudios("P-2025"))
+        .thenReturn(Optional.empty());
 
     PlanDeEstudiosNoExisteException exception =
         assertThrows(PlanDeEstudiosNoExisteException.class, () -> carreraService.crearCarrera(dto));
@@ -76,15 +77,12 @@ public class CarreraServiceTest {
     dto.setCodigosPlanesDeEstudio(Arrays.asList("P-2025"));
 
     when(carreraRepository.existsByCodigoDeCarrera("ING-SIS")).thenReturn(false);
-    
-    PlanDeEstudios plan = new PlanDeEstudios(
-        "P-2025",
-        10,
-        LocalDate.of(2025, 1, 1),
-        new ArrayList<>(),
-        LocalDate.of(2030, 12, 31)
-    );
-    when(planDeEstudiosRepository.findByCodigoDePlanDeEstudios("P-2025")).thenReturn(Optional.of(plan));
+
+    PlanDeEstudios plan =
+        new PlanDeEstudios(
+            "P-2025", 10, LocalDate.of(2025, 1, 1), new ArrayList<>(), LocalDate.of(2030, 12, 31));
+    when(planDeEstudiosRepository.findByCodigoDePlanDeEstudios("P-2025"))
+        .thenReturn(Optional.of(plan));
 
     CarreraDTO resultado = carreraService.crearCarrera(dto);
 
@@ -134,7 +132,8 @@ public class CarreraServiceTest {
     when(carreraRepository.findByCodigoDeCarrera(codigo)).thenReturn(Optional.empty());
 
     CarreraNoExisteException exception =
-        assertThrows(CarreraNoExisteException.class, () -> carreraService.obtenerCarreraPorCodigo(codigo));
+        assertThrows(
+            CarreraNoExisteException.class, () -> carreraService.obtenerCarreraPorCodigo(codigo));
 
     assertEquals("No existe una carrera con ese código.", exception.getMessage());
   }
@@ -142,13 +141,13 @@ public class CarreraServiceTest {
   @Test
   void obtenerCarreraPorCodigoDevuelveDTOCorrectoSiExiste() {
     String codigo = "ING-SIS";
-    
+
     PlanDeEstudios plan1 = new PlanDeEstudios();
     plan1.setCodigoDePlanDeEstudios("P-2024");
-    
+
     PlanDeEstudios plan2 = new PlanDeEstudios();
     plan2.setCodigoDePlanDeEstudios("P-2025");
-    
+
     Carrera carrera = new Carrera();
     carrera.setCodigoDeCarrera(codigo);
     carrera.setNombre("Ingeniería en Sistemas");
@@ -171,7 +170,7 @@ public class CarreraServiceTest {
   @Test
   void obtenerCarreraPorCodigoSinPlanesDeEstudioDevuelveDTOCorrect() {
     String codigo = "MED";
-    
+
     Carrera carrera = new Carrera();
     carrera.setCodigoDeCarrera(codigo);
     carrera.setNombre("Medicina");
@@ -195,7 +194,7 @@ public class CarreraServiceTest {
   void obtenerTodasLasCarrerasDevuelveListaDeDTOs() {
     PlanDeEstudios plan1 = new PlanDeEstudios();
     plan1.setCodigoDePlanDeEstudios("P-2025");
-    
+
     Carrera carrera1 = new Carrera();
     carrera1.setCodigoDeCarrera("ING-SIS");
     carrera1.setNombre("Ingeniería en Sistemas");
@@ -251,15 +250,17 @@ public class CarreraServiceTest {
     dto.setCodigosPlanesDeEstudio(Arrays.asList("P-2024", "P-2025"));
 
     when(carreraRepository.existsByCodigoDeCarrera("ING-IND")).thenReturn(false);
-    
+
     PlanDeEstudios plan1 = new PlanDeEstudios();
     plan1.setCodigoDePlanDeEstudios("P-2024");
-    
+
     PlanDeEstudios plan2 = new PlanDeEstudios();
     plan2.setCodigoDePlanDeEstudios("P-2025");
-    
-    when(planDeEstudiosRepository.findByCodigoDePlanDeEstudios("P-2024")).thenReturn(Optional.of(plan1));
-    when(planDeEstudiosRepository.findByCodigoDePlanDeEstudios("P-2025")).thenReturn(Optional.of(plan2));
+
+    when(planDeEstudiosRepository.findByCodigoDePlanDeEstudios("P-2024"))
+        .thenReturn(Optional.of(plan1));
+    when(planDeEstudiosRepository.findByCodigoDePlanDeEstudios("P-2025"))
+        .thenReturn(Optional.of(plan2));
 
     CarreraDTO resultado = carreraService.crearCarrera(dto);
 

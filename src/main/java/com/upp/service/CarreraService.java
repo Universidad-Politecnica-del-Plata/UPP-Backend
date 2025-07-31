@@ -18,7 +18,8 @@ public class CarreraService {
   private final CarreraRepository carreraRepository;
   private final PlanDeEstudiosRepository planDeEstudiosRepository;
 
-  public CarreraService(CarreraRepository carreraRepository, PlanDeEstudiosRepository planDeEstudiosRepository) {
+  public CarreraService(
+      CarreraRepository carreraRepository, PlanDeEstudiosRepository planDeEstudiosRepository) {
     this.carreraRepository = carreraRepository;
     this.planDeEstudiosRepository = planDeEstudiosRepository;
   }
@@ -27,17 +28,17 @@ public class CarreraService {
     if (carreraRepository.existsByCodigoDeCarrera(carreraDTO.getCodigoDeCarrera())) {
       throw new CarreraExisteException("Ya existe una carrera con ese código.");
     }
-    
+
     ArrayList<PlanDeEstudios> planesDeEstudio = obtenerPlanesDeEstudio(carreraDTO);
-    
-    Carrera carrera = new Carrera(
-        carreraDTO.getCodigoDeCarrera(),
-        carreraDTO.getNombre(),
-        carreraDTO.getTitulo(),
-        carreraDTO.getIncumbencias(),
-        planesDeEstudio
-    );
-    
+
+    Carrera carrera =
+        new Carrera(
+            carreraDTO.getCodigoDeCarrera(),
+            carreraDTO.getNombre(),
+            carreraDTO.getTitulo(),
+            carreraDTO.getIncumbencias(),
+            planesDeEstudio);
+
     carreraRepository.save(carrera);
     return carreraDTO;
   }
@@ -50,34 +51,35 @@ public class CarreraService {
     }
 
     Carrera carrera = carreraOpt.get();
-    
+
     return new CarreraDTO(
         carrera.getCodigoDeCarrera(),
         carrera.getNombre(),
         carrera.getTitulo(),
         carrera.getIncumbencias(),
-        carrera.getPlanesDeEstudio() != null ? 
-            carrera.getPlanesDeEstudio().stream()
+        carrera.getPlanesDeEstudio() != null
+            ? carrera.getPlanesDeEstudio().stream()
                 .map(PlanDeEstudios::getCodigoDePlanDeEstudios)
-                .toList() : 
-            null
-    );
+                .toList()
+            : null);
   }
 
   public List<CarreraDTO> obtenerTodasLasCarreras() {
-    List<CarreraDTO> carreras = carreraRepository.findAll().stream()
-        .map(carrera -> new CarreraDTO(
-            carrera.getCodigoDeCarrera(),
-            carrera.getNombre(),
-            carrera.getTitulo(),
-            carrera.getIncumbencias(),
-            carrera.getPlanesDeEstudio() != null ? 
-                carrera.getPlanesDeEstudio().stream()
-                    .map(PlanDeEstudios::getCodigoDePlanDeEstudios)
-                    .toList() : 
-                null
-        ))
-        .toList();
+    List<CarreraDTO> carreras =
+        carreraRepository.findAll().stream()
+            .map(
+                carrera ->
+                    new CarreraDTO(
+                        carrera.getCodigoDeCarrera(),
+                        carrera.getNombre(),
+                        carrera.getTitulo(),
+                        carrera.getIncumbencias(),
+                        carrera.getPlanesDeEstudio() != null
+                            ? carrera.getPlanesDeEstudio().stream()
+                                .map(PlanDeEstudios::getCodigoDePlanDeEstudios)
+                                .toList()
+                            : null))
+            .toList();
 
     return carreras;
   }

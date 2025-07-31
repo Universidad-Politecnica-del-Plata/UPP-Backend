@@ -16,7 +16,7 @@ public class CarreraDTO {
   private String titulo;
 
   private String incumbencias;
-  
+
   private List<String> codigosPlanesDeEstudio;
 
   public String getCodigoDeCarrera() {

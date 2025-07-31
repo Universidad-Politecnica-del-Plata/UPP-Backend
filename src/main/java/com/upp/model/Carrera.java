@@ -10,15 +10,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Carrera {
-  @Id
-  @NotBlank
-  private String codigoDeCarrera;
+  @Id @NotBlank private String codigoDeCarrera;
 
-  @NotBlank
-  private String nombre;
+  @NotBlank private String nombre;
 
-  @NotBlank
-  private String titulo;
+  @NotBlank private String titulo;
 
   @Column(columnDefinition = "TEXT")
   private String incumbencias;
@@ -42,6 +38,14 @@ public class Carrera {
   public Carrera() {}
 
   public void setPlanesDeEstudio(List<PlanDeEstudios> planesDeEstudio) {
+    // Limpiar relaciones bidireccionales existentes
+    if (this.planesDeEstudio != null) {
+      this.planesDeEstudio.forEach(planDeEstudios -> planDeEstudios.setCarrera(null));
+    }
     this.planesDeEstudio = planesDeEstudio;
+    // Establecer la relación bidireccional
+    if (planesDeEstudio != null) {
+      planesDeEstudio.forEach(planDeEstudios -> planDeEstudios.setCarrera(this));
+    }
   }
 }

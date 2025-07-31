@@ -25,25 +25,15 @@ public class CarreraTest {
     String nombre = "Ingeniería en Sistemas";
     String titulo = "Ingeniero en Sistemas";
     String incumbencias = "Desarrollo de software, análisis de sistemas";
-    
+
     List<PlanDeEstudios> planesDeEstudio = new ArrayList<>();
-    PlanDeEstudios plan = new PlanDeEstudios(
-        "P-2025",
-        10,
-        LocalDate.of(2025, 1, 1),
-        new ArrayList<>(),
-        LocalDate.of(2030, 12, 31)
-    );
+    PlanDeEstudios plan =
+        new PlanDeEstudios(
+            "P-2025", 10, LocalDate.of(2025, 1, 1), new ArrayList<>(), LocalDate.of(2030, 12, 31));
     planesDeEstudio.add(plan);
-    
-    Carrera carrera = new Carrera(
-        codigoDeCarrera,
-        nombre,
-        titulo,
-        incumbencias,
-        planesDeEstudio
-    );
-    
+
+    Carrera carrera = new Carrera(codigoDeCarrera, nombre, titulo, incumbencias, planesDeEstudio);
+
     assertNotNull(carrera);
     assertEquals("ING-SIS", carrera.getCodigoDeCarrera());
     assertEquals("Ingeniería en Sistemas", carrera.getNombre());
@@ -59,15 +49,9 @@ public class CarreraTest {
     String nombre = "Medicina";
     String titulo = "Médico";
     String incumbencias = "Atención médica";
-    
-    Carrera carrera = new Carrera(
-        codigoDeCarrera,
-        nombre,
-        titulo,
-        incumbencias,
-        null
-    );
-    
+
+    Carrera carrera = new Carrera(codigoDeCarrera, nombre, titulo, incumbencias, null);
+
     assertNotNull(carrera);
     assertEquals("MED", carrera.getCodigoDeCarrera());
     assertEquals("Medicina", carrera.getNombre());
@@ -83,29 +67,21 @@ public class CarreraTest {
     carrera.setNombre("Ingeniería Industrial");
     carrera.setTitulo("Ingeniero Industrial");
     carrera.setIncumbencias("Optimización de procesos");
-    
-    PlanDeEstudios plan1 = new PlanDeEstudios(
-        "P-2024",
-        8,
-        LocalDate.of(2024, 1, 1),
-        new ArrayList<>(),
-        LocalDate.of(2029, 12, 31)
-    );
-    
-    PlanDeEstudios plan2 = new PlanDeEstudios(
-        "P-2025",
-        10,
-        LocalDate.of(2025, 1, 1),
-        new ArrayList<>(),
-        LocalDate.of(2030, 12, 31)
-    );
-    
+
+    PlanDeEstudios plan1 =
+        new PlanDeEstudios(
+            "P-2024", 8, LocalDate.of(2024, 1, 1), new ArrayList<>(), LocalDate.of(2029, 12, 31));
+
+    PlanDeEstudios plan2 =
+        new PlanDeEstudios(
+            "P-2025", 10, LocalDate.of(2025, 1, 1), new ArrayList<>(), LocalDate.of(2030, 12, 31));
+
     List<PlanDeEstudios> planes = new ArrayList<>();
     planes.add(plan1);
     planes.add(plan2);
-    
+
     carrera.setPlanesDeEstudio(planes);
-    
+
     assertNotNull(carrera.getPlanesDeEstudio());
     assertEquals(2, carrera.getPlanesDeEstudio().size());
     assertEquals("P-2024", carrera.getPlanesDeEstudio().get(0).getCodigoDePlanDeEstudios());
@@ -117,34 +93,26 @@ public class CarreraTest {
     Carrera carrera = new Carrera();
     carrera.setCodigoDeCarrera("ARQ");
     carrera.setNombre("Arquitectura");
-    
-    PlanDeEstudios planInicial = new PlanDeEstudios(
-        "P-2023",
-        6,
-        LocalDate.of(2023, 1, 1),
-        new ArrayList<>(),
-        LocalDate.of(2028, 12, 31)
-    );
-    
+
+    PlanDeEstudios planInicial =
+        new PlanDeEstudios(
+            "P-2023", 6, LocalDate.of(2023, 1, 1), new ArrayList<>(), LocalDate.of(2028, 12, 31));
+
     List<PlanDeEstudios> planesIniciales = new ArrayList<>();
     planesIniciales.add(planInicial);
     carrera.setPlanesDeEstudio(planesIniciales);
-    
+
     assertEquals(1, carrera.getPlanesDeEstudio().size());
     assertEquals("P-2023", carrera.getPlanesDeEstudio().get(0).getCodigoDePlanDeEstudios());
-    
-    PlanDeEstudios planNuevo = new PlanDeEstudios(
-        "P-2025",
-        12,
-        LocalDate.of(2025, 1, 1),
-        new ArrayList<>(),
-        LocalDate.of(2030, 12, 31)
-    );
-    
+
+    PlanDeEstudios planNuevo =
+        new PlanDeEstudios(
+            "P-2025", 12, LocalDate.of(2025, 1, 1), new ArrayList<>(), LocalDate.of(2030, 12, 31));
+
     List<PlanDeEstudios> planesNuevos = new ArrayList<>();
     planesNuevos.add(planNuevo);
     carrera.setPlanesDeEstudio(planesNuevos);
-    
+
     assertEquals(1, carrera.getPlanesDeEstudio().size());
     assertEquals("P-2025", carrera.getPlanesDeEstudio().get(0).getCodigoDePlanDeEstudios());
   }
