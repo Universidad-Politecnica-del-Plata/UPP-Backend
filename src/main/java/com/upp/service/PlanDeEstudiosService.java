@@ -47,7 +47,8 @@ public class PlanDeEstudiosService {
         planDeEstudios.getFechaEntradaEnVigencia(),
         planDeEstudios.getFechaVencimiento(),
         codigosMaterias,
-        planDeEstudios.getCreditosObligatorios());
+        planDeEstudios.getCreditosObligatorios(),
+        planDeEstudios.getCarrera() != null ? planDeEstudios.getCarrera().getCodigoDeCarrera() : null);
   }
 
   public PlanDeEstudiosResponseDTO obtenerPlanDeEstudiosPorCodigo(String codigo) {
@@ -67,7 +68,8 @@ public class PlanDeEstudiosService {
         planDeEstudios.getFechaEntradaEnVigencia(),
         planDeEstudios.getFechaVencimiento(),
         codigosMaterias,
-        planDeEstudios.getCreditosObligatorios());
+        planDeEstudios.getCreditosObligatorios(),
+        planDeEstudios.getCarrera() != null ? planDeEstudios.getCarrera().getCodigoDeCarrera() : null);
   }
 
   private ArrayList<Materia> obtenerMaterias(PlanDeEstudiosRequestDTO planDeEstudiosRequestDTO) {
@@ -96,7 +98,8 @@ public class PlanDeEstudiosService {
                         planDeEstudios.getFechaEntradaEnVigencia(),
                         planDeEstudios.getFechaVencimiento(),
                         planDeEstudios.getCodigosMaterias(),
-                        planDeEstudios.getCreditosObligatorios()))
+                        planDeEstudios.getCreditosObligatorios(),
+                        planDeEstudios.getCarrera() != null ? planDeEstudios.getCarrera().getCodigoDeCarrera() : null))
             .toList();
 
     return planesDeEstudios;
@@ -130,7 +133,8 @@ public class PlanDeEstudiosService {
         planDeEstudios.getFechaEntradaEnVigencia(),
         planDeEstudios.getFechaVencimiento(),
         codigosMaterias,
-        planDeEstudios.getCreditosObligatorios());
+        planDeEstudios.getCreditosObligatorios(),
+        planDeEstudios.getCarrera() != null ? planDeEstudios.getCarrera().getCodigoDeCarrera() : null);
   }
 
   public void eliminarPlanDeEstudios(String codigo) {

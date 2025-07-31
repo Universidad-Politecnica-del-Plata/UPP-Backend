@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 public class PlanDeEstudiosResponseDTO extends PlanDeEstudiosRequestDTO {
   private Integer creditosObligatorios;
+  private String codigoCarrera;
 
   public PlanDeEstudiosResponseDTO(
       String codigoDePlanDeEstudios,
@@ -16,7 +17,8 @@ public class PlanDeEstudiosResponseDTO extends PlanDeEstudiosRequestDTO {
       LocalDate fechaEntradaEnVigencia,
       LocalDate fechaVencimiento,
       List<String> codigosMaterias,
-      Integer creditosObligatorios) {
+      Integer creditosObligatorios,
+      String codigoCarrera) {
     super(
         codigoDePlanDeEstudios,
         creditosElectivos,
@@ -24,5 +26,6 @@ public class PlanDeEstudiosResponseDTO extends PlanDeEstudiosRequestDTO {
         fechaVencimiento,
         codigosMaterias);
     this.creditosObligatorios = creditosObligatorios;
+    this.codigoCarrera = codigoCarrera;
   }
 }
