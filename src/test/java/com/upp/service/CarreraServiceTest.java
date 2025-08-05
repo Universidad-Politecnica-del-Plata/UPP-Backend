@@ -433,8 +433,7 @@ public class CarreraServiceTest {
     when(carreraRepository.findByCodigoDeCarrera(codigo)).thenReturn(Optional.empty());
 
     CarreraNoExisteException exception =
-        assertThrows(
-            CarreraNoExisteException.class, () -> carreraService.eliminarCarrera(codigo));
+        assertThrows(CarreraNoExisteException.class, () -> carreraService.eliminarCarrera(codigo));
 
     assertEquals("No existe una carrera con ese código.", exception.getMessage());
     verify(carreraRepository, never()).delete(any());
