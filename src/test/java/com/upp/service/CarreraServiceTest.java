@@ -274,4 +274,183 @@ public class CarreraServiceTest {
 
     assertEquals(dto, resultado);
   }
+
+  @Test
+  void modificarCarreraLanzaExcepcionSiNoExiste() {
+    String codigo = "ING-SIS";
+    CarreraDTO dto = new CarreraDTO();
+    dto.setNombre("Nuevo nombre");
+
+    when(carreraRepository.findByCodigoDeCarrera(codigo)).thenReturn(Optional.empty());
+
+    CarreraNoExisteException exception =
+        assertThrows(
+            CarreraNoExisteException.class, () -> carreraService.modificarCarrera(codigo, dto));
+
+    assertEquals("No existe una carrera con ese código.", exception.getMessage());
+    verify(carreraRepository, never()).save(any());
+  }
+
+  @Test
+  void modificarCarreraActualizaCamposSiExiste() {
+    String codigo = "ING-SIS";
+    Carrera carreraExistente = new Carrera();
+    carreraExistente.setCodigoDeCarrera(codigo);
+    carreraExistente.setNombre("Nombre viejo");
+    carreraExistente.setTitulo("Título viejo");
+    carreraExistente.setIncumbencias("Incumbencias viejas");
+    carreraExistente.setPlanesDeEstudio(new ArrayList<>());
+
+    CarreraDTO dto = new CarreraDTO();
+    dto.setNombre("Ingeniería en Sistemas Actualizada");
+    dto.setTitulo("Ingeniero en Sistemas Actualizado");
+    dto.setIncumbencias("Desarrollo de software moderno");
+    dto.setCodigosPlanesDeEstudio(Arrays.asList("P-2025"));
+
+    when(carreraRepository.findByCodigoDeCarrera(codigo)).thenReturn(Optional.of(carreraExistente));
+
+    PlanDeEstudios plan = new PlanDeEstudios();
+    plan.setCodigoDePlanDeEstudios("P-2025");
+    when(planDeEstudiosRepository.findByCodigoDePlanDeEstudios("P-2025"))
+        .thenReturn(Optional.of(plan));
+
+    CarreraDTO resultado = carreraService.modificarCarrera(codigo, dto);
+
+    ArgumentCaptor<Carrera> carreraCaptor = ArgumentCaptor.forClass(Carrera.class);
+    verify(carreraRepository).save(carreraCaptor.capture());
+
+    Carrera carreraGuardada = carreraCaptor.getValue();
+    assertEquals("Ingeniería en Sistemas Actualizada", carreraGuardada.getNombre());
+    assertEquals("Ingeniero en Sistemas Actualizado", carreraGuardada.getTitulo());
+    assertEquals("Desarrollo de software moderno", carreraGuardada.getIncumbencias());
+    assertEquals(1, carreraGuardada.getPlanesDeEstudio().size());
+    assertEquals("P-2025", carreraGuardada.getPlanesDeEstudio().get(0).getCodigoDePlanDeEstudios());
+
+    assertEquals(dto, resultado);
+  }
+
+  @Test
+  void modificarCarreraSinPlanesDeEstudioActualizaSoloCamposBasicos() {
+    String codigo = "MED";
+    Carrera carreraExistente = new Carrera();
+    carreraExistente.setCodigoDeCarrera(codigo);
+    carreraExistente.setNombre("Medicina");
+    carreraExistente.setTitulo("Médico");
+    carreraExistente.setIncumbencias("Atención médica");
+    carreraExistente.setPlanesDeEstudio(new ArrayList<>());
+
+    CarreraDTO dto = new CarreraDTO();
+    dto.setNombre("Medicina Actualizada");
+    dto.setTitulo("Médico Actualizado");
+    dto.setIncumbencias("Atención médica moderna");
+    dto.setCodigosPlanesDeEstudio(null);
+
+    when(carreraRepository.findByCodigoDeCarrera(codigo)).thenReturn(Optional.of(carreraExistente));
+
+    CarreraDTO resultado = carreraService.modificarCarrera(codigo, dto);
+
+    ArgumentCaptor<Carrera> carreraCaptor = ArgumentCaptor.forClass(Carrera.class);
+    verify(carreraRepository).save(carreraCaptor.capture());
+
+    Carrera carreraGuardada = carreraCaptor.getValue();
+    assertEquals("Medicina Actualizada", carreraGuardada.getNombre());
+    assertEquals("Médico Actualizado", carreraGuardada.getTitulo());
+    assertEquals("Atención médica moderna", carreraGuardada.getIncumbencias());
+    assertTrue(carreraGuardada.getPlanesDeEstudio().isEmpty());
+
+    assertEquals(dto, resultado);
+  }
+
+  @Test
+  void modificarCarreraConPlanDeEstudiosInexistenteLanzaExcepcion() {
+    String codigo = "ING-SIS";
+    Carrera carreraExistente = new Carrera();
+    carreraExistente.setCodigoDeCarrera(codigo);
+
+    CarreraDTO dto = new CarreraDTO();
+    dto.setNombre("Nuevo nombre");
+    dto.setCodigosPlanesDeEstudio(Arrays.asList("P-INEXISTENTE"));
+
+    when(carreraRepository.findByCodigoDeCarrera(codigo)).thenReturn(Optional.of(carreraExistente));
+    when(planDeEstudiosRepository.findByCodigoDePlanDeEstudios("P-INEXISTENTE"))
+        .thenReturn(Optional.empty());
+
+    PlanDeEstudiosNoExisteException exception =
+        assertThrows(
+            PlanDeEstudiosNoExisteException.class,
+            () -> carreraService.modificarCarrera(codigo, dto));
+
+    assertEquals(
+        "No se encontró el plan de estudios con código: P-INEXISTENTE", exception.getMessage());
+    verify(carreraRepository, never()).save(any());
+  }
+
+  @Test
+  void modificarCarreraConMultiplesPlanesDeEstudioActualizaCorrectamente() {
+    String codigo = "ING-IND";
+    Carrera carreraExistente = new Carrera();
+    carreraExistente.setCodigoDeCarrera(codigo);
+    carreraExistente.setNombre("Nombre viejo");
+    carreraExistente.setPlanesDeEstudio(new ArrayList<>());
+
+    CarreraDTO dto = new CarreraDTO();
+    dto.setNombre("Ingeniería Industrial Actualizada");
+    dto.setTitulo("Ingeniero Industrial Actualizado");
+    dto.setIncumbencias("Optimización avanzada");
+    dto.setCodigosPlanesDeEstudio(Arrays.asList("P-2024", "P-2025"));
+
+    when(carreraRepository.findByCodigoDeCarrera(codigo)).thenReturn(Optional.of(carreraExistente));
+
+    PlanDeEstudios plan1 = new PlanDeEstudios();
+    plan1.setCodigoDePlanDeEstudios("P-2024");
+    PlanDeEstudios plan2 = new PlanDeEstudios();
+    plan2.setCodigoDePlanDeEstudios("P-2025");
+
+    when(planDeEstudiosRepository.findByCodigoDePlanDeEstudios("P-2024"))
+        .thenReturn(Optional.of(plan1));
+    when(planDeEstudiosRepository.findByCodigoDePlanDeEstudios("P-2025"))
+        .thenReturn(Optional.of(plan2));
+
+    CarreraDTO resultado = carreraService.modificarCarrera(codigo, dto);
+
+    ArgumentCaptor<Carrera> carreraCaptor = ArgumentCaptor.forClass(Carrera.class);
+    verify(carreraRepository).save(carreraCaptor.capture());
+
+    Carrera carreraGuardada = carreraCaptor.getValue();
+    assertEquals("Ingeniería Industrial Actualizada", carreraGuardada.getNombre());
+    assertEquals("Ingeniero Industrial Actualizado", carreraGuardada.getTitulo());
+    assertEquals("Optimización avanzada", carreraGuardada.getIncumbencias());
+    assertEquals(2, carreraGuardada.getPlanesDeEstudio().size());
+    assertEquals("P-2024", carreraGuardada.getPlanesDeEstudio().get(0).getCodigoDePlanDeEstudios());
+    assertEquals("P-2025", carreraGuardada.getPlanesDeEstudio().get(1).getCodigoDePlanDeEstudios());
+
+    assertEquals(dto, resultado);
+  }
+
+  @Test
+  void eliminarCarreraLanzaExcepcionSiNoExiste() {
+    String codigo = "ING-INEXISTENTE";
+    when(carreraRepository.findByCodigoDeCarrera(codigo)).thenReturn(Optional.empty());
+
+    CarreraNoExisteException exception =
+        assertThrows(
+            CarreraNoExisteException.class, () -> carreraService.eliminarCarrera(codigo));
+
+    assertEquals("No existe una carrera con ese código.", exception.getMessage());
+    verify(carreraRepository, never()).delete(any());
+  }
+
+  @Test
+  void eliminarCarreraEliminaCarreraSiExiste() {
+    String codigo = "ING-SIS";
+    Carrera carrera = new Carrera();
+    carrera.setCodigoDeCarrera(codigo);
+    carrera.setNombre("Ingeniería en Sistemas");
+
+    when(carreraRepository.findByCodigoDeCarrera(codigo)).thenReturn(Optional.of(carrera));
+
+    carreraService.eliminarCarrera(codigo);
+
+    verify(carreraRepository).delete(carrera);
+  }
 }

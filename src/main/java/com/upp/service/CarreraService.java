@@ -64,6 +64,27 @@ public class CarreraService {
             : null);
   }
 
+  public CarreraDTO modificarCarrera(String codigo, CarreraDTO carreraDTO) {
+    Optional<Carrera> carreraOpt = carreraRepository.findByCodigoDeCarrera(codigo);
+
+    if (carreraOpt.isEmpty()) {
+      throw new CarreraNoExisteException("No existe una carrera con ese código.");
+    }
+
+    Carrera carrera = carreraOpt.get();
+    carrera.setNombre(carreraDTO.getNombre());
+    carrera.setTitulo(carreraDTO.getTitulo());
+    carrera.setIncumbencias(carreraDTO.getIncumbencias());
+
+    if (carreraDTO.getCodigosPlanesDeEstudio() != null) {
+      ArrayList<PlanDeEstudios> planesDeEstudio = obtenerPlanesDeEstudio(carreraDTO);
+      carrera.setPlanesDeEstudio(planesDeEstudio);
+    }
+
+    carreraRepository.save(carrera);
+    return carreraDTO;
+  }
+
   public List<CarreraDTO> obtenerTodasLasCarreras() {
     List<CarreraDTO> carreras =
         carreraRepository.findAll().stream()
@@ -82,6 +103,17 @@ public class CarreraService {
             .toList();
 
     return carreras;
+  }
+
+  public void eliminarCarrera(String codigo) {
+    Optional<Carrera> carreraOpt = carreraRepository.findByCodigoDeCarrera(codigo);
+
+    if (carreraOpt.isEmpty()) {
+      throw new CarreraNoExisteException("No existe una carrera con ese código.");
+    }
+
+    Carrera carrera = carreraOpt.get();
+    carreraRepository.delete(carrera);
   }
 
   private ArrayList<PlanDeEstudios> obtenerPlanesDeEstudio(CarreraDTO carreraDTO) {

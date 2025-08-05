@@ -36,6 +36,31 @@ public class CarreraController {
     }
   }
 
+  @PutMapping("/{codigo}")
+  public ResponseEntity<CarreraDTO> modificarCarrera(
+      @PathVariable String codigo, @RequestBody CarreraDTO carreraDTO) {
+    try {
+      CarreraDTO resultado = carreraService.modificarCarrera(codigo, carreraDTO);
+      return ResponseEntity.status(HttpStatus.OK).body(resultado);
+
+    } catch (CarreraNoExisteException | PlanDeEstudiosNoExisteException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+  }
+
+  @DeleteMapping("/{codigo}")
+  public ResponseEntity<Void> eliminarCarrera(@PathVariable String codigo) {
+    try {
+      carreraService.eliminarCarrera(codigo);
+      return ResponseEntity.status(HttpStatus.OK).build();
+
+    } catch (CarreraNoExisteException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+  }
+
   @GetMapping("/{codigo}")
   public ResponseEntity<CarreraDTO> obtenerCarreraPorCodigo(@PathVariable String codigo) {
     try {
