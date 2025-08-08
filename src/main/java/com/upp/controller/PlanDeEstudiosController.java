@@ -3,9 +3,9 @@ package com.upp.controller;
 import com.upp.dto.PlanDeEstudiosRequestDTO;
 import com.upp.dto.PlanDeEstudiosResponseDTO;
 import com.upp.exception.MateriaNoExisteException;
+import com.upp.exception.PlanConMateriasException;
 import com.upp.exception.PlanDeEstudiosExisteException;
 import com.upp.exception.PlanDeEstudiosNoExisteException;
-import com.upp.exception.PlanConMateriasException;
 import com.upp.service.PlanDeEstudiosService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -42,8 +42,7 @@ public class PlanDeEstudiosController {
   }
 
   @GetMapping("/{codigo}")
-  public ResponseEntity<?> obtenerPlanDeEstudiosPorCodigo(
-      @PathVariable String codigo) {
+  public ResponseEntity<?> obtenerPlanDeEstudiosPorCodigo(@PathVariable String codigo) {
     try {
       PlanDeEstudiosResponseDTO planDeEstudios =
           planDeEstudiosService.obtenerPlanDeEstudiosPorCodigo(codigo);
@@ -84,7 +83,8 @@ public class PlanDeEstudiosController {
   public ResponseEntity<?> eliminarPlanDeEstudios(@PathVariable String codigo) {
     try {
       planDeEstudiosService.eliminarPlanDeEstudios(codigo);
-      return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "Plan de estudios eliminado exitosamente"));
+      return ResponseEntity.status(HttpStatus.OK)
+          .body(Map.of("message", "Plan de estudios eliminado exitosamente"));
 
     } catch (PlanDeEstudiosNoExisteException e) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));

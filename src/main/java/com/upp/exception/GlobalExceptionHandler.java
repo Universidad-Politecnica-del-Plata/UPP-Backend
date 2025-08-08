@@ -21,22 +21,36 @@ public class GlobalExceptionHandler {
     return ResponseEntity.badRequest().body(errores);
   }
 
-  @ExceptionHandler({CarreraConPlanesException.class, CarreraConAlumnosException.class, PlanConMateriasException.class})
-  public ResponseEntity<Map<String, String>> handleDeletionConstraintExceptions(RuntimeException ex) {
+  @ExceptionHandler({
+    CarreraConPlanesException.class,
+    CarreraConAlumnosException.class,
+    PlanConMateriasException.class
+  })
+  public ResponseEntity<Map<String, String>> handleDeletionConstraintExceptions(
+      RuntimeException ex) {
     Map<String, String> error = new HashMap<>();
     error.put("error", ex.getMessage());
     return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
   }
 
-  @ExceptionHandler({CarreraNoExisteException.class, PlanDeEstudiosNoExisteException.class, MateriaNoExisteException.class})
+  @ExceptionHandler({
+    CarreraNoExisteException.class,
+    PlanDeEstudiosNoExisteException.class,
+    MateriaNoExisteException.class
+  })
   public ResponseEntity<Map<String, String>> handleEntityNotFoundExceptions(RuntimeException ex) {
     Map<String, String> error = new HashMap<>();
     error.put("error", ex.getMessage());
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
   }
 
-  @ExceptionHandler({CarreraExisteException.class, PlanDeEstudiosExisteException.class, MateriaExisteException.class})
-  public ResponseEntity<Map<String, String>> handleEntityAlreadyExistsExceptions(RuntimeException ex) {
+  @ExceptionHandler({
+    CarreraExisteException.class,
+    PlanDeEstudiosExisteException.class,
+    MateriaExisteException.class
+  })
+  public ResponseEntity<Map<String, String>> handleEntityAlreadyExistsExceptions(
+      RuntimeException ex) {
     Map<String, String> error = new HashMap<>();
     error.put("error", ex.getMessage());
     return ResponseEntity.status(HttpStatus.CONFLICT).body(error);

@@ -55,7 +55,8 @@ public class MateriaController {
   public ResponseEntity<?> eliminarMateria(@PathVariable String codigo) {
     try {
       materiaService.eliminarMateria(codigo);
-      return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "Materia eliminada exitosamente"));
+      return ResponseEntity.status(HttpStatus.OK)
+          .body(Map.of("message", "Materia eliminada exitosamente"));
 
     } catch (MateriaNoExisteException e) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));

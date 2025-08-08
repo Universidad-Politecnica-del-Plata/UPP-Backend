@@ -8,13 +8,13 @@ import com.upp.steps.shared.TokenHolder;
 import io.cucumber.java.es.Cuando;
 import io.cucumber.java.es.Dado;
 import io.cucumber.java.es.Entonces;
+import java.time.LocalDate;
+import java.util.Collections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.reactive.server.FluxExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import java.time.LocalDate;
-import java.util.Collections;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class dar_de_baja_plan_de_estudios_steps {
@@ -55,16 +55,18 @@ public class dar_de_baja_plan_de_estudios_steps {
     assertEquals(HttpStatus.CONFLICT, result.getStatus());
   }
 
-  @Dado("se registra un nuevo plan de estudios con codigo {string}, fecha de entrada en vigencia {string}, fecha de vencimiento {string}, sin materias y total de créditos optativos {int}")
-  public void seRegistraUnNuevoPlanDeEstudiosSinMaterias(String codigo, String fechaEntrada, String fechaVencimiento, int creditosOptativos) {
-    PlanDeEstudiosRequestDTO planDTO = new PlanDeEstudiosRequestDTO(
-        codigo,
-        creditosOptativos,
-        LocalDate.of(2025, 1, 1),
-        LocalDate.of(2035, 12, 31),
-        Collections.emptyList()
-    );
-    
+  @Dado(
+      "se registra un nuevo plan de estudios con codigo {string}, fecha de entrada en vigencia {string}, fecha de vencimiento {string}, sin materias y total de créditos optativos {int}")
+  public void seRegistraUnNuevoPlanDeEstudiosSinMaterias(
+      String codigo, String fechaEntrada, String fechaVencimiento, int creditosOptativos) {
+    PlanDeEstudiosRequestDTO planDTO =
+        new PlanDeEstudiosRequestDTO(
+            codigo,
+            creditosOptativos,
+            LocalDate.of(2025, 1, 1),
+            LocalDate.of(2035, 12, 31),
+            Collections.emptyList());
+
     webTestClient
         .post()
         .uri("/api/planDeEstudios")

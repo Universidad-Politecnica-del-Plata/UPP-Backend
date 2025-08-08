@@ -1,10 +1,10 @@
 package com.upp.controller;
 
 import com.upp.dto.CarreraDTO;
+import com.upp.exception.CarreraConAlumnosException;
+import com.upp.exception.CarreraConPlanesException;
 import com.upp.exception.CarreraExisteException;
 import com.upp.exception.CarreraNoExisteException;
-import com.upp.exception.CarreraConPlanesException;
-import com.upp.exception.CarreraConAlumnosException;
 import com.upp.exception.PlanDeEstudiosNoExisteException;
 import com.upp.service.CarreraService;
 import jakarta.validation.Valid;
@@ -57,7 +57,8 @@ public class CarreraController {
   public ResponseEntity<?> eliminarCarrera(@PathVariable String codigo) {
     try {
       carreraService.eliminarCarrera(codigo);
-      return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "Carrera eliminada exitosamente"));
+      return ResponseEntity.status(HttpStatus.OK)
+          .body(Map.of("message", "Carrera eliminada exitosamente"));
 
     } catch (CarreraNoExisteException e) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));

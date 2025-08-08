@@ -27,7 +27,10 @@ public class PlanDeEstudios {
   private LocalDate fechaEntradaEnVigencia;
   private LocalDate fechaVencimiento;
 
-  @OneToMany(mappedBy = "planDeEstudios", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+  @OneToMany(
+      mappedBy = "planDeEstudios",
+      cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+      fetch = FetchType.LAZY)
   private List<Materia> materias;
 
   @ManyToOne
