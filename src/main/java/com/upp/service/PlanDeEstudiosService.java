@@ -5,6 +5,7 @@ import com.upp.dto.PlanDeEstudiosResponseDTO;
 import com.upp.exception.MateriaNoExisteException;
 import com.upp.exception.PlanDeEstudiosExisteException;
 import com.upp.exception.PlanDeEstudiosNoExisteException;
+import com.upp.exception.PlanConMateriasException;
 import com.upp.model.Materia;
 import com.upp.model.PlanDeEstudios;
 import com.upp.repository.MateriaRepository;
@@ -154,8 +155,12 @@ public class PlanDeEstudiosService {
     }
 
     PlanDeEstudios planDeEstudios = planDeEstudiosOpt.get();
+    
+    // Validar que no tenga materias
+    if (planDeEstudios.getMaterias() != null && !planDeEstudios.getMaterias().isEmpty()) {
+      throw new PlanConMateriasException("No se puede eliminar: el plan tiene materias asociadas");
+    }
+    
     planDeEstudiosRepository.delete(planDeEstudios);
-    //    TODO: Cuando se implemente Carrera, cuando se elimine plan de estudios eliminarlo tambien
-    // de carrera
   }
 }

@@ -38,7 +38,7 @@ public class Materia {
   @JoinColumn(name = "plan_de_estudios_codigo")
   private PlanDeEstudios planDeEstudios;
 
-  @ManyToMany
+  @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   @JoinTable(
       name = "materia_correlativas",
       joinColumns = @JoinColumn(name = "materia_codigo_de_materia"),

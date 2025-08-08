@@ -3,9 +3,13 @@ package com.upp.service;
 import com.upp.dto.CarreraDTO;
 import com.upp.exception.CarreraExisteException;
 import com.upp.exception.CarreraNoExisteException;
+import com.upp.exception.CarreraConPlanesException;
+import com.upp.exception.CarreraConAlumnosException;
 import com.upp.exception.PlanDeEstudiosNoExisteException;
+import com.upp.model.Alumno;
 import com.upp.model.Carrera;
 import com.upp.model.PlanDeEstudios;
+import com.upp.repository.AlumnoRepository;
 import com.upp.repository.CarreraRepository;
 import com.upp.repository.PlanDeEstudiosRepository;
 import java.util.ArrayList;
@@ -113,6 +117,12 @@ public class CarreraService {
     }
 
     Carrera carrera = carreraOpt.get();
+    
+    // Validar que no tenga planes de estudio
+    if (carrera.getPlanesDeEstudio() != null && !carrera.getPlanesDeEstudio().isEmpty()) {
+      throw new CarreraConPlanesException("No se puede eliminar: la carrera tiene planes de estudio asociados");
+    }
+
     carreraRepository.delete(carrera);
   }
 

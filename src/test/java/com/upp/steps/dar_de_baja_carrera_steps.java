@@ -49,4 +49,10 @@ public class dar_de_baja_carrera_steps {
   public void noSeEliminaElRegistroDeLaCarreraExitosamente() {
     assertEquals(HttpStatus.NOT_FOUND, result.getStatus());
   }
+
+  @Entonces("no se elimina el registro de la carrera por tener planes asociados")
+  public void noSeEliminaElRegistroDeLaCarreraPorTenerPlanesAsociados() {
+    assertEquals(HttpStatus.CONFLICT, result.getStatus());
+  }
+
 }

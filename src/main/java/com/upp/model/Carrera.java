@@ -19,7 +19,7 @@ public class Carrera {
   @Column(columnDefinition = "TEXT")
   private String incumbencias;
 
-  @OneToMany(mappedBy = "carrera", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "carrera", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
   private List<PlanDeEstudios> planesDeEstudio;
 
   public Carrera(

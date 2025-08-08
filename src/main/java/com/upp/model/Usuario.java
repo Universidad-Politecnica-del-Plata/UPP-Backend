@@ -19,6 +19,6 @@ public class Usuario {
   private String password;
   private boolean habilitado = true;
 
-  @ManyToMany(fetch = FetchType.EAGER)
+  @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   private Set<Rol> roles = new HashSet<>();
 }
