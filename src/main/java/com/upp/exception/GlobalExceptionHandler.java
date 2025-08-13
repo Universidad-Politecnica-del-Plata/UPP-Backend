@@ -5,6 +5,7 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -62,6 +63,11 @@ public class GlobalExceptionHandler {
   public ResponseEntity<String> handleAuthenticationException(AuthenticationException ex) {
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas");
   }
+
+  @ExceptionHandler(TransactionSystemException.class)
+    public ResponseEntity<String> handleTransactionSystemException (AuthenticationException ex){
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se puede guardar con esas caracteristicas");
+    }
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<Map<String, String>> handleGeneralException(Exception ex) {
