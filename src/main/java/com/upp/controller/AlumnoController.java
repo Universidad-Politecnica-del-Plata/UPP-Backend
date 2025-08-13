@@ -1,9 +1,7 @@
 package com.upp.controller;
 
 import com.upp.dto.AlumnoDTO;
-import com.upp.exception.AlumnoExisteException;
 import com.upp.service.AlumnoService;
-import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,12 +22,7 @@ public class AlumnoController {
 
   @PostMapping
   public ResponseEntity<?> crearAlumno(@RequestBody AlumnoDTO alumnoDTO) {
-
-    try {
-      AlumnoDTO alumnoCreado = alumnoService.crearAlumno(alumnoDTO);
-      return ResponseEntity.status(HttpStatus.CREATED).body(alumnoCreado);
-    } catch (AlumnoExisteException ex) {
-      return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("error", ex.getMessage()));
-    }
+    AlumnoDTO alumnoCreado = alumnoService.crearAlumno(alumnoDTO);
+    return ResponseEntity.status(HttpStatus.CREATED).body(alumnoCreado);
   }
 }

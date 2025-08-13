@@ -1,11 +1,6 @@
 package com.upp.controller;
 
 import com.upp.dto.CarreraDTO;
-import com.upp.exception.CarreraConAlumnosException;
-import com.upp.exception.CarreraConPlanesException;
-import com.upp.exception.CarreraExisteException;
-import com.upp.exception.CarreraNoExisteException;
-import com.upp.exception.PlanDeEstudiosNoExisteException;
 import com.upp.service.CarreraService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -27,55 +22,28 @@ public class CarreraController {
 
   @PostMapping
   public ResponseEntity<?> crearCarrera(@Valid @RequestBody CarreraDTO carreraDTO) {
-    try {
-      CarreraDTO resultado = carreraService.crearCarrera(carreraDTO);
-      return ResponseEntity.status(HttpStatus.CREATED).body(resultado);
-
-    } catch (CarreraExisteException | PlanDeEstudiosNoExisteException e) {
-      return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("error", e.getMessage()));
-
-    } catch (Exception e) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
-    }
+    CarreraDTO resultado = carreraService.crearCarrera(carreraDTO);
+    return ResponseEntity.status(HttpStatus.CREATED).body(resultado);
   }
 
   @PutMapping("/{codigo}")
   public ResponseEntity<?> modificarCarrera(
       @PathVariable String codigo, @RequestBody CarreraDTO carreraDTO) {
-    try {
-      CarreraDTO resultado = carreraService.modificarCarrera(codigo, carreraDTO);
-      return ResponseEntity.status(HttpStatus.OK).body(resultado);
-
-    } catch (CarreraNoExisteException | PlanDeEstudiosNoExisteException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
-    } catch (Exception e) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
-    }
+    CarreraDTO resultado = carreraService.modificarCarrera(codigo, carreraDTO);
+    return ResponseEntity.status(HttpStatus.OK).body(resultado);
   }
 
   @DeleteMapping("/{codigo}")
   public ResponseEntity<?> eliminarCarrera(@PathVariable String codigo) {
-    try {
-      carreraService.eliminarCarrera(codigo);
-      return ResponseEntity.status(HttpStatus.OK)
-          .body(Map.of("message", "Carrera eliminada exitosamente"));
-
-    } catch (CarreraNoExisteException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
-    } catch (CarreraConPlanesException | CarreraConAlumnosException e) {
-      return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("error", e.getMessage()));
-    }
+    carreraService.eliminarCarrera(codigo);
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(Map.of("message", "Carrera eliminada exitosamente"));
   }
 
   @GetMapping("/{codigo}")
   public ResponseEntity<?> obtenerCarreraPorCodigo(@PathVariable String codigo) {
-    try {
-      CarreraDTO carrera = carreraService.obtenerCarreraPorCodigo(codigo);
-      return ResponseEntity.status(HttpStatus.OK).body(carrera);
-
-    } catch (CarreraNoExisteException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
-    }
+    CarreraDTO carrera = carreraService.obtenerCarreraPorCodigo(codigo);
+    return ResponseEntity.status(HttpStatus.OK).body(carrera);
   }
 
   @GetMapping

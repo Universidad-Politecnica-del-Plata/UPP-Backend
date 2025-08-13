@@ -30,29 +30,20 @@ public class AuthController {
 
   @PostMapping("/login")
   public ResponseEntity<?> login(@RequestBody Map<String, String> loginData) {
-    try {
-      String username = loginData.get("username");
-      String password = loginData.get("password");
+    String username = loginData.get("username");
+    String password = loginData.get("password");
 
-      Authentication authentication =
-          authenticationManager.authenticate(
-              new UsernamePasswordAuthenticationToken(username, password));
+    Authentication authentication =
+        authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(username, password));
 
-      String token = jwtTokenProvider.generarToken(username);
-      return ResponseEntity.ok(Map.of("token", token));
-
-    } catch (AuthenticationException e) {
-      return ResponseEntity.status(401).body("Credenciales inválidas");
-    }
+    String token = jwtTokenProvider.generarToken(username);
+    return ResponseEntity.ok(Map.of("token", token));
   }
 
   @PostMapping("/register")
   public ResponseEntity<?> register(@RequestBody UsuarioDTO dto) {
-    try {
-      userDetailsService.crearUsuario(dto);
-      return ResponseEntity.status(201).body("Usuario creado exitosamente");
-    } catch (RuntimeException e) {
-      return ResponseEntity.status(400).body(e.getMessage());
-    }
+    userDetailsService.crearUsuario(dto);
+    return ResponseEntity.status(201).body("Usuario creado exitosamente");
   }
 }

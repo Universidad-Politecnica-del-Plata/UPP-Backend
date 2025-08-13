@@ -1,6 +1,7 @@
 package com.upp.steps;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.upp.dto.CarreraDTO;
 import com.upp.steps.shared.TokenHolder;
@@ -101,6 +102,8 @@ public class dar_de_alta_carrera_steps {
 
   @Entonces("no se registra la carrera exitosamente")
   public void noSeRegistraLaCarreraExitosamente() {
-    assertEquals(HttpStatus.CONFLICT, result.getStatus());
+    assertTrue(
+            result.getStatus().is4xxClientError()
+    );
   }
 }

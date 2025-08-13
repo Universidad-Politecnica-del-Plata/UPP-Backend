@@ -1,8 +1,6 @@
 package com.upp.controller;
 
 import com.upp.dto.MateriaDTO;
-import com.upp.exception.MateriaExisteException;
-import com.upp.exception.MateriaNoExisteException;
 import com.upp.service.MateriaService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -24,54 +22,28 @@ public class MateriaController {
 
   @PostMapping
   public ResponseEntity<?> crearMateria(@Valid @RequestBody MateriaDTO materiaDTO) {
-    try {
-      MateriaDTO resultado = materiaService.crearMateria(materiaDTO);
-      return ResponseEntity.status(HttpStatus.CREATED).body(resultado);
-
-    } catch (MateriaExisteException e) {
-      return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("error", e.getMessage()));
-
-    } catch (Exception e) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
-    }
+    MateriaDTO resultado = materiaService.crearMateria(materiaDTO);
+    return ResponseEntity.status(HttpStatus.CREATED).body(resultado);
   }
 
   @PutMapping("/{codigo}")
   public ResponseEntity<?> modificarMateria(
       @PathVariable String codigo, @RequestBody MateriaDTO materiaDTO) {
-
-    try {
-      MateriaDTO resultado = materiaService.modificarMateria(codigo, materiaDTO);
-      return ResponseEntity.status(HttpStatus.OK).body(resultado);
-
-    } catch (MateriaNoExisteException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
-    } catch (Exception e) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
-    }
+    MateriaDTO resultado = materiaService.modificarMateria(codigo, materiaDTO);
+    return ResponseEntity.status(HttpStatus.OK).body(resultado);
   }
 
   @DeleteMapping("/{codigo}")
   public ResponseEntity<?> eliminarMateria(@PathVariable String codigo) {
-    try {
-      materiaService.eliminarMateria(codigo);
-      return ResponseEntity.status(HttpStatus.OK)
-          .body(Map.of("message", "Materia eliminada exitosamente"));
-
-    } catch (MateriaNoExisteException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
-    }
+    materiaService.eliminarMateria(codigo);
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(Map.of("message", "Materia eliminada exitosamente"));
   }
 
   @GetMapping("/{codigo}")
   public ResponseEntity<?> obtenerMateriaPorCodigo(@PathVariable String codigo) {
-    try {
-      MateriaDTO materia = materiaService.obtenerMateriaPorCodigo(codigo);
-      return ResponseEntity.status(HttpStatus.OK).body(materia);
-
-    } catch (MateriaNoExisteException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
-    }
+    MateriaDTO materia = materiaService.obtenerMateriaPorCodigo(codigo);
+    return ResponseEntity.status(HttpStatus.OK).body(materia);
   }
 
   @GetMapping

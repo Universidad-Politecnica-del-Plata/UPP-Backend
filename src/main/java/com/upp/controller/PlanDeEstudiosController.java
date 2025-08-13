@@ -2,10 +2,6 @@ package com.upp.controller;
 
 import com.upp.dto.PlanDeEstudiosRequestDTO;
 import com.upp.dto.PlanDeEstudiosResponseDTO;
-import com.upp.exception.MateriaNoExisteException;
-import com.upp.exception.PlanConMateriasException;
-import com.upp.exception.PlanDeEstudiosExisteException;
-import com.upp.exception.PlanDeEstudiosNoExisteException;
 import com.upp.service.PlanDeEstudiosService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -28,29 +24,16 @@ public class PlanDeEstudiosController {
   @PostMapping
   public ResponseEntity<?> crearPlanDeEstudios(
       @Valid @RequestBody PlanDeEstudiosRequestDTO planDeEstudiosRequestDTO) {
-    try {
-      PlanDeEstudiosResponseDTO resultado =
-          planDeEstudiosService.crearPlanDeEstudios(planDeEstudiosRequestDTO);
-      return ResponseEntity.status(HttpStatus.CREATED).body(resultado);
-
-    } catch (MateriaNoExisteException | PlanDeEstudiosExisteException e) {
-      return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("error", e.getMessage()));
-
-    } catch (Exception e) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
-    }
+    PlanDeEstudiosResponseDTO resultado =
+        planDeEstudiosService.crearPlanDeEstudios(planDeEstudiosRequestDTO);
+    return ResponseEntity.status(HttpStatus.CREATED).body(resultado);
   }
 
   @GetMapping("/{codigo}")
   public ResponseEntity<?> obtenerPlanDeEstudiosPorCodigo(@PathVariable String codigo) {
-    try {
-      PlanDeEstudiosResponseDTO planDeEstudios =
-          planDeEstudiosService.obtenerPlanDeEstudiosPorCodigo(codigo);
-      return ResponseEntity.status(HttpStatus.OK).body(planDeEstudios);
-
-    } catch (PlanDeEstudiosNoExisteException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
-    }
+    PlanDeEstudiosResponseDTO planDeEstudios =
+        planDeEstudiosService.obtenerPlanDeEstudiosPorCodigo(codigo);
+    return ResponseEntity.status(HttpStatus.OK).body(planDeEstudios);
   }
 
   @GetMapping
@@ -64,32 +47,15 @@ public class PlanDeEstudiosController {
   @PutMapping("/{codigo}")
   public ResponseEntity<?> modificarPlanDeEstudios(
       @PathVariable String codigo, @RequestBody PlanDeEstudiosRequestDTO planDeEstudiosRequestDTO) {
-
-    try {
-      PlanDeEstudiosResponseDTO resultado =
-          planDeEstudiosService.modificarPlanDeEstudios(codigo, planDeEstudiosRequestDTO);
-      return ResponseEntity.status(HttpStatus.OK).body(resultado);
-
-    } catch (PlanDeEstudiosNoExisteException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
-    } catch (MateriaNoExisteException e) {
-      return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("error", e.getMessage()));
-    } catch (Exception e) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
-    }
+    PlanDeEstudiosResponseDTO resultado =
+        planDeEstudiosService.modificarPlanDeEstudios(codigo, planDeEstudiosRequestDTO);
+    return ResponseEntity.status(HttpStatus.OK).body(resultado);
   }
 
   @DeleteMapping("/{codigo}")
   public ResponseEntity<?> eliminarPlanDeEstudios(@PathVariable String codigo) {
-    try {
-      planDeEstudiosService.eliminarPlanDeEstudios(codigo);
-      return ResponseEntity.status(HttpStatus.OK)
-          .body(Map.of("message", "Plan de estudios eliminado exitosamente"));
-
-    } catch (PlanDeEstudiosNoExisteException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
-    } catch (PlanConMateriasException e) {
-      return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("error", e.getMessage()));
-    }
+    planDeEstudiosService.eliminarPlanDeEstudios(codigo);
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(Map.of("message", "Plan de estudios eliminado exitosamente"));
   }
 }

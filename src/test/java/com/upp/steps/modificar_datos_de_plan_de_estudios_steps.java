@@ -67,7 +67,7 @@ public class modificar_datos_de_plan_de_estudios_steps {
 
   @Entonces("no se puede modificar el plan de estudios por materia inexistente")
   public void noSePuedeModificarPorMateriaInexistente() {
-    assertEquals(HttpStatus.CONFLICT, result.getStatus());
+    assertEquals(HttpStatus.NOT_FOUND, result.getStatus());
   }
 
   @Entonces(
