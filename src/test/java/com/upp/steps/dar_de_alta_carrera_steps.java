@@ -102,8 +102,6 @@ public class dar_de_alta_carrera_steps {
 
   @Entonces("no se registra la carrera exitosamente")
   public void noSeRegistraLaCarreraExitosamente() {
-    assertTrue(
-            result.getStatus().is4xxClientError()
-    );
+    assertTrue(result.getStatus().is4xxClientError());
   }
 }
