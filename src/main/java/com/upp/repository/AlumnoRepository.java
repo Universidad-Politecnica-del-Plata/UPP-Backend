@@ -1,6 +1,7 @@
 package com.upp.repository;
 
 import com.upp.model.Alumno;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -11,4 +12,8 @@ public interface AlumnoRepository extends JpaRepository<Alumno, Long> {
 
   @Query("SELECT MAX(a.matricula) FROM Alumno a")
   Long findMaxMatricula();
+
+  Optional<Alumno> findByMatricula(Long matricula);
+  
+  boolean existsByMatricula(Long matricula);
 }

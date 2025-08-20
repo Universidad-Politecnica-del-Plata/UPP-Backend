@@ -32,63 +32,6 @@ public class registrar_alumno_steps {
   private String token;
   private FluxExchangeResult<AlumnoDTO> result;
 
-  @Dado("que hay un gestor estudiantil logueado")
-  public void gestorEstudiantilLogueado() {
-    // Crear rol si no existe
-    Rol rolGestion =
-        rolRepository
-            .findById("ROLE_GESTION_ESTUDIANTIL")
-            .orElseGet(
-                () -> {
-                  Rol nuevo = new Rol("ROLE_GESTION_ESTUDIANTIL");
-                  return rolRepository.save(nuevo);
-                });
-
-    // Crear usuario si no existe
-    usuarioRepository
-        .findByUsername("admin_gestion_estudiantil2")
-        .ifPresent(usuarioRepository::delete);
-    Usuario usuarioExistente =
-        usuarioRepository.findByUsername("admin_gestion_estudiantil2").orElse(null);
-
-    if (usuarioExistente == null) {
-      Map<String, Object> registroData =
-          Map.of(
-              "username", "admin_gestion_estudiantil2",
-              "password", "password",
-              "roles", List.of("ROLE_GESTION_ESTUDIANTIL"));
-
-      webTestClient
-          .post()
-          .uri("/api/auth/register")
-          .contentType(MediaType.APPLICATION_JSON)
-          .bodyValue(registroData)
-          .exchange()
-          .expectStatus()
-          .isCreated();
-    }
-
-    Map<String, String> loginData =
-        Map.of("username", "admin_gestion_estudiantil2", "password", "password");
-
-    String token =
-        webTestClient
-            .post()
-            .uri("/api/auth/login")
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(loginData)
-            .exchange()
-            .expectStatus()
-            .isOk()
-            .returnResult(Map.class)
-            .getResponseBody()
-            .blockFirst()
-            .get("token")
-            .toString();
-    tokenHolder.setToken(token);
-    this.token = token;
-  }
-
   @Cuando(
       "registra un nuevo alumno con DNI {long}, apellido {string}, nombre {string}, direccion {string}, telefono {string}, email {string}, fecha de nacimiento {string} y fecha de ingreso {string}")
   public void registraAlumnoConDatos(

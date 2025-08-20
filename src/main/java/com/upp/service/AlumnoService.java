@@ -2,11 +2,20 @@ package com.upp.service;
 
 import com.upp.dto.AlumnoDTO;
 import com.upp.exception.AlumnoExisteException;
+import com.upp.exception.AlumnoNoExisteException;
 import com.upp.model.Alumno;
+import com.upp.model.Carrera;
+import com.upp.model.PlanDeEstudios;
 import com.upp.model.Rol;
 import com.upp.repository.AlumnoRepository;
+import com.upp.repository.CarreraRepository;
+import com.upp.repository.PlanDeEstudiosRepository;
 import com.upp.repository.RolRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,15 +23,21 @@ import org.springframework.stereotype.Service;
 public class AlumnoService {
   private final AlumnoRepository alumnoRepository;
   private final RolRepository rolRepository;
+  private final CarreraRepository carreraRepository;
+  private final PlanDeEstudiosRepository planDeEstudiosRepository;
   private final PasswordEncoder passwordEncoder;
   private static final String ID_ROL_ALUMNO = "ROLE_ALUMNO";
 
   public AlumnoService(
       AlumnoRepository alumnoRepository,
       RolRepository rolRepository,
+      CarreraRepository carreraRepository,
+      PlanDeEstudiosRepository planDeEstudiosRepository,
       PasswordEncoder passwordEncoder) {
     this.alumnoRepository = alumnoRepository;
     this.rolRepository = rolRepository;
+    this.carreraRepository = carreraRepository;
+    this.planDeEstudiosRepository = planDeEstudiosRepository;
     this.passwordEncoder = passwordEncoder;
   }
 
@@ -40,10 +55,8 @@ public class AlumnoService {
     alumno.setFechaIngreso(alumnoDTO.getFechaIngreso());
     alumno.setFechaEgreso(alumnoDTO.getFechaEgreso());
     alumno.setTelefonos(alumnoDTO.getTelefonos());
-    //        TODO: mapear a objeto Carrera
-    alumno.setCarreras(alumnoDTO.getCodigosCarreras());
-    //        TODO: mapear a objeto Plan de estudios
-    alumno.setPlanesDeEstudio(alumnoDTO.getCodigosPlanesDeEstudio());
+    alumno.setCarreras(obtenerCarreras(alumnoDTO.getCodigosCarreras()));
+    alumno.setPlanesDeEstudio(obtenerPlanesDeEstudio(alumnoDTO.getCodigosPlanesDeEstudio()));
 
     Long ultimaMatricula = obtenerUltimaMatricula();
     alumno.setMatricula(ultimaMatricula + 1);
@@ -65,8 +78,8 @@ public class AlumnoService {
             alumnoGuardado.getFechaIngreso(),
             alumnoGuardado.getFechaEgreso(),
             alumnoGuardado.getTelefonos(),
-            alumnoGuardado.getCarreras(),
-            alumnoGuardado.getPlanesDeEstudio());
+            obtenerCodigosCarreras(alumnoGuardado.getCarreras()),
+            obtenerCodigosPlanesDeEstudio(alumnoGuardado.getPlanesDeEstudio()));
 
     return alumnoGuardadoDTO;
   }
@@ -79,13 +92,105 @@ public class AlumnoService {
     return ultimaMatricula;
   }
 
+  public AlumnoDTO obtenerAlumnoPorMatricula(Long matricula) {
+    Optional<Alumno> alumnoOpt = alumnoRepository.findByMatricula(matricula);
+    if (alumnoOpt.isEmpty()) {
+      throw new AlumnoNoExisteException("No existe un alumno con esa matrícula.");
+    }
+    Alumno alumno = alumnoOpt.get();
+    return new AlumnoDTO(
+        alumno.getMatricula(),
+        alumno.getNombre(),
+        alumno.getApellido(),
+        alumno.getDni(),
+        alumno.getEmail(),
+        alumno.getDireccion(),
+        alumno.getFechaNacimiento(),
+        alumno.getFechaIngreso(),
+        alumno.getFechaEgreso(),
+        alumno.getTelefonos(),
+        obtenerCodigosCarreras(alumno.getCarreras()),
+        obtenerCodigosPlanesDeEstudio(alumno.getPlanesDeEstudio()));
+  }
+
+  public AlumnoDTO modificarAlumno(Long matricula, AlumnoDTO alumnoDTO) {
+    Optional<Alumno> alumnoOpt = alumnoRepository.findByMatricula(matricula);
+    if (alumnoOpt.isEmpty()) {
+      throw new AlumnoNoExisteException("No existe un alumno con esa matrícula.");
+    }
+    
+    Alumno alumno = alumnoOpt.get();
+    
+    // Actualizar todos los campos excepto matricula
+    alumno.setNombre(alumnoDTO.getNombre());
+    alumno.setApellido(alumnoDTO.getApellido());
+    alumno.setDni(alumnoDTO.getDni());
+    alumno.setEmail(alumnoDTO.getEmail());
+    alumno.setDireccion(alumnoDTO.getDireccion());
+    alumno.setFechaNacimiento(alumnoDTO.getFechaNacimiento());
+    alumno.setFechaIngreso(alumnoDTO.getFechaIngreso());
+    alumno.setFechaEgreso(alumnoDTO.getFechaEgreso());
+    alumno.setTelefonos(alumnoDTO.getTelefonos());
+    alumno.setCarreras(obtenerCarreras(alumnoDTO.getCodigosCarreras()));
+    alumno.setPlanesDeEstudio(obtenerPlanesDeEstudio(alumnoDTO.getCodigosPlanesDeEstudio()));
+    
+    alumnoRepository.save(alumno);
+    return alumnoDTO;
+  }
+
+  public void eliminarAlumno(Long matricula) {
+    Optional<Alumno> alumnoOpt = alumnoRepository.findByMatricula(matricula);
+    if (alumnoOpt.isEmpty()) {
+      throw new AlumnoNoExisteException("No existe un alumno con esa matrícula.");
+    }
+    
+    Alumno alumno = alumnoOpt.get();
+    // Baja lógica
+    alumno.setHabilitado(false);
+    alumnoRepository.save(alumno);
+  }
+
+  private List<Carrera> obtenerCarreras(List<String> codigosCarreras) {
+    if (codigosCarreras == null) {
+      return new ArrayList<>();
+    }
+    return codigosCarreras.stream()
+        .map(codigo -> carreraRepository.findByCodigoDeCarrera(codigo)
+            .orElseThrow(() -> new RuntimeException("Carrera no encontrada: " + codigo)))
+        .collect(Collectors.toList());
+  }
+
+  private List<PlanDeEstudios> obtenerPlanesDeEstudio(List<String> codigosPlanesDeEstudio) {
+    if (codigosPlanesDeEstudio == null) {
+      return new ArrayList<>();
+    }
+    return codigosPlanesDeEstudio.stream()
+        .map(codigo -> planDeEstudiosRepository.findByCodigoDePlanDeEstudios(codigo)
+            .orElseThrow(() -> new RuntimeException("Plan de estudios no encontrado: " + codigo)))
+        .collect(Collectors.toList());
+  }
+
+  private List<String> obtenerCodigosCarreras(List<Carrera> carreras) {
+    if (carreras == null) {
+      return new ArrayList<>();
+    }
+    return carreras.stream()
+        .map(Carrera::getCodigoDeCarrera)
+        .collect(Collectors.toList());
+  }
+
+  private List<String> obtenerCodigosPlanesDeEstudio(List<PlanDeEstudios> planesDeEstudio) {
+    if (planesDeEstudio == null) {
+      return new ArrayList<>();
+    }
+    return planesDeEstudio.stream()
+        .map(PlanDeEstudios::getCodigoDePlanDeEstudios)
+        .collect(Collectors.toList());
+  }
+
   private Rol obtenerRolAlumno() {
     return rolRepository
         .findById(ID_ROL_ALUMNO)
-        .orElseGet(
-            () -> {
-              Rol nuevo = new Rol(ID_ROL_ALUMNO);
-              return rolRepository.save(nuevo);
-            });
+        .orElseThrow(() -> new RuntimeException("ROLE_ALUMNO no encontrado"));
   }
 }

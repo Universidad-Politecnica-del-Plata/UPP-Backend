@@ -29,13 +29,21 @@ public class Alumno extends Usuario {
   @Column(name = "telefono")
   private List<String> telefonos;
 
-  @ElementCollection(fetch = FetchType.EAGER)
-  @Column(name = "carrera")
-  private List<String> carreras;
+  @ManyToMany(fetch = FetchType.LAZY)
+  @JoinTable(
+    name = "alumno_carrera",
+    joinColumns = @JoinColumn(name = "alumno_id"),
+    inverseJoinColumns = @JoinColumn(name = "carrera_codigo")
+  )
+  private List<Carrera> carreras;
 
-  @ElementCollection(fetch = FetchType.EAGER)
-  @Column(name = "planDeEstudio")
-  private List<String> planesDeEstudio;
+  @ManyToMany(fetch = FetchType.LAZY)
+  @JoinTable(
+    name = "alumno_plan_estudios",
+    joinColumns = @JoinColumn(name = "alumno_id"),
+    inverseJoinColumns = @JoinColumn(name = "plan_codigo")
+  )
+  private List<PlanDeEstudios> planesDeEstudio;
 
   public Alumno() {
     super();

@@ -39,7 +39,8 @@ public class GlobalExceptionHandler {
   @ExceptionHandler({
     CarreraNoExisteException.class,
     PlanDeEstudiosNoExisteException.class,
-    MateriaNoExisteException.class
+    MateriaNoExisteException.class,
+    AlumnoNoExisteException.class
   })
   public ResponseEntity<Map<String, String>> handleEntityNotFoundExceptions(RuntimeException ex) {
     Map<String, String> error = new HashMap<>();

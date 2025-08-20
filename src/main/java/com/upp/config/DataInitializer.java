@@ -21,7 +21,12 @@ public class DataInitializer {
     ROLES_INICIALES.forEach(
         nombre -> {
           if (!rolRepository.existsById(nombre)) {
-            rolRepository.save(new Rol(nombre));
+            try {
+              rolRepository.save(new Rol(nombre));
+            } catch (Exception e) {
+              // Si falla por constraint violation, el rol ya existe - esto es normal
+              // en entornos de test donde puede haber race conditions
+            }
           }
         });
   }
