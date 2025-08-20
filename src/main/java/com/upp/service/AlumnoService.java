@@ -113,6 +113,27 @@ public class AlumnoService {
         obtenerCodigosPlanesDeEstudio(alumno.getPlanesDeEstudio()));
   }
 
+  public List<AlumnoDTO> obtenerTodosLosAlumnos() {
+    List<Alumno> alumnos = alumnoRepository.findAll();
+    return alumnos.stream()
+        .map(
+            alumno ->
+                new AlumnoDTO(
+                    alumno.getMatricula(),
+                    alumno.getNombre(),
+                    alumno.getApellido(),
+                    alumno.getDni(),
+                    alumno.getEmail(),
+                    alumno.getDireccion(),
+                    alumno.getFechaNacimiento(),
+                    alumno.getFechaIngreso(),
+                    alumno.getFechaEgreso(),
+                    alumno.getTelefonos(),
+                    obtenerCodigosCarreras(alumno.getCarreras()),
+                    obtenerCodigosPlanesDeEstudio(alumno.getPlanesDeEstudio())))
+        .collect(Collectors.toList());
+  }
+
   public AlumnoDTO modificarAlumno(Long matricula, AlumnoDTO alumnoDTO) {
     Optional<Alumno> alumnoOpt = alumnoRepository.findByMatricula(matricula);
     if (alumnoOpt.isEmpty()) {

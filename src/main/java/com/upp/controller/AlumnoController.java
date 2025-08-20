@@ -2,6 +2,7 @@ package com.upp.controller;
 
 import com.upp.dto.AlumnoDTO;
 import com.upp.service.AlumnoService;
+import java.util.List;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,12 @@ public class AlumnoController {
   public ResponseEntity<?> crearAlumno(@RequestBody AlumnoDTO alumnoDTO) {
     AlumnoDTO alumnoCreado = alumnoService.crearAlumno(alumnoDTO);
     return ResponseEntity.status(HttpStatus.CREATED).body(alumnoCreado);
+  }
+
+  @GetMapping
+  public ResponseEntity<List<AlumnoDTO>> obtenerTodosLosAlumnos() {
+    List<AlumnoDTO> alumnos = alumnoService.obtenerTodosLosAlumnos();
+    return ResponseEntity.ok(alumnos);
   }
 
   @GetMapping("/{matricula}")
