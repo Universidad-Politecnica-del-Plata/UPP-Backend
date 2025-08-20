@@ -118,9 +118,9 @@ public class AlumnoService {
     if (alumnoOpt.isEmpty()) {
       throw new AlumnoNoExisteException("No existe un alumno con esa matrícula.");
     }
-    
+
     Alumno alumno = alumnoOpt.get();
-    
+
     // Actualizar todos los campos excepto matricula
     alumno.setNombre(alumnoDTO.getNombre());
     alumno.setApellido(alumnoDTO.getApellido());
@@ -133,7 +133,7 @@ public class AlumnoService {
     alumno.setTelefonos(alumnoDTO.getTelefonos());
     alumno.setCarreras(obtenerCarreras(alumnoDTO.getCodigosCarreras()));
     alumno.setPlanesDeEstudio(obtenerPlanesDeEstudio(alumnoDTO.getCodigosPlanesDeEstudio()));
-    
+
     alumnoRepository.save(alumno);
     return alumnoDTO;
   }
@@ -143,7 +143,7 @@ public class AlumnoService {
     if (alumnoOpt.isEmpty()) {
       throw new AlumnoNoExisteException("No existe un alumno con esa matrícula.");
     }
-    
+
     Alumno alumno = alumnoOpt.get();
     // Baja lógica
     alumno.setHabilitado(false);
@@ -155,8 +155,11 @@ public class AlumnoService {
       return new ArrayList<>();
     }
     return codigosCarreras.stream()
-        .map(codigo -> carreraRepository.findByCodigoDeCarrera(codigo)
-            .orElseThrow(() -> new RuntimeException("Carrera no encontrada: " + codigo)))
+        .map(
+            codigo ->
+                carreraRepository
+                    .findByCodigoDeCarrera(codigo)
+                    .orElseThrow(() -> new RuntimeException("Carrera no encontrada: " + codigo)))
         .collect(Collectors.toList());
   }
 
@@ -165,8 +168,12 @@ public class AlumnoService {
       return new ArrayList<>();
     }
     return codigosPlanesDeEstudio.stream()
-        .map(codigo -> planDeEstudiosRepository.findByCodigoDePlanDeEstudios(codigo)
-            .orElseThrow(() -> new RuntimeException("Plan de estudios no encontrado: " + codigo)))
+        .map(
+            codigo ->
+                planDeEstudiosRepository
+                    .findByCodigoDePlanDeEstudios(codigo)
+                    .orElseThrow(
+                        () -> new RuntimeException("Plan de estudios no encontrado: " + codigo)))
         .collect(Collectors.toList());
   }
 
@@ -174,9 +181,7 @@ public class AlumnoService {
     if (carreras == null) {
       return new ArrayList<>();
     }
-    return carreras.stream()
-        .map(Carrera::getCodigoDeCarrera)
-        .collect(Collectors.toList());
+    return carreras.stream().map(Carrera::getCodigoDeCarrera).collect(Collectors.toList());
   }
 
   private List<String> obtenerCodigosPlanesDeEstudio(List<PlanDeEstudios> planesDeEstudio) {

@@ -1,6 +1,5 @@
 package com.upp.steps;
 
-import com.upp.dto.AlumnoDTO;
 import com.upp.model.Alumno;
 import com.upp.repository.AlumnoRepository;
 import com.upp.repository.RolRepository;
@@ -8,19 +7,13 @@ import com.upp.repository.UsuarioRepository;
 import com.upp.service.AlumnoService;
 import com.upp.steps.shared.TokenHolder;
 import io.cucumber.java.es.Dado;
-import io.cucumber.java.es.Entonces;
-import io.cucumber.java.es.Y;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class alumno_shared_steps {

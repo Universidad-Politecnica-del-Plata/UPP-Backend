@@ -14,6 +14,6 @@ public interface AlumnoRepository extends JpaRepository<Alumno, Long> {
   Long findMaxMatricula();
 
   Optional<Alumno> findByMatricula(Long matricula);
-  
+
   boolean existsByMatricula(Long matricula);
 }

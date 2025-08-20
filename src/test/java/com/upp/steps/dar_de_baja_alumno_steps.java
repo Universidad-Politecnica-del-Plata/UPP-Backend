@@ -24,7 +24,6 @@ public class dar_de_baja_alumno_steps {
   @Autowired private TokenHolder tokenHolder;
   private FluxExchangeResult<Map> result;
 
-
   @Cuando("se da de baja el alumno con matrícula {long}")
   public void seDaDeBajaElAlumnoConMatricula(Long matricula) {
     this.result =

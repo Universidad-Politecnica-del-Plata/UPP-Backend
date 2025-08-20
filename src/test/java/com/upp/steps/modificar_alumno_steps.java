@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.upp.dto.AlumnoDTO;
 import com.upp.steps.shared.TokenHolder;
 import io.cucumber.java.es.Cuando;
-import io.cucumber.java.es.Dado;
 import io.cucumber.java.es.Entonces;
 import io.cucumber.java.es.Y;
 import java.time.LocalDate;
@@ -27,8 +26,8 @@ public class modificar_alumno_steps {
   private FluxExchangeResult<AlumnoDTO> result;
   private FluxExchangeResult<Map> errorResult;
 
-
-  @Cuando("se modifican los datos del alumno con matrícula {long} con nombre {string}, apellido {string}, dni {long}, email {string}, dirección {string}, teléfonos {string}, fecha de nacimiento {string}, fecha de ingreso {string} y fecha de egreso {string}")
+  @Cuando(
+      "se modifican los datos del alumno con matrícula {long} con nombre {string}, apellido {string}, dni {long}, email {string}, dirección {string}, teléfonos {string}, fecha de nacimiento {string}, fecha de ingreso {string} y fecha de egreso {string}")
   public void seModificanLosDatosDelAlumno(
       Long matricula,
       String nombre,
@@ -66,7 +65,8 @@ public class modificar_alumno_steps {
             .returnResult(AlumnoDTO.class);
   }
 
-  @Cuando("se intenta modificar los datos del alumno con matrícula {long} con nombre {string}, apellido {string}, dni {long}, email {string}, dirección {string}, teléfonos {string}, fecha de nacimiento {string}, fecha de ingreso {string} y fecha de egreso {string}")
+  @Cuando(
+      "se intenta modificar los datos del alumno con matrícula {long} con nombre {string}, apellido {string}, dni {long}, email {string}, dirección {string}, teléfonos {string}, fecha de nacimiento {string}, fecha de ingreso {string} y fecha de egreso {string}")
   public void seIntentaModificarLosDatosDelAlumno(
       Long matricula,
       String nombre,
@@ -111,13 +111,14 @@ public class modificar_alumno_steps {
 
   @Y("el alumno con matrícula {long} tiene los nuevos datos")
   public void elAlumnoConMatriculaTieneLosDatosNuevos(Long matricula) {
-    var getResult = webTestClient
-        .get()
-        .uri("/api/alumnos/{matricula}", matricula)
-        .header("Authorization", "Bearer " + tokenHolder.getToken())
-        .exchange()
-        .returnResult(AlumnoDTO.class);
-    
+    var getResult =
+        webTestClient
+            .get()
+            .uri("/api/alumnos/{matricula}", matricula)
+            .header("Authorization", "Bearer " + tokenHolder.getToken())
+            .exchange()
+            .returnResult(AlumnoDTO.class);
+
     assertEquals(HttpStatus.OK, getResult.getStatus());
     AlumnoDTO alumno = getResult.getResponseBody().blockFirst();
     assertNotNull(alumno);
@@ -135,13 +136,14 @@ public class modificar_alumno_steps {
 
   @Entonces("la matrícula del alumno permanece como {long}")
   public void laMatriculaDelAlumnoPermaneceComo(Long matricula) {
-    var getResult = webTestClient
-        .get()
-        .uri("/api/alumnos/{matricula}", matricula)
-        .header("Authorization", "Bearer " + tokenHolder.getToken())
-        .exchange()
-        .returnResult(AlumnoDTO.class);
-    
+    var getResult =
+        webTestClient
+            .get()
+            .uri("/api/alumnos/{matricula}", matricula)
+            .header("Authorization", "Bearer " + tokenHolder.getToken())
+            .exchange()
+            .returnResult(AlumnoDTO.class);
+
     assertEquals(HttpStatus.OK, getResult.getStatus());
     AlumnoDTO alumno = getResult.getResponseBody().blockFirst();
     assertNotNull(alumno);

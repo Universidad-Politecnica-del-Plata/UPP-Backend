@@ -31,18 +31,16 @@ public class Alumno extends Usuario {
 
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(
-    name = "alumno_carrera",
-    joinColumns = @JoinColumn(name = "alumno_id"),
-    inverseJoinColumns = @JoinColumn(name = "carrera_codigo")
-  )
+      name = "alumno_carrera",
+      joinColumns = @JoinColumn(name = "alumno_id"),
+      inverseJoinColumns = @JoinColumn(name = "carrera_codigo"))
   private List<Carrera> carreras;
 
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(
-    name = "alumno_plan_estudios",
-    joinColumns = @JoinColumn(name = "alumno_id"),
-    inverseJoinColumns = @JoinColumn(name = "plan_codigo")
-  )
+      name = "alumno_plan_estudios",
+      joinColumns = @JoinColumn(name = "alumno_id"),
+      inverseJoinColumns = @JoinColumn(name = "plan_codigo"))
   private List<PlanDeEstudios> planesDeEstudio;
 
   public Alumno() {

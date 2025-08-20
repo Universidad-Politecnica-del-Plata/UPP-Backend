@@ -56,7 +56,8 @@ class AlumnoServiceTest {
         .thenReturn(false);
     when(rolRepository.findById("ROLE_ALUMNO")).thenReturn(Optional.of(new Rol("ROLE_ALUMNO")));
     when(carreraRepository.findByCodigoDeCarrera("CS")).thenReturn(Optional.of(new Carrera()));
-    when(planDeEstudiosRepository.findByCodigoDePlanDeEstudios("2023")).thenReturn(Optional.of(new PlanDeEstudios()));
+    when(planDeEstudiosRepository.findByCodigoDePlanDeEstudios("2023"))
+        .thenReturn(Optional.of(new PlanDeEstudios()));
     when(passwordEncoder.encode(any(CharSequence.class))).thenReturn("passwordEncriptado");
 
     Alumno alumnoGuardado = new Alumno();
@@ -132,8 +133,7 @@ class AlumnoServiceTest {
     when(alumnoRepository.findByMatricula(matricula)).thenReturn(Optional.empty());
 
     assertThrows(
-        AlumnoNoExisteException.class,
-        () -> alumnoService.obtenerAlumnoPorMatricula(matricula));
+        AlumnoNoExisteException.class, () -> alumnoService.obtenerAlumnoPorMatricula(matricula));
 
     verify(alumnoRepository, times(1)).findByMatricula(matricula);
   }
@@ -157,7 +157,8 @@ class AlumnoServiceTest {
 
     when(alumnoRepository.findByMatricula(matricula)).thenReturn(Optional.of(alumnoExistente));
     when(carreraRepository.findByCodigoDeCarrera("CS")).thenReturn(Optional.of(new Carrera()));
-    when(planDeEstudiosRepository.findByCodigoDePlanDeEstudios("2023")).thenReturn(Optional.of(new PlanDeEstudios()));
+    when(planDeEstudiosRepository.findByCodigoDePlanDeEstudios("2023"))
+        .thenReturn(Optional.of(new PlanDeEstudios()));
 
     AlumnoDTO resultado = alumnoService.modificarAlumno(matricula, alumnoDTO);
 
@@ -173,8 +174,7 @@ class AlumnoServiceTest {
     when(alumnoRepository.findByMatricula(matricula)).thenReturn(Optional.empty());
 
     assertThrows(
-        AlumnoNoExisteException.class,
-        () -> alumnoService.modificarAlumno(matricula, alumnoDTO));
+        AlumnoNoExisteException.class, () -> alumnoService.modificarAlumno(matricula, alumnoDTO));
 
     verify(alumnoRepository, times(1)).findByMatricula(matricula);
     verify(alumnoRepository, never()).save(any(Alumno.class));
@@ -201,9 +201,7 @@ class AlumnoServiceTest {
     Long matricula = 99999L;
     when(alumnoRepository.findByMatricula(matricula)).thenReturn(Optional.empty());
 
-    assertThrows(
-        AlumnoNoExisteException.class,
-        () -> alumnoService.eliminarAlumno(matricula));
+    assertThrows(AlumnoNoExisteException.class, () -> alumnoService.eliminarAlumno(matricula));
 
     verify(alumnoRepository, times(1)).findByMatricula(matricula);
     verify(alumnoRepository, never()).save(any(Alumno.class));
