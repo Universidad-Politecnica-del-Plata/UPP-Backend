@@ -4,10 +4,12 @@ import com.upp.dto.UsuarioDTO;
 import com.upp.security.JwtTokenProvider;
 import com.upp.service.CustomUserDetailsService;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -36,7 +38,11 @@ public class AuthController {
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(username, password));
 
-    String token = jwtTokenProvider.generarToken(username);
+    var roles = authentication.getAuthorities().stream()
+        .map(GrantedAuthority::getAuthority)
+        .collect(Collectors.toList());
+
+    String token = jwtTokenProvider.generarToken(username, roles);
     return ResponseEntity.ok(Map.of("token", token));
   }
 
