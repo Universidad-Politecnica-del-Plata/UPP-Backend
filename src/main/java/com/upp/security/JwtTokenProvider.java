@@ -63,12 +63,9 @@ public class JwtTokenProvider {
   }
 
   public List<String> obtenerRoles(String token) {
-    Claims claims = Jwts.parser()
-        .verifyWith(secretKey)
-        .build()
-        .parseSignedClaims(token)
-        .getPayload();
-    
+    Claims claims =
+        Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload();
+
     @SuppressWarnings("unchecked")
     List<String> roles = (List<String>) claims.get("roles");
     return roles != null ? roles : List.of();

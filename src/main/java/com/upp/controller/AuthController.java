@@ -38,9 +38,10 @@ public class AuthController {
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(username, password));
 
-    var roles = authentication.getAuthorities().stream()
-        .map(GrantedAuthority::getAuthority)
-        .collect(Collectors.toList());
+    var roles =
+        authentication.getAuthorities().stream()
+            .map(GrantedAuthority::getAuthority)
+            .collect(Collectors.toList());
 
     String token = jwtTokenProvider.generarToken(username, roles);
     return ResponseEntity.ok(Map.of("token", token));
