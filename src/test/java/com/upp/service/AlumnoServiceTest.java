@@ -17,6 +17,7 @@ import com.upp.repository.PlanDeEstudiosRepository;
 import com.upp.repository.RolRepository;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -205,5 +206,50 @@ class AlumnoServiceTest {
 
     verify(alumnoRepository, times(1)).findByMatricula(matricula);
     verify(alumnoRepository, never()).save(any(Alumno.class));
+  }
+
+  @Test
+  void obtenerAlumnosActivosRetornaSoloAlumnosHabilitados() {
+    Alumno alumno1 = new Alumno();
+    alumno1.setMatricula(1L);
+    alumno1.setNombre("Juan");
+    alumno1.setApellido("Perez");
+    alumno1.setDni(12345678L);
+    alumno1.setEmail("juan@example.com");
+    alumno1.setHabilitado(true);
+    alumno1.setCarreras(Arrays.asList(new Carrera()));
+    alumno1.setPlanesDeEstudio(Arrays.asList(new PlanDeEstudios()));
+
+    Alumno alumno2 = new Alumno();
+    alumno2.setMatricula(2L);
+    alumno2.setNombre("Maria");
+    alumno2.setApellido("Garcia");
+    alumno2.setDni(87654321L);
+    alumno2.setEmail("maria@example.com");
+    alumno2.setHabilitado(true);
+    alumno2.setCarreras(Arrays.asList(new Carrera()));
+    alumno2.setPlanesDeEstudio(Arrays.asList(new PlanDeEstudios()));
+
+    when(alumnoRepository.findByHabilitadoTrue()).thenReturn(Arrays.asList(alumno1, alumno2));
+
+    List<AlumnoDTO> resultado = alumnoService.obtenerAlumnosActivos();
+
+    assertEquals(2, resultado.size());
+    assertEquals(1L, resultado.get(0).getMatricula());
+    assertEquals("Juan", resultado.get(0).getNombre());
+    assertEquals(2L, resultado.get(1).getMatricula());
+    assertEquals("Maria", resultado.get(1).getNombre());
+
+    verify(alumnoRepository, times(1)).findByHabilitadoTrue();
+  }
+
+  @Test
+  void obtenerAlumnosActivosRetornaListaVaciaClumnosNoHayAlumnosActivos() {
+    when(alumnoRepository.findByHabilitadoTrue()).thenReturn(Arrays.asList());
+
+    List<AlumnoDTO> resultado = alumnoService.obtenerAlumnosActivos();
+
+    assertTrue(resultado.isEmpty());
+    verify(alumnoRepository, times(1)).findByHabilitadoTrue();
   }
 }

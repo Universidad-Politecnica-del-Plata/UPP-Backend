@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/planDeEstudios")
-@PreAuthorize("hasRole('GESTION_ACADEMICA')")
 public class PlanDeEstudiosController {
   private final PlanDeEstudiosService planDeEstudiosService;
 
@@ -22,6 +21,7 @@ public class PlanDeEstudiosController {
   }
 
   @PostMapping
+  @PreAuthorize("hasRole('GESTION_ACADEMICA')")
   public ResponseEntity<?> crearPlanDeEstudios(
       @Valid @RequestBody PlanDeEstudiosRequestDTO planDeEstudiosRequestDTO) {
     PlanDeEstudiosResponseDTO resultado =
@@ -30,6 +30,7 @@ public class PlanDeEstudiosController {
   }
 
   @GetMapping("/{codigo}")
+  @PreAuthorize("hasRole('GESTION_ACADEMICA') or hasRole('GESTION_ESTUDIANTIL')")
   public ResponseEntity<?> obtenerPlanDeEstudiosPorCodigo(@PathVariable String codigo) {
     PlanDeEstudiosResponseDTO planDeEstudios =
         planDeEstudiosService.obtenerPlanDeEstudiosPorCodigo(codigo);
@@ -37,6 +38,7 @@ public class PlanDeEstudiosController {
   }
 
   @GetMapping
+  @PreAuthorize("hasRole('GESTION_ACADEMICA') or hasRole('GESTION_ESTUDIANTIL')")
   public ResponseEntity<List<PlanDeEstudiosResponseDTO>> obtenerTodosLosPlanesDeEstudio() {
     List<PlanDeEstudiosResponseDTO> planes =
         planDeEstudiosService.obtenerTodosLosPlanesDeEstudios();
@@ -45,6 +47,7 @@ public class PlanDeEstudiosController {
   }
 
   @PutMapping("/{codigo}")
+  @PreAuthorize("hasRole('GESTION_ACADEMICA')")
   public ResponseEntity<?> modificarPlanDeEstudios(
       @PathVariable String codigo, @RequestBody PlanDeEstudiosRequestDTO planDeEstudiosRequestDTO) {
     PlanDeEstudiosResponseDTO resultado =
@@ -53,6 +56,7 @@ public class PlanDeEstudiosController {
   }
 
   @DeleteMapping("/{codigo}")
+  @PreAuthorize("hasRole('GESTION_ACADEMICA')")
   public ResponseEntity<?> eliminarPlanDeEstudios(@PathVariable String codigo) {
     planDeEstudiosService.eliminarPlanDeEstudios(codigo);
     return ResponseEntity.status(HttpStatus.OK)

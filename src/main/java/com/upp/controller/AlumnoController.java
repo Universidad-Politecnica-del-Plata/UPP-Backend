@@ -38,6 +38,12 @@ public class AlumnoController {
     return ResponseEntity.ok(alumnos);
   }
 
+  @GetMapping("/activos")
+  public ResponseEntity<List<AlumnoDTO>> obtenerAlumnosActivos() {
+    List<AlumnoDTO> alumnosActivos = alumnoService.obtenerAlumnosActivos();
+    return ResponseEntity.ok(alumnosActivos);
+  }
+
   @GetMapping("/{matricula}")
   public ResponseEntity<?> obtenerAlumnoPorMatricula(@PathVariable Long matricula) {
     AlumnoDTO alumno = alumnoService.obtenerAlumnoPorMatricula(matricula);

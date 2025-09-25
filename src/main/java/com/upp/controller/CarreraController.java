@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/carreras")
-@PreAuthorize("hasRole('GESTION_ACADEMICA')")
 public class CarreraController {
   private final CarreraService carreraService;
 
@@ -21,12 +20,14 @@ public class CarreraController {
   }
 
   @PostMapping
+  @PreAuthorize("hasRole('GESTION_ACADEMICA')")
   public ResponseEntity<?> crearCarrera(@Valid @RequestBody CarreraDTO carreraDTO) {
     CarreraDTO resultado = carreraService.crearCarrera(carreraDTO);
     return ResponseEntity.status(HttpStatus.CREATED).body(resultado);
   }
 
   @PutMapping("/{codigo}")
+  @PreAuthorize("hasRole('GESTION_ACADEMICA')")
   public ResponseEntity<?> modificarCarrera(
       @PathVariable String codigo, @RequestBody CarreraDTO carreraDTO) {
     CarreraDTO resultado = carreraService.modificarCarrera(codigo, carreraDTO);
@@ -34,6 +35,7 @@ public class CarreraController {
   }
 
   @DeleteMapping("/{codigo}")
+  @PreAuthorize("hasRole('GESTION_ACADEMICA')")
   public ResponseEntity<?> eliminarCarrera(@PathVariable String codigo) {
     carreraService.eliminarCarrera(codigo);
     return ResponseEntity.status(HttpStatus.OK)
@@ -41,12 +43,14 @@ public class CarreraController {
   }
 
   @GetMapping("/{codigo}")
+  @PreAuthorize("hasRole('GESTION_ACADEMICA') or hasRole('GESTION_ESTUDIANTIL')")
   public ResponseEntity<?> obtenerCarreraPorCodigo(@PathVariable String codigo) {
     CarreraDTO carrera = carreraService.obtenerCarreraPorCodigo(codigo);
     return ResponseEntity.status(HttpStatus.OK).body(carrera);
   }
 
   @GetMapping
+  @PreAuthorize("hasRole('GESTION_ACADEMICA') or hasRole('GESTION_ESTUDIANTIL')")
   public ResponseEntity<List<CarreraDTO>> obtenerTodasLasCarreras() {
     List<CarreraDTO> carreras = carreraService.obtenerTodasLasCarreras();
 
