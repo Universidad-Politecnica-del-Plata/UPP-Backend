@@ -3,6 +3,7 @@ package com.upp.service;
 import com.upp.dto.PlanDeEstudiosRequestDTO;
 import com.upp.dto.PlanDeEstudiosResponseDTO;
 import com.upp.exception.MateriaNoExisteException;
+import com.upp.exception.PlanConMateriasException;
 import com.upp.exception.PlanDeEstudiosExisteException;
 import com.upp.exception.PlanDeEstudiosNoExisteException;
 import com.upp.model.Materia;
@@ -47,7 +48,10 @@ public class PlanDeEstudiosService {
         planDeEstudios.getFechaEntradaEnVigencia(),
         planDeEstudios.getFechaVencimiento(),
         codigosMaterias,
-        planDeEstudios.getCreditosObligatorios());
+        planDeEstudios.getCreditosObligatorios(),
+        planDeEstudios.getCarrera() != null
+            ? planDeEstudios.getCarrera().getCodigoDeCarrera()
+            : null);
   }
 
   public PlanDeEstudiosResponseDTO obtenerPlanDeEstudiosPorCodigo(String codigo) {
@@ -67,7 +71,10 @@ public class PlanDeEstudiosService {
         planDeEstudios.getFechaEntradaEnVigencia(),
         planDeEstudios.getFechaVencimiento(),
         codigosMaterias,
-        planDeEstudios.getCreditosObligatorios());
+        planDeEstudios.getCreditosObligatorios(),
+        planDeEstudios.getCarrera() != null
+            ? planDeEstudios.getCarrera().getCodigoDeCarrera()
+            : null);
   }
 
   private ArrayList<Materia> obtenerMaterias(PlanDeEstudiosRequestDTO planDeEstudiosRequestDTO) {
@@ -96,7 +103,10 @@ public class PlanDeEstudiosService {
                         planDeEstudios.getFechaEntradaEnVigencia(),
                         planDeEstudios.getFechaVencimiento(),
                         planDeEstudios.getCodigosMaterias(),
-                        planDeEstudios.getCreditosObligatorios()))
+                        planDeEstudios.getCreditosObligatorios(),
+                        planDeEstudios.getCarrera() != null
+                            ? planDeEstudios.getCarrera().getCodigoDeCarrera()
+                            : null))
             .toList();
 
     return planesDeEstudios;
@@ -130,7 +140,10 @@ public class PlanDeEstudiosService {
         planDeEstudios.getFechaEntradaEnVigencia(),
         planDeEstudios.getFechaVencimiento(),
         codigosMaterias,
-        planDeEstudios.getCreditosObligatorios());
+        planDeEstudios.getCreditosObligatorios(),
+        planDeEstudios.getCarrera() != null
+            ? planDeEstudios.getCarrera().getCodigoDeCarrera()
+            : null);
   }
 
   public void eliminarPlanDeEstudios(String codigo) {
@@ -142,8 +155,12 @@ public class PlanDeEstudiosService {
     }
 
     PlanDeEstudios planDeEstudios = planDeEstudiosOpt.get();
+
+    // Validar que no tenga materias
+    if (planDeEstudios.getMaterias() != null && !planDeEstudios.getMaterias().isEmpty()) {
+      throw new PlanConMateriasException("No se puede eliminar: el plan tiene materias asociadas");
+    }
+
     planDeEstudiosRepository.delete(planDeEstudios);
-    //    TODO: Cuando se implemente Carrera, cuando se elimine plan de estudios eliminarlo tambien
-    // de carrera
   }
 }

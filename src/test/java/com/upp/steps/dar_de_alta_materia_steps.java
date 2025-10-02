@@ -94,6 +94,8 @@ public class dar_de_alta_materia_steps {
             creditosOtorga,
             creditosNecesarios,
             TipoMateria.valueOf(tipoMateria.toUpperCase()),
+            null, // cuatrimestre
+            null, // codigoPlanDeEstudios
             listaDeCorrelativas);
 
     this.result =
@@ -118,11 +120,7 @@ public class dar_de_alta_materia_steps {
       Rol rolGestion =
           rolRepository
               .findById("ROLE_GESTION_ACADEMICA")
-              .orElseGet(
-                  () -> {
-                    Rol nuevo = new Rol("ROLE_GESTION_ACADEMICA");
-                    return rolRepository.save(nuevo);
-                  });
+              .orElseThrow(() -> new RuntimeException("ROLE_GESTION_ACADEMICA no encontrado"));
 
       Usuario usuarioExistente = usuarioRepository.findByUsername("admin_gestion").orElse(null);
 

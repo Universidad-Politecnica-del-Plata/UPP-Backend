@@ -6,6 +6,7 @@ import com.upp.dto.PlanDeEstudiosRequestDTO;
 import com.upp.dto.PlanDeEstudiosResponseDTO;
 import com.upp.steps.shared.TokenHolder;
 import io.cucumber.java.ast.Cuando;
+import io.cucumber.java.es.Dado;
 import io.cucumber.java.es.Entonces;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -77,5 +78,25 @@ public class dar_de_alta_plan_de_estudios_steps {
   @Entonces("no se registra el plan de estudios exitosamente")
   public void noSeRegistraElPlanDeEstudiosExitosamente() {
     assertEquals(HttpStatus.CONFLICT, result.getStatus());
+  }
+
+  @Dado(
+      "que existe un plan de estudios con codigo {string}, fecha de entrada en vigencia {string}, fecha de vencimiento {string}, materias en el plan {string}, {string} y {string} y total de créditos optativos {int}")
+  public void queExisteUnPlanDeEstudios(
+      String codigoPlan,
+      String fechaVigencia,
+      String fechaVencimiento,
+      String codMateria1,
+      String codMateria2,
+      String codMateria3,
+      Integer creditosOptativos) {
+    this.darDeAltaPlanDeEstudios(
+        codigoPlan,
+        fechaVigencia,
+        fechaVencimiento,
+        codMateria1,
+        codMateria2,
+        codMateria3,
+        creditosOptativos);
   }
 }

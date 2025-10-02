@@ -42,11 +42,13 @@ public class MateriaTest {
     Materia analisisII = new Materia();
     analisisII.setCodigoDeMateria("124-M");
     analisisII.setNombre("Analisis II");
+    analisisII.setCuatrimestre(2);
     List<Materia> correlativas = new ArrayList<>();
     correlativas.add(analisisI);
     analisisII.setCorrelativas(correlativas);
 
     assertNotNull(analisisII.getCorrelativas());
     assertEquals("123-M", analisisII.getCorrelativas().get(0).getCodigoDeMateria());
+    assertEquals(Integer.valueOf(2), analisisII.getCuatrimestre());
   }
 }

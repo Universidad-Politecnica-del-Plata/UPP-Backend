@@ -32,7 +32,13 @@ public class Materia {
   @NotNull
   private TipoMateria tipo;
 
-  @ManyToMany
+  @Column private Integer cuatrimestre;
+
+  @ManyToOne
+  @JoinColumn(name = "plan_de_estudios_codigo")
+  private PlanDeEstudios planDeEstudios;
+
+  @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   @JoinTable(
       name = "materia_correlativas",
       joinColumns = @JoinColumn(name = "materia_codigo_de_materia"),

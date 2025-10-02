@@ -4,11 +4,12 @@ import com.upp.dto.UsuarioDTO;
 import com.upp.security.JwtTokenProvider;
 import com.upp.service.CustomUserDetailsService;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -30,29 +31,25 @@ public class AuthController {
 
   @PostMapping("/login")
   public ResponseEntity<?> login(@RequestBody Map<String, String> loginData) {
-    try {
-      String username = loginData.get("username");
-      String password = loginData.get("password");
+    String username = loginData.get("username");
+    String password = loginData.get("password");
 
-      Authentication authentication =
-          authenticationManager.authenticate(
-              new UsernamePasswordAuthenticationToken(username, password));
+    Authentication authentication =
+        authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(username, password));
 
-      String token = jwtTokenProvider.generarToken(username);
-      return ResponseEntity.ok(Map.of("token", token));
+    var roles =
+        authentication.getAuthorities().stream()
+            .map(GrantedAuthority::getAuthority)
+            .collect(Collectors.toList());
 
-    } catch (AuthenticationException e) {
-      return ResponseEntity.status(401).body("Credenciales inválidas");
-    }
+    String token = jwtTokenProvider.generarToken(username, roles);
+    return ResponseEntity.ok(Map.of("token", token));
   }
 
   @PostMapping("/register")
   public ResponseEntity<?> register(@RequestBody UsuarioDTO dto) {
-    try {
-      userDetailsService.crearUsuario(dto);
-      return ResponseEntity.status(201).body("Usuario creado exitosamente");
-    } catch (RuntimeException e) {
-      return ResponseEntity.status(400).body(e.getMessage());
-    }
+    userDetailsService.crearUsuario(dto);
+    return ResponseEntity.status(201).body("Usuario creado exitosamente");
   }
 }

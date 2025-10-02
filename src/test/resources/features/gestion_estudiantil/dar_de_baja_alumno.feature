@@ -1,10 +1,19 @@
 #language: es
-@todo
 Característica: Dar de baja alumno
+  Antecedentes:
+    Dado que hay un gestor estudiantil logueado
 
-  Escenario: : Dar de baja alumno es exitoso
-    Dado que existe un responsable de Gestión Estudiantil
-    Y existe un alumno con "número de matrícula", "DNI", "apellido", "nombre", "dirección", "teléfonos", "email", "fecha de nacimiento", "fecha de ingreso", "fecha de egreso", "carreras que cursa" y "planes de estudio de la carrera"
-    Cuando se da de baja el alumno
-    Entonces se elimina el registro del alumno
+  Escenario: Dar de baja alumno exitosamente
+    Dado existe un alumno con matrícula 100001
+    Cuando se da de baja el alumno con matrícula 100001
+    Entonces se da de baja el alumno exitosamente
+    Y el alumno con matrícula 100001 está inhabilitado
 
+  Escenario: Error al dar de baja alumno que no existe
+    Cuando se intenta dar de baja el alumno con matrícula 999999
+    Entonces no se puede dar de baja el alumno
+
+  Escenario: Verificar que la baja es lógica (no elimina físicamente)
+    Y existe un alumno con matrícula 100001
+    Cuando se da de baja el alumno con matrícula 100001
+    Entonces el alumno con matrícula 100001 sigue existiendo en el sistema pero inhabilitado

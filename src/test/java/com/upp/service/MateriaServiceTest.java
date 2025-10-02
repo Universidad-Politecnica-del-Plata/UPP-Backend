@@ -57,6 +57,8 @@ public class MateriaServiceTest {
     dto.setCreditosQueOtorga(4);
     dto.setCreditosNecesarios(0);
     dto.setTipo(TipoMateria.OBLIGATORIA);
+    dto.setCuatrimestre(1);
+    dto.setCodigoPlanDeEstudios("P-2025");
     dto.setCodigosCorrelativas(Arrays.asList("MAT100"));
 
     // Mock: el código NO existe
@@ -116,6 +118,8 @@ public class MateriaServiceTest {
             8,
             0,
             TipoMateria.OBLIGATORIA,
+            2,
+            "P-2025",
             Arrays.asList("MAT100"));
 
     when(materiaRepository.findByCodigoDeMateria("MAT101")).thenReturn(Optional.of(existente));
@@ -140,7 +144,8 @@ public class MateriaServiceTest {
     when(materiaRepository.findByCodigoDeMateria("INEXISTENTE")).thenReturn(Optional.empty());
 
     MateriaDTO dto =
-        new MateriaDTO("INEXISTENTE", "Nombre", "Cont", 4, 0, TipoMateria.OPTATIVA, null);
+        new MateriaDTO(
+            "INEXISTENTE", "Nombre", "Cont", 4, 0, TipoMateria.OPTATIVA, null, null, null);
 
     assertThrows(
         MateriaNoExisteException.class, () -> materiaService.modificarMateria("INEXISTENTE", dto));
@@ -230,6 +235,8 @@ public class MateriaServiceTest {
     assertEquals(6, dto.getCreditosQueOtorga());
     assertEquals(12, dto.getCreditosNecesarios());
     assertEquals(TipoMateria.OBLIGATORIA, dto.getTipo());
+    assertNull(dto.getCuatrimestre());
+    assertNull(dto.getCodigoPlanDeEstudios());
     assertEquals(List.of("MAT001"), dto.getCodigosCorrelativas());
   }
 
@@ -266,6 +273,8 @@ public class MateriaServiceTest {
     assertEquals(6, dto1.getCreditosQueOtorga());
     assertEquals(12, dto1.getCreditosNecesarios());
     assertEquals(TipoMateria.OBLIGATORIA, dto1.getTipo());
+    assertNull(dto1.getCuatrimestre());
+    assertNull(dto1.getCodigoPlanDeEstudios());
 
     MateriaDTO dto2 = resultado.get(1);
     assertEquals("FIS202", dto2.getCodigoDeMateria());
@@ -274,6 +283,8 @@ public class MateriaServiceTest {
     assertEquals(5, dto2.getCreditosQueOtorga());
     assertEquals(10, dto2.getCreditosNecesarios());
     assertEquals(TipoMateria.OPTATIVA, dto2.getTipo());
+    assertNull(dto2.getCuatrimestre());
+    assertNull(dto2.getCodigoPlanDeEstudios());
   }
 
   @Test
