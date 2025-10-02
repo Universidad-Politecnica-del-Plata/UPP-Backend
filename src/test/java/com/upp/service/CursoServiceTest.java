@@ -1,0 +1,206 @@
+package com.upp.service;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+import com.upp.dto.CursoDTO;
+import com.upp.exception.CursoExisteException;
+import com.upp.exception.CursoNoExisteException;
+import com.upp.exception.MateriaNoExisteException;
+import com.upp.model.Curso;
+import com.upp.model.Materia;
+import com.upp.model.TipoMateria;
+import com.upp.repository.CursoRepository;
+import com.upp.repository.MateriaRepository;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+@ExtendWith(MockitoExtension.class)
+class CursoServiceTest {
+
+  @Mock private CursoRepository cursoRepository;
+
+  @Mock private MateriaRepository materiaRepository;
+
+  @InjectMocks private CursoService cursoService;
+
+  private CursoDTO cursoDTO;
+  private Curso curso;
+  private Materia materia;
+
+  @BeforeEach
+  void setUp() {
+    materia =
+        new Materia(
+            "123-M",
+            "Análisis I",
+            "Funciones y límites",
+            8,
+            0,
+            TipoMateria.OBLIGATORIA);
+
+    cursoDTO = new CursoDTO("CURSO-001", 30, "123-M");
+
+    curso = new Curso("CURSO-001", 30, materia);
+  }
+
+  @Test
+  void crearCurso_Exitoso() {
+    when(cursoRepository.existsByCodigo("CURSO-001")).thenReturn(false);
+    when(materiaRepository.findByCodigoDeMateria("123-M")).thenReturn(Optional.of(materia));
+    when(cursoRepository.save(any(Curso.class))).thenReturn(curso);
+
+    CursoDTO resultado = cursoService.crearCurso(cursoDTO);
+
+    assertNotNull(resultado);
+    assertEquals("CURSO-001", resultado.getCodigo());
+    assertEquals(30, resultado.getMaximoDeAlumnos());
+    assertEquals("123-M", resultado.getCodigoMateria());
+    verify(cursoRepository).save(any(Curso.class));
+  }
+
+  @Test
+  void crearCurso_YaExiste_LanzaExcepcion() {
+    when(cursoRepository.existsByCodigo("CURSO-001")).thenReturn(true);
+
+    assertThrows(CursoExisteException.class, () -> cursoService.crearCurso(cursoDTO));
+
+    verify(cursoRepository, never()).save(any(Curso.class));
+  }
+
+  @Test
+  void crearCurso_MateriaNoExiste_LanzaExcepcion() {
+    when(cursoRepository.existsByCodigo("CURSO-001")).thenReturn(false);
+    when(materiaRepository.findByCodigoDeMateria("123-M")).thenReturn(Optional.empty());
+
+    assertThrows(MateriaNoExisteException.class, () -> cursoService.crearCurso(cursoDTO));
+
+    verify(cursoRepository, never()).save(any(Curso.class));
+  }
+
+  @Test
+  void obtenerCursoPorCodigo_Exitoso() {
+    when(cursoRepository.findByCodigo("CURSO-001")).thenReturn(Optional.of(curso));
+
+    CursoDTO resultado = cursoService.obtenerCursoPorCodigo("CURSO-001");
+
+    assertNotNull(resultado);
+    assertEquals("CURSO-001", resultado.getCodigo());
+    assertEquals(30, resultado.getMaximoDeAlumnos());
+    assertEquals("123-M", resultado.getCodigoMateria());
+  }
+
+  @Test
+  void obtenerCursoPorCodigo_NoExiste_LanzaExcepcion() {
+    when(cursoRepository.findByCodigo("CURSO-001")).thenReturn(Optional.empty());
+
+    assertThrows(
+        CursoNoExisteException.class, () -> cursoService.obtenerCursoPorCodigo("CURSO-001"));
+  }
+
+  @Test
+  void obtenerTodosLosCursos_Exitoso() {
+    Materia materia2 =
+        new Materia(
+            "124-M",
+            "Análisis II",
+            "Derivadas e integrales",
+            8,
+            8,
+            TipoMateria.OBLIGATORIA);
+    Curso curso2 = new Curso("CURSO-002", 25, materia2);
+
+    when(cursoRepository.findAll()).thenReturn(Arrays.asList(curso, curso2));
+
+    List<CursoDTO> resultado = cursoService.obtenerTodosLosCursos();
+
+    assertNotNull(resultado);
+    assertEquals(2, resultado.size());
+    assertEquals("CURSO-001", resultado.get(0).getCodigo());
+    assertEquals("CURSO-002", resultado.get(1).getCodigo());
+  }
+
+  @Test
+  void modificarCurso_Exitoso() {
+    when(cursoRepository.findByCodigo("CURSO-001")).thenReturn(Optional.of(curso));
+    when(materiaRepository.findByCodigoDeMateria("123-M")).thenReturn(Optional.of(materia));
+    when(cursoRepository.save(any(Curso.class))).thenReturn(curso);
+
+    cursoDTO.setMaximoDeAlumnos(35);
+    CursoDTO resultado = cursoService.modificarCurso("CURSO-001", cursoDTO);
+
+    assertNotNull(resultado);
+    assertEquals(35, resultado.getMaximoDeAlumnos());
+    verify(cursoRepository).save(any(Curso.class));
+  }
+
+  @Test
+  void modificarCurso_NoExiste_LanzaExcepcion() {
+    when(cursoRepository.findByCodigo("CURSO-001")).thenReturn(Optional.empty());
+
+    assertThrows(
+        CursoNoExisteException.class, () -> cursoService.modificarCurso("CURSO-001", cursoDTO));
+
+    verify(cursoRepository, never()).save(any(Curso.class));
+  }
+
+  @Test
+  void modificarCurso_MateriaNoExiste_LanzaExcepcion() {
+    when(cursoRepository.findByCodigo("CURSO-001")).thenReturn(Optional.of(curso));
+    when(materiaRepository.findByCodigoDeMateria("123-M")).thenReturn(Optional.empty());
+
+    assertThrows(
+        MateriaNoExisteException.class, () -> cursoService.modificarCurso("CURSO-001", cursoDTO));
+
+    verify(cursoRepository, never()).save(any(Curso.class));
+  }
+
+  @Test
+  void eliminarCurso_Exitoso() {
+    when(cursoRepository.findByCodigo("CURSO-001")).thenReturn(Optional.of(curso));
+
+    assertDoesNotThrow(() -> cursoService.eliminarCurso("CURSO-001"));
+
+    verify(cursoRepository).delete(curso);
+  }
+
+  @Test
+  void eliminarCurso_NoExiste_LanzaExcepcion() {
+    when(cursoRepository.findByCodigo("CURSO-001")).thenReturn(Optional.empty());
+
+    assertThrows(CursoNoExisteException.class, () -> cursoService.eliminarCurso("CURSO-001"));
+
+    verify(cursoRepository, never()).delete(any(Curso.class));
+  }
+
+  @Test
+  void obtenerCursosPorMateria_Exitoso() {
+    when(materiaRepository.findByCodigoDeMateria("123-M")).thenReturn(Optional.of(materia));
+    when(cursoRepository.findByMateria(materia)).thenReturn(Arrays.asList(curso));
+
+    List<CursoDTO> resultado = cursoService.obtenerCursosPorMateria("123-M");
+
+    assertNotNull(resultado);
+    assertEquals(1, resultado.size());
+    assertEquals("CURSO-001", resultado.get(0).getCodigo());
+    assertEquals("123-M", resultado.get(0).getCodigoMateria());
+  }
+
+  @Test
+  void obtenerCursosPorMateria_MateriaNoExiste_LanzaExcepcion() {
+    when(materiaRepository.findByCodigoDeMateria("123-M")).thenReturn(Optional.empty());
+
+    assertThrows(
+        MateriaNoExisteException.class, () -> cursoService.obtenerCursosPorMateria("123-M"));
+
+    verify(cursoRepository, never()).findByMateria(any(Materia.class));
+  }
+}
