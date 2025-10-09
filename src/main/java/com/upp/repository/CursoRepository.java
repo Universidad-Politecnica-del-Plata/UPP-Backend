@@ -14,4 +14,6 @@ public interface CursoRepository extends JpaRepository<Curso, Long> {
   Optional<Curso> findByCodigo(String codigo);
 
   List<Curso> findByMateria(Materia materia);
+
+  List<Curso> findByCodigoIn(List<String> codigosCursos);
 }

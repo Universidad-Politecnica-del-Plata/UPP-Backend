@@ -40,6 +40,15 @@ public class CuatrimestreService {
         cuatrimestreDTO.getFechaInicioPeriodoIntegradores(),
         cuatrimestreDTO.getFechaFinPeriodoIntegradores());
 
+    // Asignar cursos si vienen en el DTO
+    if (cuatrimestreDTO.getCodigosCursos() != null && !cuatrimestreDTO.getCodigosCursos().isEmpty()) {
+      List<Curso> cursos = cursoRepository.findByCodigoIn(cuatrimestreDTO.getCodigosCursos());
+      for (Curso curso : cursos) {
+        curso.getCuatrimestres().add(cuatrimestre);
+        cuatrimestre.getCursos().add(curso);
+      }
+    }
+
     cuatrimestreRepository.save(cuatrimestre);
 
     return cuatrimestreDTO;
@@ -61,6 +70,24 @@ public class CuatrimestreService {
     cuatrimestre.setFechaFinPeriodoDeInscripcion(cuatrimestreDTO.getFechaFinPeriodoDeInscripcion());
     cuatrimestre.setFechaInicioPeriodoIntegradores(cuatrimestreDTO.getFechaInicioPeriodoIntegradores());
     cuatrimestre.setFechaFinPeriodoIntegradores(cuatrimestreDTO.getFechaFinPeriodoIntegradores());
+
+    // Actualizar cursos si vienen en el DTO
+    if (cuatrimestreDTO.getCodigosCursos() != null) {
+      // Limpiar relaciones existentes
+      for (Curso curso : new ArrayList<>(cuatrimestre.getCursos())) {
+        curso.getCuatrimestres().remove(cuatrimestre);
+      }
+      cuatrimestre.getCursos().clear();
+
+      // Asignar nuevos cursos
+      if (!cuatrimestreDTO.getCodigosCursos().isEmpty()) {
+        List<Curso> cursos = cursoRepository.findByCodigoIn(cuatrimestreDTO.getCodigosCursos());
+        for (Curso curso : cursos) {
+          curso.getCuatrimestres().add(cuatrimestre);
+          cuatrimestre.getCursos().add(curso);
+        }
+      }
+    }
 
     cuatrimestreRepository.save(cuatrimestre);
     return cuatrimestreDTO;
