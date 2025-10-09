@@ -5,9 +5,12 @@ Característica: Modificar datos de un curso
     Y que existe una materia con el código de materia "125-M" y nombre "Cálculo I"
     Y que existe una materia con el código de materia "126-M" y nombre "Física I"
     Y que hay un gestor de planificacion logueado
+    Y que existe un cuatrimestre con código "2024-1"
+    Y que existe un cuatrimestre con código "2024-2"
+    Y que existe un cuatrimestre con código "2024-3"
     Y se registra un nuevo curso con código "CURSO-MOD-01", máximo de alumnos 25 y materia "125-M"
-    Y se registra un nuevo curso con código "CURSO-MOD-02", máximo de alumnos 30 y materia "126-M"
-
+    Y se registra un nuevo curso con código "CURSO-MOD-02", máximo de alumnos 30, materia "126-M" y cuatrimestres "2024-1"
+    Y se registra un nuevo curso con código "CURSO-MOD-03", máximo de alumnos 35, materia "125-M" y cuatrimestres "2024-1,2024-2"
 
   Escenario: Modificar máximo de alumnos de un curso es exitoso
     Cuando se modifica el curso con código "CURSO-MOD-01", máximo de alumnos 35 y materia "125-M"
@@ -19,10 +22,26 @@ Característica: Modificar datos de un curso
     Entonces se actualiza la información del curso "CURSO-MOD-02" exitosamente
     Y el curso "CURSO-MOD-02" tiene máximo de alumnos 30 y materia "126-M"
 
+  Escenario: Modificar cuatrimestres de un curso es exitoso
+    Cuando se modifica el curso con código "CURSO-MOD-01", máximo de alumnos 25, materia "125-M" y cuatrimestres "2024-2"
+    Entonces se actualiza la información del curso "CURSO-MOD-01" exitosamente
+    Y el curso "CURSO-MOD-01" está asignado al cuatrimestre "2024-2"
+
+  Escenario: Modificar curso agregando múltiples cuatrimestres es exitoso
+    Cuando se modifica el curso con código "CURSO-MOD-02", máximo de alumnos 30, materia "126-M" y cuatrimestres "2024-1,2024-3"
+    Entonces se actualiza la información del curso "CURSO-MOD-02" exitosamente
+    Y el curso "CURSO-MOD-02" está asignado a los cuatrimestres "2024-1,2024-3"
+
+  Escenario: Modificar curso removiendo cuatrimestres es exitoso
+    Cuando se modifica el curso con código "CURSO-MOD-03", máximo de alumnos 35 y materia "125-M"
+    Entonces se actualiza la información del curso "CURSO-MOD-03" exitosamente
+    Y el curso "CURSO-MOD-03" no tiene cuatrimestres asignados
+
   Escenario: Modificar todos los datos de un curso es exitoso
-    Cuando se modifica el curso con código "CURSO-MOD-01", máximo de alumnos 40 y materia "126-M"
+    Cuando se modifica el curso con código "CURSO-MOD-01", máximo de alumnos 40, materia "126-M" y cuatrimestres "2024-2,2024-3"
     Entonces se actualiza la información del curso "CURSO-MOD-01" exitosamente
     Y el curso "CURSO-MOD-01" tiene máximo de alumnos 40 y materia "126-M"
+    Y el curso "CURSO-MOD-01" está asignado a los cuatrimestres "2024-2,2024-3"
 
   Escenario: Modificar curso inexistente fracasa
     Cuando se modifica el curso con código "CURSO-INEXISTENTE", máximo de alumnos 20 y materia "125-M"
@@ -30,4 +49,8 @@ Característica: Modificar datos de un curso
 
   Escenario: Modificar curso con materia inexistente fracasa
     Cuando se modifica el curso con código "CURSO-MOD-01", máximo de alumnos 25 y materia "MATERIA-INEXISTENTE"
+    Entonces no se actualiza la información del curso exitosamente
+
+  Escenario: Modificar curso con cuatrimestre inexistente fracasa
+    Cuando se modifica el curso con código "CURSO-MOD-01", máximo de alumnos 25, materia "125-M" y cuatrimestres "2099-1"
     Entonces no se actualiza la información del curso exitosamente

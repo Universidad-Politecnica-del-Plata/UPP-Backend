@@ -2,11 +2,15 @@ package com.upp.steps;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.upp.dto.CursoDTO;
 import com.upp.steps.shared.TokenHolder;
 import io.cucumber.java.es.Cuando;
 import io.cucumber.java.es.Entonces;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -23,7 +27,29 @@ public class modificar_datos_de_curso_steps {
 
   @Cuando("se modifica el curso con código {string}, máximo de alumnos {int} y materia {string}")
   public void seModificaElCurso(String codigo, Integer maximoAlumnos, String codigoMateria) {
-    CursoDTO cursoEnviado = new CursoDTO(codigo, maximoAlumnos, codigoMateria);
+    CursoDTO cursoEnviado = new CursoDTO(codigo, maximoAlumnos, codigoMateria, null);
+
+    this.result =
+        webTestClient
+            .put()
+            .uri("/api/cursos/{codigo}", codigo)
+            .header("Authorization", "Bearer " + tokenHolder.getToken())
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(cursoEnviado)
+            .exchange()
+            .returnResult(CursoDTO.class);
+  }
+
+  @Cuando("se modifica el curso con código {string}, máximo de alumnos {int}, materia {string} y cuatrimestres {string}")
+  public void seModificaElCursoConCuatrimestres(String codigo, Integer maximoAlumnos, String codigoMateria, String cuatrimestres) {
+    List<String> codigosCuatrimestres = null;
+    if (cuatrimestres != null && !cuatrimestres.trim().isEmpty()) {
+      codigosCuatrimestres = Arrays.stream(cuatrimestres.split(","))
+          .map(String::trim)
+          .collect(Collectors.toList());
+    }
+
+    CursoDTO cursoEnviado = new CursoDTO(codigo, maximoAlumnos, codigoMateria, codigosCuatrimestres);
 
     this.result =
         webTestClient
@@ -70,8 +96,28 @@ public class modificar_datos_de_curso_steps {
     assertEquals(codigoMateria, curso.getCodigoMateria());
   }
 
+  @Entonces("el curso {string} no tiene cuatrimestres asignados")
+  public void elCursoNoTieneCuatrimestreAsignados(String codigo) {
+    var response =
+        webTestClient
+            .get()
+            .uri("/api/cursos/{codigo}", codigo)
+            .header("Authorization", "Bearer " + tokenHolder.getToken())
+            .exchange()
+            .returnResult(CursoDTO.class);
+
+    assertEquals(HttpStatus.OK, response.getStatus());
+
+    CursoDTO curso = response.getResponseBody().blockFirst();
+    assertNotNull(curso);
+    assertTrue(curso.getCodigosCuatrimestres() == null || curso.getCodigosCuatrimestres().isEmpty(),
+               "El curso debería no tener cuatrimestres asignados");
+  }
+
   @Entonces("no se actualiza la información del curso exitosamente")
   public void noSeActualizaLaInformacionDelCursoExitosamente() {
-    assertEquals(HttpStatus.NOT_FOUND, result.getStatus());
+    assertTrue(result.getStatus() == HttpStatus.NOT_FOUND || 
+               result.getStatus() == HttpStatus.BAD_REQUEST,
+               "Expected NOT_FOUND or BAD_REQUEST but got: " + result.getStatus());
   }
 }

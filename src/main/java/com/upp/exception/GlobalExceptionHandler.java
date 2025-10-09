@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler({
     CarreraConPlanesException.class,
     CarreraConAlumnosException.class,
-    PlanConMateriasException.class
+    PlanConMateriasException.class,
   })
   public ResponseEntity<Map<String, String>> handleDeletionConstraintExceptions(
       RuntimeException ex) {
@@ -42,6 +42,7 @@ public class GlobalExceptionHandler {
     MateriaNoExisteException.class,
     AlumnoNoExisteException.class,
     CursoNoExisteException.class,
+    CuatrimestreNoExisteException.class,
   })
   public ResponseEntity<Map<String, String>> handleEntityNotFoundExceptions(RuntimeException ex) {
     Map<String, String> error = new HashMap<>();
@@ -55,6 +56,7 @@ public class GlobalExceptionHandler {
     MateriaExisteException.class,
     AlumnoExisteException.class,
     CursoExisteException.class,
+    CuatrimestreExisteException.class,
   })
   public ResponseEntity<Map<String, String>> handleEntityAlreadyExistsExceptions(
       RuntimeException ex) {

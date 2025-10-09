@@ -1,25 +1,32 @@
 package com.upp.service;
 
 import com.upp.dto.CursoDTO;
+import com.upp.exception.CuatrimestreNoExisteException;
 import com.upp.exception.CursoExisteException;
 import com.upp.exception.CursoNoExisteException;
 import com.upp.exception.MateriaNoExisteException;
 import com.upp.model.Curso;
 import com.upp.model.Materia;
+import com.upp.model.Cuatrimestre;
 import com.upp.repository.CursoRepository;
 import com.upp.repository.MateriaRepository;
+import com.upp.repository.CuatrimestreRepository;
 import java.util.List;
 import java.util.Optional;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CursoService {
   private final CursoRepository cursoRepository;
   private final MateriaRepository materiaRepository;
+  private final CuatrimestreRepository cuatrimestreRepository;
 
-  public CursoService(CursoRepository cursoRepository, MateriaRepository materiaRepository) {
+  public CursoService(CursoRepository cursoRepository, MateriaRepository materiaRepository, CuatrimestreRepository cuatrimestreRepository) {
     this.cursoRepository = cursoRepository;
     this.materiaRepository = materiaRepository;
+    this.cuatrimestreRepository = cuatrimestreRepository;
   }
 
   public CursoDTO crearCurso(CursoDTO cursoDTO) {
@@ -33,7 +40,16 @@ public class CursoService {
       throw new MateriaNoExisteException("No existe una materia con ese código.");
     }
 
-    Curso curso = new Curso(cursoDTO.getCodigo(), cursoDTO.getMaximoDeAlumnos(), materiaOpt.get());
+    List<Cuatrimestre> cuatrimestres = new ArrayList<>();
+    if (cursoDTO.getCodigosCuatrimestres() != null && !cursoDTO.getCodigosCuatrimestres().isEmpty()) {
+      cuatrimestres = cuatrimestreRepository.findByCodigoIn(cursoDTO.getCodigosCuatrimestres());
+    }
+
+    if (cursoDTO.getCodigosCuatrimestres() != null && cuatrimestres.size() != cursoDTO.getCodigosCuatrimestres().size() ){
+      throw new CuatrimestreNoExisteException("No existe un cuatrimestre con ese código.");
+    }
+    
+    Curso curso = new Curso(cursoDTO.getCodigo(), cursoDTO.getMaximoDeAlumnos(), materiaOpt.get(), cuatrimestres);
     cursoRepository.save(curso);
 
     return cursoDTO;
@@ -48,6 +64,17 @@ public class CursoService {
 
     Curso curso = cursoOpt.get();
     curso.setMaximoDeAlumnos(cursoDTO.getMaximoDeAlumnos());
+
+    List<Cuatrimestre> cuatrimestres = new ArrayList<>();
+    if (cursoDTO.getCodigosCuatrimestres() != null && !cursoDTO.getCodigosCuatrimestres().isEmpty()) {
+      cuatrimestres = cuatrimestreRepository.findByCodigoIn(cursoDTO.getCodigosCuatrimestres());
+    }
+
+    if (cursoDTO.getCodigosCuatrimestres() != null && cuatrimestres.size() != cursoDTO.getCodigosCuatrimestres().size() ){
+      throw new CuatrimestreNoExisteException("No existe un cuatrimestre con ese código.");
+    }
+
+    curso.setCuatrimestres(cuatrimestres);
 
     if (cursoDTO.getCodigoMateria() != null) {
       Optional<Materia> materiaOpt =
@@ -81,20 +108,30 @@ public class CursoService {
 
     Curso curso = cursoOpt.get();
 
+    List<String> codigosCuatrimestres = curso.getCuatrimestres().stream()
+        .map(Cuatrimestre::getCodigo)
+        .collect(Collectors.toList());
+        
     return new CursoDTO(
         curso.getCodigo(),
         curso.getMaximoDeAlumnos(),
-        curso.getMateria().getCodigoDeMateria());
+        curso.getMateria().getCodigoDeMateria(),
+        codigosCuatrimestres);
   }
 
   public List<CursoDTO> obtenerTodosLosCursos() {
     return cursoRepository.findAll().stream()
         .map(
-            curso ->
-                new CursoDTO(
+            curso -> {
+                List<String> codigosCuatrimestres = curso.getCuatrimestres().stream()
+                    .map(Cuatrimestre::getCodigo)
+                    .collect(Collectors.toList());
+                return new CursoDTO(
                     curso.getCodigo(),
                     curso.getMaximoDeAlumnos(),
-                    curso.getMateria().getCodigoDeMateria()))
+                    curso.getMateria().getCodigoDeMateria(),
+                    codigosCuatrimestres);
+            })
         .toList();
   }
 
@@ -106,11 +143,16 @@ public class CursoService {
 
     return cursoRepository.findByMateria(materiaOpt.get()).stream()
         .map(
-            curso ->
-                new CursoDTO(
+            curso -> {
+                List<String> codigosCuatrimestres = curso.getCuatrimestres().stream()
+                    .map(Cuatrimestre::getCodigo)
+                    .collect(Collectors.toList());
+                return new CursoDTO(
                     curso.getCodigo(),
                     curso.getMaximoDeAlumnos(),
-                    curso.getMateria().getCodigoDeMateria()))
+                    curso.getMateria().getCodigoDeMateria(),
+                    codigosCuatrimestres);
+            })
         .toList();
   }
 }
