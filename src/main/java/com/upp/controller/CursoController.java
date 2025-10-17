@@ -57,4 +57,11 @@ public class CursoController {
     List<CursoDTO> cursos = cursoService.obtenerCursosPorMateria(codigoMateria);
     return ResponseEntity.ok(cursos);
   }
+
+  @GetMapping("/planDeEstudios/{codigoPlan}")
+  @PreAuthorize("isAuthenticated()")
+  public ResponseEntity<List<CursoDTO>> obtenerCursosPorPlanDeEstudios(@PathVariable String codigoPlan) {
+    List<CursoDTO> cursos = cursoService.obtenerCursosPorPlanDeEstudios(codigoPlan);
+    return ResponseEntity.ok(cursos);
+  }
 }

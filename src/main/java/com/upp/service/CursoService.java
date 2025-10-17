@@ -5,12 +5,16 @@ import com.upp.exception.CuatrimestreNoExisteException;
 import com.upp.exception.CursoExisteException;
 import com.upp.exception.CursoNoExisteException;
 import com.upp.exception.MateriaNoExisteException;
+import com.upp.exception.PlanDeEstudiosNoExisteException;
 import com.upp.model.Curso;
 import com.upp.model.Materia;
 import com.upp.model.Cuatrimestre;
+import com.upp.model.PlanDeEstudios;
 import com.upp.repository.CursoRepository;
 import com.upp.repository.MateriaRepository;
 import com.upp.repository.CuatrimestreRepository;
+import com.upp.repository.PlanDeEstudiosRepository;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.ArrayList;
@@ -22,11 +26,13 @@ public class CursoService {
   private final CursoRepository cursoRepository;
   private final MateriaRepository materiaRepository;
   private final CuatrimestreRepository cuatrimestreRepository;
+  private final PlanDeEstudiosRepository planDeEstudiosRepository;
 
-  public CursoService(CursoRepository cursoRepository, MateriaRepository materiaRepository, CuatrimestreRepository cuatrimestreRepository) {
+  public CursoService(CursoRepository cursoRepository, MateriaRepository materiaRepository, CuatrimestreRepository cuatrimestreRepository, PlanDeEstudiosRepository planDeEstudiosRepository) {
     this.cursoRepository = cursoRepository;
     this.materiaRepository = materiaRepository;
     this.cuatrimestreRepository = cuatrimestreRepository;
+    this.planDeEstudiosRepository = planDeEstudiosRepository;
   }
 
   public CursoDTO crearCurso(CursoDTO cursoDTO) {
@@ -153,6 +159,36 @@ public class CursoService {
                     curso.getMateria().getCodigoDeMateria(),
                     codigosCuatrimestres);
             })
+        .toList();
+  }
+
+  public List<CursoDTO> obtenerCursosPorPlanDeEstudios(String codigoPlan) {
+    Optional<PlanDeEstudios> planOpt = planDeEstudiosRepository.findByCodigoDePlanDeEstudios(codigoPlan);
+    if (planOpt.isEmpty()) {
+      throw new PlanDeEstudiosNoExisteException("No existe un plan de estudios con ese código.");
+    }
+
+    PlanDeEstudios plan = planOpt.get();
+    List<String> codigosMaterias = plan.getCodigosMaterias();
+    
+    List<Materia> materias = materiaRepository.findByCodigoDeMateria_In(codigosMaterias);
+    
+    List<Cuatrimestre> cuatrimestresActuales = cuatrimestreRepository.findCuatrimestresActuales(LocalDate.now());
+    
+    return materias.stream()
+        .flatMap(materia -> cursoRepository.findByMateria(materia).stream())
+        .filter(curso -> curso.getCuatrimestres().stream()
+            .anyMatch(cuatrimestresActuales::contains))
+        .map(curso -> {
+          List<String> codigosCuatrimestres = curso.getCuatrimestres().stream()
+              .map(Cuatrimestre::getCodigo)
+              .collect(Collectors.toList());
+          return new CursoDTO(
+              curso.getCodigo(),
+              curso.getMaximoDeAlumnos(),
+              curso.getMateria().getCodigoDeMateria(),
+              codigosCuatrimestres);
+        })
         .toList();
   }
 }
