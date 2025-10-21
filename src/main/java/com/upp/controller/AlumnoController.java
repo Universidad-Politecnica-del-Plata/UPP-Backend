@@ -2,6 +2,7 @@ package com.upp.controller;
 
 import com.upp.dto.AlumnoDTO;
 import com.upp.service.AlumnoService;
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
@@ -62,5 +63,12 @@ public class AlumnoController {
     alumnoService.eliminarAlumno(matricula);
     return ResponseEntity.status(HttpStatus.OK)
         .body(Map.of("message", "Alumno dado de baja exitosamente"));
+  }
+
+  @GetMapping("/me")
+  @PreAuthorize("hasRole('ROLE_ALUMNO')")
+  public ResponseEntity<AlumnoDTO> obtenerAlumnoActual(Principal principal) {
+    AlumnoDTO alumnoActual = alumnoService.obtenerAlumnoActual(principal.getName());
+    return ResponseEntity.ok(alumnoActual);
   }
 }

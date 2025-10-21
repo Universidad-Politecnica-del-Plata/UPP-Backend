@@ -27,7 +27,7 @@ public class CarreraController {
   }
 
   @PutMapping("/{codigo}")
-  @PreAuthorize("hasRole('GESTION_ACADEMICA')")
+  @PreAuthorize("hasRole('GESTION_ACADEMICA') ")
   public ResponseEntity<?> modificarCarrera(
       @PathVariable String codigo, @RequestBody CarreraDTO carreraDTO) {
     CarreraDTO resultado = carreraService.modificarCarrera(codigo, carreraDTO);
@@ -43,7 +43,7 @@ public class CarreraController {
   }
 
   @GetMapping("/{codigo}")
-  @PreAuthorize("hasRole('GESTION_ACADEMICA') or hasRole('GESTION_ESTUDIANTIL')")
+  @PreAuthorize("hasRole('GESTION_ACADEMICA') or hasRole('GESTION_ESTUDIANTIL') or hasRole('ALUMNO')")
   public ResponseEntity<?> obtenerCarreraPorCodigo(@PathVariable String codigo) {
     CarreraDTO carrera = carreraService.obtenerCarreraPorCodigo(codigo);
     return ResponseEntity.status(HttpStatus.OK).body(carrera);

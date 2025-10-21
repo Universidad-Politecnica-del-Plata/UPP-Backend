@@ -44,14 +44,14 @@ public class MateriaController {
   }
 
   @GetMapping("/{codigo}")
-  @PreAuthorize("hasRole('GESTION_ACADEMICA')")
+  @PreAuthorize("hasRole('GESTION_ACADEMICA')  or hasRole('ALUMNO')")
   public ResponseEntity<?> obtenerMateriaPorCodigo(@PathVariable String codigo) {
     MateriaDTO materia = materiaService.obtenerMateriaPorCodigo(codigo);
     return ResponseEntity.status(HttpStatus.OK).body(materia);
   }
 
   @GetMapping
-  @PreAuthorize("hasRole('GESTION_ACADEMICA') or hasRole('GESTOR_DE_PLANIFICACION')")
+  @PreAuthorize("hasRole('GESTION_ACADEMICA') or hasRole('GESTOR_DE_PLANIFICACION') or hasRole('ALUMNO')")
   public ResponseEntity<List<MateriaDTO>> obtenerTodasLasMaterias() {
     List<MateriaDTO> materias = materiaService.obtenerTodasLasMaterias();
 
