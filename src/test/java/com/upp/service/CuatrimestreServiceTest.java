@@ -58,7 +58,7 @@ class CuatrimestreServiceTest {
   }
 
   @Test
-  void crearCuatrimestre_Exitoso() {
+  void crearCuatrimestreExitoso() {
     when(cuatrimestreRepository.existsById("2024-1")).thenReturn(false);
     when(cuatrimestreRepository.save(any(Cuatrimestre.class))).thenReturn(cuatrimestre);
 
@@ -76,7 +76,7 @@ class CuatrimestreServiceTest {
   }
 
   @Test
-  void crearCuatrimestre_YaExiste_LanzaExcepcion() {
+  void crearCuatrimestreYaExisteLanzaExcepcion() {
     when(cuatrimestreRepository.existsById("2024-1")).thenReturn(true);
 
     assertThrows(CuatrimestreExisteException.class, () -> cuatrimestreService.crearCuatrimestre(cuatrimestreDTO));
@@ -85,7 +85,7 @@ class CuatrimestreServiceTest {
   }
 
   @Test
-  void obtenerCuatrimestrePorCodigo_Exitoso() {
+  void obtenerCuatrimestrePorCodigoExitoso() {
     when(cuatrimestreRepository.findByCodigo("2024-1")).thenReturn(Optional.of(cuatrimestre));
 
     CuatrimestreDTO resultado = cuatrimestreService.obtenerCuatrimestrePorCodigo("2024-1");
@@ -98,7 +98,7 @@ class CuatrimestreServiceTest {
   }
 
   @Test
-  void obtenerCuatrimestrePorCodigo_NoExiste_LanzaExcepcion() {
+  void obtenerCuatrimestrePorCodigoNoExisteLanzaExcepcion() {
     when(cuatrimestreRepository.findByCodigo("2024-1")).thenReturn(Optional.empty());
 
     assertThrows(
@@ -106,7 +106,7 @@ class CuatrimestreServiceTest {
   }
 
   @Test
-  void obtenerTodosLosCuatrimestres_Exitoso() {
+  void obtenerTodosLosCuatrimestresExitoso() {
     Cuatrimestre cuatrimestre2 = new Cuatrimestre(
         "2024-2",
         LocalDate.of(2024, 8, 1),
@@ -129,7 +129,7 @@ class CuatrimestreServiceTest {
   }
 
   @Test
-  void modificarCuatrimestre_Exitoso() {
+  void modificarCuatrimestreExitoso() {
     when(cuatrimestreRepository.findByCodigo("2024-1")).thenReturn(Optional.of(cuatrimestre));
     when(cuatrimestreRepository.save(any(Cuatrimestre.class))).thenReturn(cuatrimestre);
 
@@ -142,7 +142,7 @@ class CuatrimestreServiceTest {
   }
 
   @Test
-  void modificarCuatrimestre_NoExiste_LanzaExcepcion() {
+  void modificarCuatrimestreNoExisteLanzaExcepcion() {
     when(cuatrimestreRepository.findByCodigo("2024-1")).thenReturn(Optional.empty());
 
     assertThrows(
@@ -152,7 +152,7 @@ class CuatrimestreServiceTest {
   }
 
   @Test
-  void eliminarCuatrimestre_Exitoso() {
+  void eliminarCuatrimestreExitoso() {
     when(cuatrimestreRepository.findByCodigo("2024-1")).thenReturn(Optional.of(cuatrimestre));
 
     assertDoesNotThrow(() -> cuatrimestreService.eliminarCuatrimestre("2024-1"));
@@ -161,7 +161,7 @@ class CuatrimestreServiceTest {
   }
 
   @Test
-  void eliminarCuatrimestre_NoExiste_LanzaExcepcion() {
+  void eliminarCuatrimestreNoExisteLanzaExcepcion() {
     when(cuatrimestreRepository.findByCodigo("2024-1")).thenReturn(Optional.empty());
 
     assertThrows(CuatrimestreNoExisteException.class, () -> cuatrimestreService.eliminarCuatrimestre("2024-1"));
@@ -170,7 +170,7 @@ class CuatrimestreServiceTest {
   }
 
   @Test
-  void obtenerCuatrimestreConCursos_Exitoso() {
+  void obtenerCuatrimestreConCursosExitoso() {
     // Setup de cursos asociados
     Curso curso1 = new Curso();
     curso1.setCodigo("CURSO-001");
@@ -193,7 +193,7 @@ class CuatrimestreServiceTest {
   }
 
   @Test
-  void obtenerCuatrimestreSinCursos_Exitoso() {
+  void obtenerCuatrimestreSinCursosExitoso() {
     cuatrimestre.setCursos(new ArrayList<>());
     when(cuatrimestreRepository.findByCodigo("2024-1")).thenReturn(Optional.of(cuatrimestre));
 
@@ -206,7 +206,7 @@ class CuatrimestreServiceTest {
   }
 
   @Test
-  void crearCuatrimestre_FechaInicioClasesPosteriorAFin_LanzaExcepcion() {
+  void crearCuatrimestre_FechaInicioClasesPosteriorAFinLanzaExcepcion() {
     CuatrimestreDTO cuatrimestreInvalido = new CuatrimestreDTO(
         "2024-1",
         LocalDate.of(2024, 7, 15), // Fecha de inicio POSTERIOR a fecha de fin
@@ -224,7 +224,7 @@ class CuatrimestreServiceTest {
   }
 
   @Test
-  void crearCuatrimestre_FechaInicioInscripcionPosteriorAFin_LanzaExcepcion() {
+  void crearCuatrimestre_FechaInicioInscripcionPosteriorAFinLanzaExcepcion() {
     CuatrimestreDTO cuatrimestreInvalido = new CuatrimestreDTO(
         "2024-1",
         LocalDate.of(2024, 3, 1),
@@ -242,7 +242,7 @@ class CuatrimestreServiceTest {
   }
 
   @Test
-  void crearCuatrimestre_FechaInicioIntegradoresPosteriorAFin_LanzaExcepcion() {
+  void crearCuatrimestreFechaInicioIntegradoresPosteriorAFinLanzaExcepcion() {
     CuatrimestreDTO cuatrimestreInvalido = new CuatrimestreDTO(
         "2024-1",
         LocalDate.of(2024, 3, 1),
@@ -260,7 +260,7 @@ class CuatrimestreServiceTest {
   }
 
   @Test
-  void crearCuatrimestre_InscripcionFinalizaDespuesDeInicioClases_LanzaExcepcion() {
+  void crearCuatrimestreInscripcionFinalizaDespuesDeInicioClasesLanzaExcepcion() {
     CuatrimestreDTO cuatrimestreInvalido = new CuatrimestreDTO(
         "2024-1",
         LocalDate.of(2024, 3, 1),
@@ -278,7 +278,7 @@ class CuatrimestreServiceTest {
   }
 
   @Test
-  void crearCuatrimestre_IntegradoresComenzanAntesDeFinClases_LanzaExcepcion() {
+  void crearCuatrimestreIntegradoresComenzanAntesDeFinClasesLanzaExcepcion() {
     CuatrimestreDTO cuatrimestreInvalido = new CuatrimestreDTO(
         "2024-1",
         LocalDate.of(2024, 3, 1),
@@ -296,7 +296,7 @@ class CuatrimestreServiceTest {
   }
 
   @Test
-  void modificarCuatrimestre_FechasInvalidas_LanzaExcepcion() {
+  void modificarCuatrimestreFechasInvalidasLanzaExcepcion() {
     when(cuatrimestreRepository.findByCodigo("2024-1")).thenReturn(Optional.of(cuatrimestre));
 
     CuatrimestreDTO cuatrimestreInvalido = new CuatrimestreDTO(

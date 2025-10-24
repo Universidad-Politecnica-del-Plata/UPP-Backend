@@ -55,6 +55,7 @@ public class consultar_cursos_disponibles_steps {
     assertTrue(result.getStatus().is4xxClientError() || result.getStatus().is5xxServerError());
   }
 
+
   private void configurarAutenticacionAlumno() {
     try {
       Rol rolAlumno = rolRepository

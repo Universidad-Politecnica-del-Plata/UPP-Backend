@@ -64,7 +64,7 @@ class CursoServiceTest {
   }
 
   @Test
-  void crearCurso_Exitoso() {
+  void crearCursoExitoso() {
     when(cursoRepository.existsByCodigo("CURSO-001")).thenReturn(false);
     when(materiaRepository.findByCodigoDeMateria("123-M")).thenReturn(Optional.of(materia));
     when(cursoRepository.save(any(Curso.class))).thenReturn(curso);
@@ -81,7 +81,7 @@ class CursoServiceTest {
   }
 
   @Test
-  void crearCurso_YaExiste_LanzaExcepcion() {
+  void crearCursoYaExisteLanzaExcepcion() {
     when(cursoRepository.existsByCodigo("CURSO-001")).thenReturn(true);
 
     assertThrows(CursoExisteException.class, () -> cursoService.crearCurso(cursoDTO));
@@ -90,7 +90,7 @@ class CursoServiceTest {
   }
 
   @Test
-  void crearCurso_MateriaNoExiste_LanzaExcepcion() {
+  void crearCursoMateriaNoExisteLanzaExcepcion() {
     when(cursoRepository.existsByCodigo("CURSO-001")).thenReturn(false);
     when(materiaRepository.findByCodigoDeMateria("123-M")).thenReturn(Optional.empty());
 
@@ -100,7 +100,7 @@ class CursoServiceTest {
   }
 
   @Test
-  void obtenerCursoPorCodigo_Exitoso() {
+  void obtenerCursoPorCodigoExitoso() {
     when(cursoRepository.findByCodigo("CURSO-001")).thenReturn(Optional.of(curso));
 
     CursoDTO resultado = cursoService.obtenerCursoPorCodigo("CURSO-001");
@@ -113,7 +113,7 @@ class CursoServiceTest {
   }
 
   @Test
-  void obtenerCursoPorCodigo_NoExiste_LanzaExcepcion() {
+  void obtenerCursoPorCodigoNoExisteLanzaExcepcion() {
     when(cursoRepository.findByCodigo("CURSO-001")).thenReturn(Optional.empty());
 
     assertThrows(
@@ -121,7 +121,7 @@ class CursoServiceTest {
   }
 
   @Test
-  void obtenerTodosLosCursos_Exitoso() {
+  void obtenerTodosLosCursosExitoso() {
     Materia materia2 =
         new Materia(
             "124-M",
@@ -145,7 +145,7 @@ class CursoServiceTest {
   }
 
   @Test
-  void modificarCurso_Exitoso() {
+  void modificarCursoExitoso() {
     when(cursoRepository.findByCodigo("CURSO-001")).thenReturn(Optional.of(curso));
     when(materiaRepository.findByCodigoDeMateria("123-M")).thenReturn(Optional.of(materia));
     when(cursoRepository.save(any(Curso.class))).thenReturn(curso);
@@ -159,7 +159,7 @@ class CursoServiceTest {
   }
 
   @Test
-  void modificarCurso_NoExiste_LanzaExcepcion() {
+  void modificarCursoNoExisteLanzaExcepcion() {
     when(cursoRepository.findByCodigo("CURSO-001")).thenReturn(Optional.empty());
 
     assertThrows(
@@ -169,7 +169,7 @@ class CursoServiceTest {
   }
 
   @Test
-  void modificarCurso_MateriaNoExiste_LanzaExcepcion() {
+  void modificarCursoMateriaNoExisteLanzaExcepcion() {
     when(cursoRepository.findByCodigo("CURSO-001")).thenReturn(Optional.of(curso));
     when(materiaRepository.findByCodigoDeMateria("123-M")).thenReturn(Optional.empty());
 
@@ -180,7 +180,7 @@ class CursoServiceTest {
   }
 
   @Test
-  void eliminarCurso_Exitoso() {
+  void eliminarCursoExitoso() {
     when(cursoRepository.findByCodigo("CURSO-001")).thenReturn(Optional.of(curso));
 
     assertDoesNotThrow(() -> cursoService.eliminarCurso("CURSO-001"));
@@ -189,7 +189,7 @@ class CursoServiceTest {
   }
 
   @Test
-  void eliminarCurso_NoExiste_LanzaExcepcion() {
+  void eliminarCursoNoExisteLanzaExcepcion() {
     when(cursoRepository.findByCodigo("CURSO-001")).thenReturn(Optional.empty());
 
     assertThrows(CursoNoExisteException.class, () -> cursoService.eliminarCurso("CURSO-001"));
@@ -198,7 +198,7 @@ class CursoServiceTest {
   }
 
   @Test
-  void obtenerCursosPorMateria_Exitoso() {
+  void obtenerCursosPorMateriaExitoso() {
     when(materiaRepository.findByCodigoDeMateria("123-M")).thenReturn(Optional.of(materia));
     when(cursoRepository.findByMateria(materia)).thenReturn(Arrays.asList(curso));
 
@@ -212,7 +212,7 @@ class CursoServiceTest {
   }
 
   @Test
-  void obtenerCursosPorMateria_MateriaNoExiste_LanzaExcepcion() {
+  void obtenerCursosPorMateriaMateriaNoExisteLanzaExcepcion() {
     when(materiaRepository.findByCodigoDeMateria("123-M")).thenReturn(Optional.empty());
 
     assertThrows(
