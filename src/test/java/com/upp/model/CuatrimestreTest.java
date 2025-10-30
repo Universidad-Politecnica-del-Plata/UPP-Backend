@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -14,7 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest
 @ActiveProfiles("test")
 public class CuatrimestreTest {
-  
+
   @Test
   void crearSinParametros() {
     new Cuatrimestre();
@@ -30,14 +30,15 @@ public class CuatrimestreTest {
     LocalDate fechaInicioIntegradores = LocalDate.of(2024, 7, 16);
     LocalDate fechaFinIntegradores = LocalDate.of(2024, 7, 31);
 
-    Cuatrimestre cuatrimestre = new Cuatrimestre(
-        codigo,
-        fechaInicioClases,
-        fechaFinClases,
-        fechaInicioInscripcion,
-        fechaFinInscripcion,
-        fechaInicioIntegradores,
-        fechaFinIntegradores);
+    Cuatrimestre cuatrimestre =
+        new Cuatrimestre(
+            codigo,
+            fechaInicioClases,
+            fechaFinClases,
+            fechaInicioInscripcion,
+            fechaFinInscripcion,
+            fechaInicioIntegradores,
+            fechaFinIntegradores);
 
     assertNotNull(cuatrimestre);
     assertEquals(codigo, cuatrimestre.getCodigo());
@@ -61,14 +62,15 @@ public class CuatrimestreTest {
     LocalDate fechaInicioIntegradores = LocalDate.of(2024, 12, 16);
     LocalDate fechaFinIntegradores = LocalDate.of(2024, 12, 31);
 
-    Cuatrimestre cuatrimestre = new Cuatrimestre(
-        codigo,
-        fechaInicioClases,
-        fechaFinClases,
-        fechaInicioInscripcion,
-        fechaFinInscripcion,
-        fechaInicioIntegradores,
-        fechaFinIntegradores);
+    Cuatrimestre cuatrimestre =
+        new Cuatrimestre(
+            codigo,
+            fechaInicioClases,
+            fechaFinClases,
+            fechaInicioInscripcion,
+            fechaFinInscripcion,
+            fechaInicioIntegradores,
+            fechaFinIntegradores);
 
     Materia materia = new Materia();
     materia.setCodigoDeMateria("123-M");
@@ -78,7 +80,7 @@ public class CuatrimestreTest {
     cuatrimestres.add(cuatrimestre);
 
     Curso curso = new Curso("CURSO-001", 30, materia, cuatrimestres);
-    
+
     List<Curso> cursos = new ArrayList<>();
     cursos.add(curso);
     cuatrimestre.setCursos(cursos);
@@ -91,7 +93,7 @@ public class CuatrimestreTest {
   @Test
   void verificarSettersYGetters() {
     Cuatrimestre cuatrimestre = new Cuatrimestre();
-    
+
     String codigo = "2025-1";
     LocalDate fechaInicioClases = LocalDate.of(2025, 3, 1);
     LocalDate fechaFinClases = LocalDate.of(2025, 7, 15);

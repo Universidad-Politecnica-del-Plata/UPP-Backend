@@ -40,16 +40,18 @@ public class modificar_datos_de_curso_steps {
             .returnResult(CursoDTO.class);
   }
 
-  @Cuando("se modifica el curso con código {string}, máximo de alumnos {int}, materia {string} y cuatrimestres {string}")
-  public void seModificaElCursoConCuatrimestres(String codigo, Integer maximoAlumnos, String codigoMateria, String cuatrimestres) {
+  @Cuando(
+      "se modifica el curso con código {string}, máximo de alumnos {int}, materia {string} y cuatrimestres {string}")
+  public void seModificaElCursoConCuatrimestres(
+      String codigo, Integer maximoAlumnos, String codigoMateria, String cuatrimestres) {
     List<String> codigosCuatrimestres = null;
     if (cuatrimestres != null && !cuatrimestres.trim().isEmpty()) {
-      codigosCuatrimestres = Arrays.stream(cuatrimestres.split(","))
-          .map(String::trim)
-          .collect(Collectors.toList());
+      codigosCuatrimestres =
+          Arrays.stream(cuatrimestres.split(",")).map(String::trim).collect(Collectors.toList());
     }
 
-    CursoDTO cursoEnviado = new CursoDTO(codigo, maximoAlumnos, codigoMateria, codigosCuatrimestres);
+    CursoDTO cursoEnviado =
+        new CursoDTO(codigo, maximoAlumnos, codigoMateria, codigosCuatrimestres);
 
     this.result =
         webTestClient
@@ -78,7 +80,8 @@ public class modificar_datos_de_curso_steps {
   }
 
   @Entonces("el curso {string} tiene máximo de alumnos {int} y materia {string}")
-  public void elCursoTieneLosDatosEsperados(String codigo, Integer maximoAlumnos, String codigoMateria) {
+  public void elCursoTieneLosDatosEsperados(
+      String codigo, Integer maximoAlumnos, String codigoMateria) {
     var response =
         webTestClient
             .get()
@@ -110,14 +113,15 @@ public class modificar_datos_de_curso_steps {
 
     CursoDTO curso = response.getResponseBody().blockFirst();
     assertNotNull(curso);
-    assertTrue(curso.getCodigosCuatrimestres() == null || curso.getCodigosCuatrimestres().isEmpty(),
-               "El curso debería no tener cuatrimestres asignados");
+    assertTrue(
+        curso.getCodigosCuatrimestres() == null || curso.getCodigosCuatrimestres().isEmpty(),
+        "El curso debería no tener cuatrimestres asignados");
   }
 
   @Entonces("no se actualiza la información del curso exitosamente")
   public void noSeActualizaLaInformacionDelCursoExitosamente() {
-    assertTrue(result.getStatus() == HttpStatus.NOT_FOUND || 
-               result.getStatus() == HttpStatus.BAD_REQUEST,
-               "Expected NOT_FOUND or BAD_REQUEST but got: " + result.getStatus());
+    assertTrue(
+        result.getStatus() == HttpStatus.NOT_FOUND || result.getStatus() == HttpStatus.BAD_REQUEST,
+        "Expected NOT_FOUND or BAD_REQUEST but got: " + result.getStatus());
   }
 }

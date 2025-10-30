@@ -1,20 +1,15 @@
 package com.upp.steps;
 
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import com.upp.dto.CuatrimestreDTO;
-import com.upp.model.Rol;
-import com.upp.model.Usuario;
 import com.upp.repository.RolRepository;
 import com.upp.repository.UsuarioRepository;
 import com.upp.steps.shared.TokenHolder;
 import io.cucumber.java.ast.Cuando;
-import io.cucumber.java.es.Dado;
 import io.cucumber.java.es.Entonces;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -31,20 +26,26 @@ public class dar_de_alta_cuatrimestre_steps {
 
   private FluxExchangeResult<CuatrimestreDTO> result;
 
+  @Cuando(
+      "se registra un nuevo cuatrimestre con código {string}, fecha de inicio de clases {string}, fecha de fin de clases {string}, fecha de inicio de inscripción {string}, fecha de fin de inscripción {string}, fecha de inicio de integradores {string} y fecha de fin de integradores {string}")
+  public void darDeAltaCuatrimestre(
+      String codigo,
+      String fechaInicioClases,
+      String fechaFinClases,
+      String fechaInicioInscripcion,
+      String fechaFinInscripcion,
+      String fechaInicioIntegradores,
+      String fechaFinIntegradores) {
 
-
-  @Cuando("se registra un nuevo cuatrimestre con código {string}, fecha de inicio de clases {string}, fecha de fin de clases {string}, fecha de inicio de inscripción {string}, fecha de fin de inscripción {string}, fecha de inicio de integradores {string} y fecha de fin de integradores {string}")
-  public void darDeAltaCuatrimestre(String codigo, String fechaInicioClases, String fechaFinClases, 
-      String fechaInicioInscripcion, String fechaFinInscripcion, String fechaInicioIntegradores, String fechaFinIntegradores) {
-    
-    CuatrimestreDTO cuatrimestreEnviado = new CuatrimestreDTO(
-        codigo,
-        LocalDate.parse(fechaInicioClases),
-        LocalDate.parse(fechaFinClases),
-        LocalDate.parse(fechaInicioInscripcion),
-        LocalDate.parse(fechaFinInscripcion),
-        LocalDate.parse(fechaInicioIntegradores),
-        LocalDate.parse(fechaFinIntegradores));
+    CuatrimestreDTO cuatrimestreEnviado =
+        new CuatrimestreDTO(
+            codigo,
+            LocalDate.parse(fechaInicioClases),
+            LocalDate.parse(fechaFinClases),
+            LocalDate.parse(fechaInicioInscripcion),
+            LocalDate.parse(fechaFinInscripcion),
+            LocalDate.parse(fechaInicioIntegradores),
+            LocalDate.parse(fechaFinIntegradores));
 
     this.result =
         webTestClient

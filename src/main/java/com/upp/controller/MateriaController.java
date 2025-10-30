@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/materias")
-
 public class MateriaController {
   private final MateriaService materiaService;
 
@@ -51,7 +50,8 @@ public class MateriaController {
   }
 
   @GetMapping
-  @PreAuthorize("hasRole('GESTION_ACADEMICA') or hasRole('GESTOR_DE_PLANIFICACION') or hasRole('ALUMNO')")
+  @PreAuthorize(
+      "hasRole('GESTION_ACADEMICA') or hasRole('GESTOR_DE_PLANIFICACION') or hasRole('ALUMNO')")
   public ResponseEntity<List<MateriaDTO>> obtenerTodasLasMaterias() {
     List<MateriaDTO> materias = materiaService.obtenerTodasLasMaterias();
 

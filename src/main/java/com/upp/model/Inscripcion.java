@@ -2,10 +2,10 @@ package com.upp.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -16,11 +16,9 @@ public class Inscripcion {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long codigoDeInscripcion;
 
-  @NotNull
-  private LocalDate fecha;
+  @NotNull private LocalDate fecha;
 
-  @NotNull
-  private LocalTime horario;
+  @NotNull private LocalTime horario;
 
   @ManyToOne
   @JoinColumn(name = "curso_codigo")

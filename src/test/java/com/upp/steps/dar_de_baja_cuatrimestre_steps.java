@@ -3,8 +3,8 @@ package com.upp.steps;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import com.upp.dto.CursoDTO;
 import com.upp.dto.CuatrimestreDTO;
+import com.upp.dto.CursoDTO;
 import com.upp.steps.shared.TokenHolder;
 import io.cucumber.java.es.Cuando;
 import io.cucumber.java.es.Entonces;
@@ -52,9 +52,8 @@ public class dar_de_baja_cuatrimestre_steps {
 
   @Entonces("los cursos {string} ya no tienen el cuatrimestre {string} asignado")
   public void losCursosYaNoTienenElCuatrimestreAsignado(String cursos, String codigoCuatrimestre) {
-    List<String> codigosCursos = Arrays.stream(cursos.split(","))
-        .map(String::trim)
-        .collect(Collectors.toList());
+    List<String> codigosCursos =
+        Arrays.stream(cursos.split(",")).map(String::trim).collect(Collectors.toList());
 
     for (String codigoCurso : codigosCursos) {
       var resultGetCurso =
@@ -69,8 +68,13 @@ public class dar_de_baja_cuatrimestre_steps {
 
       CursoDTO curso = resultGetCurso.getResponseBody().blockFirst();
       if (curso.getCodigosCuatrimestres() != null) {
-        assertFalse(curso.getCodigosCuatrimestres().contains(codigoCuatrimestre),
-                   "El curso " + codigoCurso + " no debería tener el cuatrimestre " + codigoCuatrimestre + " asignado");
+        assertFalse(
+            curso.getCodigosCuatrimestres().contains(codigoCuatrimestre),
+            "El curso "
+                + codigoCurso
+                + " no debería tener el cuatrimestre "
+                + codigoCuatrimestre
+                + " asignado");
       }
     }
   }
@@ -78,9 +82,10 @@ public class dar_de_baja_cuatrimestre_steps {
   @Entonces("no se elimina el cuatrimestre y se lanza error")
   public void noSeEliminaElCuatrimestreYSeLanzaError() {
     assertEquals(HttpStatus.NOT_FOUND, result.getStatus());
-    
+
     // Verificar que el cuatrimestre original aún existe si había sido creado previamente
-    if (codigoCuatrimestreOriginal != null && !codigoCuatrimestreOriginal.equals("CUATRIMESTRE-INEXISTENTE")) {
+    if (codigoCuatrimestreOriginal != null
+        && !codigoCuatrimestreOriginal.equals("CUATRIMESTRE-INEXISTENTE")) {
       var resultGetCuatrimestreOriginal =
           webTestClient
               .get()

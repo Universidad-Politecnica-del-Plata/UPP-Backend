@@ -2,37 +2,29 @@ package com.upp.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
 public class Cuatrimestre {
-  @Id
-  @NotNull
-  private String codigo;
+  @Id @NotNull private String codigo;
 
-  @NotNull
-  private LocalDate fechaDeInicioClases;
+  @NotNull private LocalDate fechaDeInicioClases;
 
-  @NotNull
-  private LocalDate fechaDeFinClases;
+  @NotNull private LocalDate fechaDeFinClases;
 
-  @NotNull
-  private LocalDate fechaInicioPeriodoDeInscripcion;
+  @NotNull private LocalDate fechaInicioPeriodoDeInscripcion;
 
-  @NotNull
-  private LocalDate fechaFinPeriodoDeInscripcion;
+  @NotNull private LocalDate fechaFinPeriodoDeInscripcion;
 
-  @NotNull
-  private LocalDate fechaInicioPeriodoIntegradores;
+  @NotNull private LocalDate fechaInicioPeriodoIntegradores;
 
-  @NotNull
-  private LocalDate fechaFinPeriodoIntegradores;
+  @NotNull private LocalDate fechaFinPeriodoIntegradores;
 
   @ManyToMany(mappedBy = "cuatrimestres")
   private List<Curso> cursos = new ArrayList<>();

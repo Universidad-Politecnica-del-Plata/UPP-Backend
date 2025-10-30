@@ -8,16 +8,16 @@ import com.upp.dto.CursoDTO;
 import com.upp.exception.CursoExisteException;
 import com.upp.exception.CursoNoExisteException;
 import com.upp.exception.MateriaNoExisteException;
+import com.upp.model.Cuatrimestre;
 import com.upp.model.Curso;
 import com.upp.model.Materia;
-import com.upp.model.Cuatrimestre;
 import com.upp.model.TipoMateria;
+import com.upp.repository.CuatrimestreRepository;
 import com.upp.repository.CursoRepository;
 import com.upp.repository.MateriaRepository;
-import com.upp.repository.CuatrimestreRepository;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ class CursoServiceTest {
   @Mock private CursoRepository cursoRepository;
 
   @Mock private MateriaRepository materiaRepository;
-  
+
   @Mock private CuatrimestreRepository cuatrimestreRepository;
 
   @InjectMocks private CursoService cursoService;
@@ -46,20 +46,14 @@ class CursoServiceTest {
   @BeforeEach
   void setUp() {
     materia =
-        new Materia(
-            "123-M",
-            "Análisis I",
-            "Funciones y límites",
-            8,
-            0,
-            TipoMateria.OBLIGATORIA);
+        new Materia("123-M", "Análisis I", "Funciones y límites", 8, 0, TipoMateria.OBLIGATORIA);
 
     cuatrimestres = new ArrayList<>();
 
     cuatrimestresId = new ArrayList<>();
 
     cursoDTO = new CursoDTO("CURSO-001", 30, "123-M", cuatrimestresId);
-    
+
     curso = new Curso("CURSO-001", 30, materia, cuatrimestres);
   }
 
@@ -124,12 +118,7 @@ class CursoServiceTest {
   void obtenerTodosLosCursosExitoso() {
     Materia materia2 =
         new Materia(
-            "124-M",
-            "Análisis II",
-            "Derivadas e integrales",
-            8,
-            8,
-            TipoMateria.OBLIGATORIA);
+            "124-M", "Análisis II", "Derivadas e integrales", 8, 8, TipoMateria.OBLIGATORIA);
     Curso curso2 = new Curso("CURSO-002", 25, materia2, new ArrayList<>());
 
     when(cursoRepository.findAll()).thenReturn(Arrays.asList(curso, curso2));

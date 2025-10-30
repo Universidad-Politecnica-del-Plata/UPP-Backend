@@ -4,10 +4,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -32,13 +32,14 @@ public class Curso {
       inverseJoinColumns = @JoinColumn(name = "cuatrimestre_codigo"))
   private List<Cuatrimestre> cuatrimestres = new ArrayList<>();
 
-  public Curso(String codigo, Integer maximoDeAlumnos, Materia materia, List<Cuatrimestre> cuatrimestres) {
+  public Curso(
+      String codigo, Integer maximoDeAlumnos, Materia materia, List<Cuatrimestre> cuatrimestres) {
     this.codigo = codigo;
     this.maximoDeAlumnos = maximoDeAlumnos;
     this.materia = materia;
     this.cuatrimestres = cuatrimestres != null ? cuatrimestres : new ArrayList<>();
   }
-  
+
   public Curso(String codigo, Integer maximoDeAlumnos, Materia materia) {
     this(codigo, maximoDeAlumnos, materia, new ArrayList<>());
   }

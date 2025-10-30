@@ -32,14 +32,14 @@ public class registrar_alumno_steps {
   @Cuando(
       "registra un nuevo alumno con DNI {long}, apellido {string}, nombre {string}, direccion {string}, telefono {string}, email {string}, fecha de nacimiento {string} y fecha de ingreso {string}")
   public void registraAlumnoConDatos(
-          Long dni,
-          String apellido,
-          String nombre,
-          String direccion,
-          String telefono,
-          String email,
-          String fechaNacimiento,
-          String fechaIngreso) {
+      Long dni,
+      String apellido,
+      String nombre,
+      String direccion,
+      String telefono,
+      String email,
+      String fechaNacimiento,
+      String fechaIngreso) {
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 

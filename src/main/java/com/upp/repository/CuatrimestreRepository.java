@@ -11,9 +11,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CuatrimestreRepository extends JpaRepository<Cuatrimestre, String> {
   Optional<Cuatrimestre> findByCodigo(String codigo);
-  
+
   List<Cuatrimestre> findByCodigoIn(List<String> codigos);
-  
-  @Query("SELECT c FROM Cuatrimestre c WHERE :fecha >= c.fechaInicioPeriodoDeInscripcion AND :fecha <= c.fechaFinPeriodoIntegradores")
+
+  @Query(
+      "SELECT c FROM Cuatrimestre c WHERE :fecha >= c.fechaInicioPeriodoDeInscripcion AND :fecha <= c.fechaFinPeriodoIntegradores")
   List<Cuatrimestre> findCuatrimestresActuales(LocalDate fecha);
 }

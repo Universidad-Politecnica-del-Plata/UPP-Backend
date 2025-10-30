@@ -43,7 +43,8 @@ public class CarreraController {
   }
 
   @GetMapping("/{codigo}")
-  @PreAuthorize("hasRole('GESTION_ACADEMICA') or hasRole('GESTION_ESTUDIANTIL') or hasRole('ALUMNO')")
+  @PreAuthorize(
+      "hasRole('GESTION_ACADEMICA') or hasRole('GESTION_ESTUDIANTIL') or hasRole('ALUMNO')")
   public ResponseEntity<?> obtenerCarreraPorCodigo(@PathVariable String codigo) {
     CarreraDTO carrera = carreraService.obtenerCarreraPorCodigo(codigo);
     return ResponseEntity.status(HttpStatus.OK).body(carrera);

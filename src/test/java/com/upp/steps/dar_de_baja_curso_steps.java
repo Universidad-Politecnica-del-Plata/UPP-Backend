@@ -3,8 +3,8 @@ package com.upp.steps;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import com.upp.dto.CursoDTO;
 import com.upp.dto.CuatrimestreDTO;
+import com.upp.dto.CursoDTO;
 import com.upp.steps.shared.TokenHolder;
 import io.cucumber.java.es.Cuando;
 import io.cucumber.java.es.Entonces;
@@ -52,9 +52,8 @@ public class dar_de_baja_curso_steps {
 
   @Entonces("los cuatrimestres {string} ya no tienen el curso {string} asignado")
   public void losCuatrimestreYaNoTienenElCursoAsignado(String cuatrimestres, String codigoCurso) {
-    List<String> codigosCuatrimestres = Arrays.stream(cuatrimestres.split(","))
-        .map(String::trim)
-        .collect(Collectors.toList());
+    List<String> codigosCuatrimestres =
+        Arrays.stream(cuatrimestres.split(",")).map(String::trim).collect(Collectors.toList());
 
     for (String codigoCuatrimestre : codigosCuatrimestres) {
       var resultGetCuatrimestre =
@@ -69,8 +68,13 @@ public class dar_de_baja_curso_steps {
 
       CuatrimestreDTO cuatrimestre = resultGetCuatrimestre.getResponseBody().blockFirst();
       if (cuatrimestre.getCodigosCursos() != null) {
-        assertFalse(cuatrimestre.getCodigosCursos().contains(codigoCurso),
-                   "El cuatrimestre " + codigoCuatrimestre + " no debería tener el curso " + codigoCurso + " asignado");
+        assertFalse(
+            cuatrimestre.getCodigosCursos().contains(codigoCurso),
+            "El cuatrimestre "
+                + codigoCuatrimestre
+                + " no debería tener el curso "
+                + codigoCurso
+                + " asignado");
       }
     }
   }
@@ -78,7 +82,7 @@ public class dar_de_baja_curso_steps {
   @Entonces("no se elimina el curso y se lanza error")
   public void noSeEliminaElCursoYSeLanzaError() {
     assertEquals(HttpStatus.NOT_FOUND, result.getStatus());
-    
+
     // Verificar que el curso original aún existe si había sido creado previamente
     if (codigoCursoOriginal != null && !codigoCursoOriginal.equals("CURSO-INEXISTENTE")) {
       var resultGetCursoOriginal =

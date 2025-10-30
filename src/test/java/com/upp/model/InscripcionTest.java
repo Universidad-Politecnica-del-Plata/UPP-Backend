@@ -36,10 +36,10 @@ public class InscripcionTest {
     assertEquals(alumno, inscripcion.getAlumno());
     assertNotNull(inscripcion.getFecha());
     assertNotNull(inscripcion.getHorario());
-    
+
     LocalDate fechaDespues = LocalDate.now();
     LocalTime horaDespues = LocalTime.now();
-    
+
     assertEquals(fechaAntes, inscripcion.getFecha());
     assertEquals(horaAntes.getHour(), inscripcion.getHorario().getHour());
     assertEquals(horaAntes.getMinute(), inscripcion.getHorario().getMinute());
@@ -48,7 +48,7 @@ public class InscripcionTest {
   @Test
   void testGettersYSetters() {
     Inscripcion inscripcion = new Inscripcion();
-    
+
     Long codigoDeInscripcion = 123L;
     LocalDate fecha = LocalDate.of(2024, 10, 24);
     LocalTime horario = LocalTime.of(14, 30);

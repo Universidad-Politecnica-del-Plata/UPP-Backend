@@ -11,6 +11,6 @@ public interface MateriaRepository extends JpaRepository<Materia, Long> {
   boolean existsByCodigoDeMateria(String codigoDeMateria);
 
   Optional<Materia> findByCodigoDeMateria(String cod);
-  
+
   List<Materia> findByCodigoDeMateria_In(List<String> codigosMaterias);
 }

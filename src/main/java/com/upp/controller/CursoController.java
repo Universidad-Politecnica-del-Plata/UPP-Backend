@@ -53,14 +53,16 @@ public class CursoController {
   }
 
   @GetMapping("/materia/{codigoMateria}")
-  public ResponseEntity<List<CursoDTO>> obtenerCursosPorMateria(@PathVariable String codigoMateria) {
+  public ResponseEntity<List<CursoDTO>> obtenerCursosPorMateria(
+      @PathVariable String codigoMateria) {
     List<CursoDTO> cursos = cursoService.obtenerCursosPorMateria(codigoMateria);
     return ResponseEntity.ok(cursos);
   }
 
   @GetMapping("/planDeEstudios/{codigoPlan}")
   @PreAuthorize("isAuthenticated()")
-  public ResponseEntity<List<CursoDTO>> obtenerCursosPorPlanDeEstudios(@PathVariable String codigoPlan) {
+  public ResponseEntity<List<CursoDTO>> obtenerCursosPorPlanDeEstudios(
+      @PathVariable String codigoPlan) {
     List<CursoDTO> cursos = cursoService.obtenerCursosPorPlanDeEstudios(codigoPlan);
     return ResponseEntity.ok(cursos);
   }

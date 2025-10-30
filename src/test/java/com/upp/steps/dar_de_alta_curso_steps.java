@@ -1,12 +1,16 @@
 package com.upp.steps;
 
-import com.upp.dto.CursoDTO;
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.upp.dto.CuatrimestreDTO;
+import com.upp.dto.CursoDTO;
 import com.upp.model.Rol;
 import com.upp.model.Usuario;
+import com.upp.repository.CursoRepository;
 import com.upp.repository.RolRepository;
 import com.upp.repository.UsuarioRepository;
 import com.upp.steps.shared.TokenHolder;
+import io.cucumber.java.Before;
 import io.cucumber.java.ast.Cuando;
 import io.cucumber.java.es.Dado;
 import io.cucumber.java.es.Entonces;
@@ -22,16 +26,21 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.FluxExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class dar_de_alta_curso_steps {
   @Autowired private WebTestClient webTestClient;
   @Autowired private UsuarioRepository usuarioRepository;
   @Autowired private RolRepository rolRepository;
   @Autowired private TokenHolder tokenHolder;
+  @Autowired private CursoRepository cursoRepository;
 
   private FluxExchangeResult<CursoDTO> result;
+
+  @Before
+  public void limpiarCursos() {
+    // Limpiar cursos antes de cada escenario para evitar interferencias
+    cursoRepository.deleteAll();
+  }
 
   @Dado("que hay un gestor de planificacion logueado")
   public void queHayUnGestorDePlanificacionLogueado() {
@@ -59,7 +68,8 @@ public class dar_de_alta_curso_steps {
           .isCreated();
     }
 
-    Map<String, String> loginData = Map.of("username", "admin_planificacion", "password", "password");
+    Map<String, String> loginData =
+        Map.of("username", "admin_planificacion", "password", "password");
 
     String token =
         webTestClient
@@ -81,14 +91,15 @@ public class dar_de_alta_curso_steps {
 
   @Dado("que existe un cuatrimestre con código {string}")
   public void queExisteUnCuatrimestreConCodigo(String codigo) {
-    CuatrimestreDTO cuatrimestreEnviado = new CuatrimestreDTO(
-        codigo,
-        LocalDate.of(2024, 3, 1),
-        LocalDate.of(2024, 7, 15),
-        LocalDate.of(2024, 2, 1),
-        LocalDate.of(2024, 2, 28),
-        LocalDate.of(2024, 7, 16),
-        LocalDate.of(2024, 7, 31));
+    CuatrimestreDTO cuatrimestreEnviado =
+        new CuatrimestreDTO(
+            codigo,
+            LocalDate.of(2024, 3, 1),
+            LocalDate.of(2024, 7, 15),
+            LocalDate.of(2024, 2, 1),
+            LocalDate.of(2024, 2, 28),
+            LocalDate.of(2024, 7, 16),
+            LocalDate.of(2024, 7, 31));
 
     webTestClient
         .post()
@@ -99,7 +110,8 @@ public class dar_de_alta_curso_steps {
         .exchange();
   }
 
-  @Cuando("se registra un nuevo curso con código {string}, máximo de alumnos {int} y materia {string}")
+  @Cuando(
+      "se registra un nuevo curso con código {string}, máximo de alumnos {int} y materia {string}")
   public void darDeAltaCurso(String codigo, Integer maximoAlumnos, String codigoMateria) {
 
     CursoDTO cursoEnviado = new CursoDTO(codigo, maximoAlumnos, codigoMateria, null);
@@ -115,16 +127,18 @@ public class dar_de_alta_curso_steps {
             .returnResult(CursoDTO.class);
   }
 
-  @Cuando("se registra un nuevo curso con código {string}, máximo de alumnos {int}, materia {string} y cuatrimestres {string}")
-  public void darDeAltaCursoConCuatrimestres(String codigo, Integer maximoAlumnos, String codigoMateria, String cuatrimestres) {
+  @Cuando(
+      "se registra un nuevo curso con código {string}, máximo de alumnos {int}, materia {string} y cuatrimestres {string}")
+  public void darDeAltaCursoConCuatrimestres(
+      String codigo, Integer maximoAlumnos, String codigoMateria, String cuatrimestres) {
     List<String> codigosCuatrimestres = null;
     if (cuatrimestres != null && !cuatrimestres.trim().isEmpty()) {
-      codigosCuatrimestres = Arrays.stream(cuatrimestres.split(","))
-          .map(String::trim)
-          .collect(Collectors.toList());
+      codigosCuatrimestres =
+          Arrays.stream(cuatrimestres.split(",")).map(String::trim).collect(Collectors.toList());
     }
 
-    CursoDTO cursoEnviado = new CursoDTO(codigo, maximoAlumnos, codigoMateria, codigosCuatrimestres);
+    CursoDTO cursoEnviado =
+        new CursoDTO(codigo, maximoAlumnos, codigoMateria, codigosCuatrimestres);
 
     this.result =
         webTestClient
@@ -161,11 +175,12 @@ public class dar_de_alta_curso_steps {
             .returnResult(CursoDTO.class);
 
     assertEquals(HttpStatus.OK, resultGetCurso.getStatus());
-    
+
     CursoDTO curso = resultGetCurso.getResponseBody().blockFirst();
-    assertTrue(curso.getCodigosCuatrimestres() != null && 
-               curso.getCodigosCuatrimestres().contains(codigoCuatrimestre),
-               "El curso no está asignado al cuatrimestre esperado");
+    assertTrue(
+        curso.getCodigosCuatrimestres() != null
+            && curso.getCodigosCuatrimestres().contains(codigoCuatrimestre),
+        "El curso no está asignado al cuatrimestre esperado");
   }
 
   @Entonces("el curso {string} está asignado a los cuatrimestres {string}")
@@ -179,15 +194,15 @@ public class dar_de_alta_curso_steps {
             .returnResult(CursoDTO.class);
 
     assertEquals(HttpStatus.OK, resultGetCurso.getStatus());
-    
+
     CursoDTO curso = resultGetCurso.getResponseBody().blockFirst();
-    List<String> cuatrimestresList = Arrays.stream(cuatrimestres.split(","))
-        .map(String::trim)
-        .collect(Collectors.toList());
-    
-    assertTrue(curso.getCodigosCuatrimestres() != null &&
-               curso.getCodigosCuatrimestres().containsAll(cuatrimestresList),
-               "El curso no está asignado a todos los cuatrimestres esperados");
+    List<String> cuatrimestresList =
+        Arrays.stream(cuatrimestres.split(",")).map(String::trim).collect(Collectors.toList());
+
+    assertTrue(
+        curso.getCodigosCuatrimestres() != null
+            && curso.getCodigosCuatrimestres().containsAll(cuatrimestresList),
+        "El curso no está asignado a todos los cuatrimestres esperados");
   }
 
   @Entonces("no se registra el curso exitosamente")
@@ -195,6 +210,4 @@ public class dar_de_alta_curso_steps {
     // Puede ser CONFLICT (409) para código duplicado o BAD_REQUEST (400) para validaciones
     assertNotEquals(HttpStatus.OK, result.getStatus());
   }
-
-
-  }
+}

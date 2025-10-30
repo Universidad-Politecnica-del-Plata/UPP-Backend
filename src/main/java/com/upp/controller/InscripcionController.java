@@ -16,20 +16,22 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/inscripciones")
 @PreAuthorize("isAuthenticated()")
 public class InscripcionController {
-  
+
   private final InscripcionService inscripcionService;
-  
+
   public InscripcionController(InscripcionService inscripcionService) {
     this.inscripcionService = inscripcionService;
   }
-  
+
   @PostMapping
   @PreAuthorize("hasRole('ALUMNO') or hasRole('GESTOR_DE_PLANIFICACION')")
-  public ResponseEntity<?> crearInscripcion(@Valid @RequestBody InscripcionRequestDTO inscripcionRequestDTO, Principal principal) {
-    InscripcionDTO resultado = inscripcionService.crearInscripcion(inscripcionRequestDTO, principal.getName());
+  public ResponseEntity<?> crearInscripcion(
+      @Valid @RequestBody InscripcionRequestDTO inscripcionRequestDTO, Principal principal) {
+    InscripcionDTO resultado =
+        inscripcionService.crearInscripcion(inscripcionRequestDTO, principal.getName());
     return ResponseEntity.status(HttpStatus.CREATED).body(resultado);
   }
-  
+
   @DeleteMapping("/{codigoDeInscripcion}")
   @PreAuthorize("hasRole('ALUMNO') or hasRole('GESTOR_DE_PLANIFICACION')")
   public ResponseEntity<?> eliminarInscripcion(@PathVariable Long codigoDeInscripcion) {
@@ -37,18 +39,20 @@ public class InscripcionController {
     return ResponseEntity.status(HttpStatus.OK)
         .body(Map.of("message", "Inscripción eliminada exitosamente"));
   }
-  
+
   @GetMapping("/{codigoDeInscripcion}")
   @PreAuthorize("hasRole('ALUMNO') or hasRole('GESTOR_DE_PLANIFICACION')")
   public ResponseEntity<?> obtenerInscripcionPorCodigo(@PathVariable Long codigoDeInscripcion) {
-    InscripcionDTO inscripcion = inscripcionService.obtenerInscripcionPorCodigo(codigoDeInscripcion);
+    InscripcionDTO inscripcion =
+        inscripcionService.obtenerInscripcionPorCodigo(codigoDeInscripcion);
     return ResponseEntity.status(HttpStatus.OK).body(inscripcion);
   }
-  
+
   @GetMapping("/misInscripciones")
   @PreAuthorize("hasRole('ALUMNO')")
   public ResponseEntity<List<InscripcionDTO>> obtenerMisInscripciones(Principal principal) {
-    List<InscripcionDTO> inscripciones = inscripcionService.obtenerInscripcionesPorUsername(principal.getName());
+    List<InscripcionDTO> inscripciones =
+        inscripcionService.obtenerInscripcionesPorUsername(principal.getName());
     return ResponseEntity.ok(inscripciones);
   }
 }

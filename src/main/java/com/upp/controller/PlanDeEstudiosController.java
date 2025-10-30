@@ -30,7 +30,8 @@ public class PlanDeEstudiosController {
   }
 
   @GetMapping("/{codigo}")
-  @PreAuthorize("hasRole('GESTION_ACADEMICA') or hasRole('GESTION_ESTUDIANTIL') or hasRole('ALUMNO')")
+  @PreAuthorize(
+      "hasRole('GESTION_ACADEMICA') or hasRole('GESTION_ESTUDIANTIL') or hasRole('ALUMNO')")
   public ResponseEntity<?> obtenerPlanDeEstudiosPorCodigo(@PathVariable String codigo) {
     PlanDeEstudiosResponseDTO planDeEstudios =
         planDeEstudiosService.obtenerPlanDeEstudiosPorCodigo(codigo);

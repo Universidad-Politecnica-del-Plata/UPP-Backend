@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -44,7 +44,7 @@ public class CursoTest {
     Materia materia = new Materia();
     materia.setCodigoDeMateria("124-M");
     materia.setNombre("Análisis II");
-    
+
     List<Cuatrimestre> cuatrimestres = new ArrayList<>();
     Cuatrimestre cuatrimestre1 = new Cuatrimestre();
     cuatrimestre1.setCodigo("2024-1");
@@ -72,5 +72,4 @@ public class CursoTest {
     assertNotNull(curso.getCuatrimestres());
     assertTrue(curso.getCuatrimestres().isEmpty());
   }
-
 }

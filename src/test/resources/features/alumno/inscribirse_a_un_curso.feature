@@ -3,14 +3,14 @@ Característica: Inscribirse a un curso
 
   Antecedentes:
     Dado que hay un gestor academico logueado
-    Y que existe una materia con el código de materia "997-M" y nombre "Analisis I"
-    Y que existe una materia con el código de materia "998-M" y nombre "Algebra I"
-    Y que existe una materia con el código de materia "999-M" y nombre "Algoritmos y Programacion I"
+    Y que existe una materia con el código de materia "997-MA" y nombre "Analisis I"
+    Y que existe una materia con el código de materia "998-MA" y nombre "Algebra I"
+    Y que existe una materia con el código de materia "999-MA" y nombre "Algoritmos y Programacion I"
     Y se registra un nuevo plan de estudios con codigo "P1-2025", fecha de entrada en vigencia "01-01-2025", fecha de vencimiento "31-12-9999", materias en el plan "997-M", "998-M" y "999-M" y total de créditos optativos 20
     Y que hay un gestor de planificacion logueado
     Y se registra un nuevo cuatrimestre con código "2025-2", fecha de inicio de clases "9999-02-01", fecha de fin de clases "9999-07-15", fecha de inicio de inscripción "2025-01-01", fecha de fin de inscripción "9999-01-31", fecha de inicio de integradores "9999-07-16" y fecha de fin de integradores "9999-07-31"
-    Y se registra un nuevo curso con código "CURSO-001", máximo de alumnos 25, materia "997-M" y cuatrimestres "2025-2"
-    Y se registra un nuevo curso con código "CURSO-002", máximo de alumnos 25, materia "998-M" y cuatrimestres "2025-2"
+    Y se registra un nuevo curso con código "CURSO-001", máximo de alumnos 25, materia "997-MA" y cuatrimestres "2025-2"
+    Y se registra un nuevo curso con código "CURSO-002", máximo de alumnos 25, materia "998-MA" y cuatrimestres "2025-2"
     Y que hay un gestor estudiantil logueado
     Y registra un nuevo alumno con DNI 12345678, apellido "Perez", nombre "Juan", direccion "Calle Falsa 123", telefono "1234", email "juan@mail.com", fecha de nacimiento "01-01-1990" y fecha de ingreso "01-03-2015"
     Y que hay un alumno logueado con username "12345678", password "12345678"
