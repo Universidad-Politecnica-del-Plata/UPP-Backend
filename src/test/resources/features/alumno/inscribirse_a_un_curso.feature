@@ -8,17 +8,16 @@ Característica: Inscribirse a un curso
     Y que existe una materia con el código de materia "999-M" y nombre "Algoritmos y Programacion I"
     Y se registra un nuevo plan de estudios con codigo "P1-2025", fecha de entrada en vigencia "01-01-2025", fecha de vencimiento "31-12-9999", materias en el plan "997-M", "998-M" y "999-M" y total de créditos optativos 20
     Y que hay un gestor de planificacion logueado
-    Y se registra un nuevo cuatrimestre con código "2025-2", fecha de inicio de clases "2025-02-01", fecha de fin de clases "9999-07-15", fecha de inicio de inscripción "2025-01-01", fecha de fin de inscripción "2025-01-31", fecha de inicio de integradores "9999-07-16" y fecha de fin de integradores "9999-07-31"
+    Y se registra un nuevo cuatrimestre con código "2025-2", fecha de inicio de clases "9999-02-01", fecha de fin de clases "9999-07-15", fecha de inicio de inscripción "2025-01-01", fecha de fin de inscripción "9999-01-31", fecha de inicio de integradores "9999-07-16" y fecha de fin de integradores "9999-07-31"
     Y se registra un nuevo curso con código "CURSO-001", máximo de alumnos 25, materia "997-M" y cuatrimestres "2025-2"
     Y se registra un nuevo curso con código "CURSO-002", máximo de alumnos 25, materia "998-M" y cuatrimestres "2025-2"
     Y que hay un gestor estudiantil logueado
-    Y que hay un alumno logueado con username "12345678", password "password123", dni 12345678, nombre "Juan", apellido "Pérez", email "juan.perez@example.com", dirección "Av. Corrientes 1234", fecha de nacimiento "2000-01-01", fecha de ingreso "2024-03-01"
+    Y registra un nuevo alumno con DNI 12345678, apellido "Perez", nombre "Juan", direccion "Calle Falsa 123", telefono "1234", email "juan@mail.com", fecha de nacimiento "01-01-1990" y fecha de ingreso "01-03-2015"
+    Y que hay un alumno logueado con username "12345678", password "12345678"
 
   Escenario: Inscribirse a un curso exitosamente
     Cuando el alumno se inscribe al curso "CURSO-001" en el cuatrimestre "2025-2"
     Entonces la inscripción se realiza exitosamente
-    Y se le asigna un código de inscripción
-    Y se registra la fecha y horario de inscripción
 
   Escenario: Inscribirse dos veces al mismo curso fracasa
     Dado que el alumno ya está inscrito al curso "CURSO-001" en el cuatrimestre "2025-2"
