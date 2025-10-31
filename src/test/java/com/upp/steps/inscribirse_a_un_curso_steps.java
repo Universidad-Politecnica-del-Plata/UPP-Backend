@@ -1,8 +1,6 @@
 package com.upp.steps;
 
 import static org.junit.jupiter.api.Assertions.*;
-import org.springframework.jdbc.core.JdbcTemplate;
-
 
 import com.upp.dto.InscripcionDTO;
 import com.upp.repository.*;
@@ -18,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.web.reactive.server.FluxExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -34,8 +33,7 @@ public class inscribirse_a_un_curso_steps {
   @Autowired private CuatrimestreRepository cuatrimestreRepository;
   @Autowired private PlanDeEstudiosRepository planDeEstudiosRepository;
   @Autowired private TokenHolder tokenHolder;
-  @Autowired
-  private JdbcTemplate jdbcTemplate;
+  @Autowired private JdbcTemplate jdbcTemplate;
   private FluxExchangeResult<InscripcionDTO> inscripcionResult;
   private FluxExchangeResult<List> consultaResult;
   private FluxExchangeResult<Map> eliminarResult;
