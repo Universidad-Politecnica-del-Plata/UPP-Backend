@@ -39,28 +39,12 @@ public class inscribirse_a_un_curso_steps {
   private Long codigoInscripcionGuardado;
 
   @Before
-  public void limpiarInscripciones() {
-    // Limpiar inscripciones antes de cada escenario para evitar interferencias
+  public void limpiarBaseDeDatos() {
     inscripcionRepository.deleteAll();
-    codigoInscripcionGuardado = null;
-  }
-
-  @Before
-  public void limpiarCursos() {
-    // Limpiar cursos antes de cada escenario para evitar interferencias
     cursoRepository.deleteAll();
-  }
-
-  @Before
-  public void limpiarMateria() {
-    // Limpiar materias antes de cada escenario para evitar interferencias
     materiaRepository.deleteAll();
-  }
-
-  @Before
-  public void limpiarCuatrimestre() {
-    // Limpiar cuatrimestres antes de cada escenario para evitar interferencias
     cuatrimestreRepository.deleteAll();
+    codigoInscripcionGuardado = null;
   }
 
   @Dado("que hay un alumno logueado con username {string}, password {string}")
