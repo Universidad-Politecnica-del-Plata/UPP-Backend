@@ -10,7 +10,6 @@ import com.upp.repository.CursoRepository;
 import com.upp.repository.RolRepository;
 import com.upp.repository.UsuarioRepository;
 import com.upp.steps.shared.TokenHolder;
-import io.cucumber.java.Before;
 import io.cucumber.java.ast.Cuando;
 import io.cucumber.java.es.Dado;
 import io.cucumber.java.es.Entonces;
@@ -35,19 +34,6 @@ public class dar_de_alta_curso_steps {
   @Autowired private CursoRepository cursoRepository;
 
   private FluxExchangeResult<CursoDTO> result;
-
-  @Before
-  public void limpiarDatos() {
-    // Limpiar datos en el orden correcto para respetar restricciones de claves foráneas
-    // Primero eliminar inscripciones (si existen) que puedan referenciar cursos
-    try {
-      // Solo eliminar cursos si no hay inscripciones que los referencien
-      cursoRepository.deleteAll();
-    } catch (Exception e) {
-      // Si falla por restricciones de FK, no hacer nada
-      // El cleanup será manejado por otros @Before methods
-    }
-  }
 
   @Dado("que hay un gestor de planificacion logueado")
   public void queHayUnGestorDePlanificacionLogueado() {
