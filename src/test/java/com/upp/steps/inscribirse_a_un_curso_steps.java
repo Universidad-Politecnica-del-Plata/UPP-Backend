@@ -1,6 +1,8 @@
 package com.upp.steps;
 
 import static org.junit.jupiter.api.Assertions.*;
+import org.springframework.jdbc.core.JdbcTemplate;
+
 
 import com.upp.dto.InscripcionDTO;
 import com.upp.repository.*;
@@ -32,7 +34,8 @@ public class inscribirse_a_un_curso_steps {
   @Autowired private CuatrimestreRepository cuatrimestreRepository;
   @Autowired private PlanDeEstudiosRepository planDeEstudiosRepository;
   @Autowired private TokenHolder tokenHolder;
-
+  @Autowired
+  private JdbcTemplate jdbcTemplate;
   private FluxExchangeResult<InscripcionDTO> inscripcionResult;
   private FluxExchangeResult<List> consultaResult;
   private FluxExchangeResult<Map> eliminarResult;
@@ -40,10 +43,14 @@ public class inscribirse_a_un_curso_steps {
 
   @Before
   public void limpiarBaseDeDatos() {
+    jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY FALSE");
+
     inscripcionRepository.deleteAll();
     cursoRepository.deleteAll();
     materiaRepository.deleteAll();
     cuatrimestreRepository.deleteAll();
+
+    jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY TRUE");
     codigoInscripcionGuardado = null;
   }
 
