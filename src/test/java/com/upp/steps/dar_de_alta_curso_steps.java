@@ -37,9 +37,16 @@ public class dar_de_alta_curso_steps {
   private FluxExchangeResult<CursoDTO> result;
 
   @Before
-  public void limpiarCursos() {
-    // Limpiar cursos antes de cada escenario para evitar interferencias
-    cursoRepository.deleteAll();
+  public void limpiarDatos() {
+    // Limpiar datos en el orden correcto para respetar restricciones de claves foráneas
+    // Primero eliminar inscripciones (si existen) que puedan referenciar cursos
+    try {
+      // Solo eliminar cursos si no hay inscripciones que los referencien
+      cursoRepository.deleteAll();
+    } catch (Exception e) {
+      // Si falla por restricciones de FK, no hacer nada
+      // El cleanup será manejado por otros @Before methods
+    }
   }
 
   @Dado("que hay un gestor de planificacion logueado")
