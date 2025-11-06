@@ -16,12 +16,12 @@ Característica: Inscribirse a un curso
     Y que hay un alumno logueado con username "12345678", password "12345678"
 
   Escenario: Inscribirse a un curso exitosamente
-    Cuando el alumno se inscribe al curso "CURSO-001" en el cuatrimestre "2025-2"
+    Cuando el alumno se inscribe al curso "CURSO-001" en el cuatrimestre actual
     Entonces la inscripción se realiza exitosamente
 
   Escenario: Inscribirse dos veces al mismo curso fracasa
-    Dado que el alumno ya está inscrito al curso "CURSO-001" en el cuatrimestre "2025-2"
-    Cuando el alumno se inscribe al curso "CURSO-001" en el cuatrimestre "2025-2"
+    Dado que el alumno ya está inscrito al curso "CURSO-001" en el cuatrimestre actual
+    Cuando el alumno se inscribe al curso "CURSO-001" en el cuatrimestre actual
     Entonces no se puede realizar la inscripción exitosamente
     Y se le informa que ya está inscrito en ese curso
 

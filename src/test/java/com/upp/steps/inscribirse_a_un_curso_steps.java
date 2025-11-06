@@ -121,8 +121,8 @@ public class inscribirse_a_un_curso_steps {
     assertTrue(inscripcionResult.getStatus().is4xxClientError());
   }
 
-  @Dado("que el alumno ya está inscrito al curso {string} en el cuatrimestre {string}")
-  public void queElAlumnoYaEstaInscritoAlCurso(String codigoCurso, String codigoCuatrimestre) {
+  @Dado("que el alumno ya está inscrito al curso {string} en el cuatrimestre actual")
+  public void queElAlumnoYaEstaInscritoAlCurso(String codigoCurso) {
     // Primero inscribir al alumno
     elAlumnoSeInscribeAlCurso(codigoCurso);
 
