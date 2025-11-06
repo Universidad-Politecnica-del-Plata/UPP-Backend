@@ -24,7 +24,6 @@ import com.upp.repository.CursoRepository;
 import com.upp.repository.InscripcionRepository;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -81,7 +80,7 @@ class InscripcionServiceTest {
     alumno.setCarreras(new ArrayList<>());
     alumno.setPlanesDeEstudio(new ArrayList<>());
 
-    inscripcionRequestDTO = new InscripcionRequestDTO("CURSO-001", "2024-1");
+    inscripcionRequestDTO = new InscripcionRequestDTO("CURSO-001");
 
     inscripcion = new Inscripcion(curso, cuatrimestre, alumno);
     inscripcion.setCodigoDeInscripcion(1L);
@@ -91,7 +90,7 @@ class InscripcionServiceTest {
   void crearInscripcionExitoso() {
     when(alumnoRepository.findByUsername("jperez")).thenReturn(Optional.of(alumno));
     when(cursoRepository.findByCodigo("CURSO-001")).thenReturn(Optional.of(curso));
-    when(cuatrimestreRepository.findByCodigo("2024-1")).thenReturn(Optional.of(cuatrimestre));
+    when(cuatrimestreRepository.findCuatrimestresActuales(any(LocalDate.class))).thenReturn(List.of(cuatrimestre));
     when(inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(alumno, curso, cuatrimestre))
         .thenReturn(false);
     when(inscripcionRepository.save(any(Inscripcion.class)))
@@ -142,7 +141,7 @@ class InscripcionServiceTest {
   void crearInscripcionCuatrimestreNoExisteLanzaExcepcion() {
     when(alumnoRepository.findByUsername("jperez")).thenReturn(Optional.of(alumno));
     when(cursoRepository.findByCodigo("CURSO-001")).thenReturn(Optional.of(curso));
-    when(cuatrimestreRepository.findByCodigo("2024-1")).thenReturn(Optional.empty());
+    when(cuatrimestreRepository.findCuatrimestresActuales(any(LocalDate.class))).thenReturn(new ArrayList<>());
 
     assertThrows(
         CuatrimestreNoExisteException.class,
@@ -155,7 +154,7 @@ class InscripcionServiceTest {
   void crearInscripcionYaExisteLanzaExcepcion() {
     when(alumnoRepository.findByUsername("jperez")).thenReturn(Optional.of(alumno));
     when(cursoRepository.findByCodigo("CURSO-001")).thenReturn(Optional.of(curso));
-    when(cuatrimestreRepository.findByCodigo("2024-1")).thenReturn(Optional.of(cuatrimestre));
+    when(cuatrimestreRepository.findCuatrimestresActuales(any(LocalDate.class))).thenReturn(List.of(cuatrimestre));
     when(inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(alumno, curso, cuatrimestre))
         .thenReturn(true);
 
@@ -187,7 +186,7 @@ class InscripcionServiceTest {
 
   @Test
   void obtenerInscripcionesPorUsernameExitoso() {
-    List<Inscripcion> inscripciones = Arrays.asList(inscripcion);
+    List<Inscripcion> inscripciones = List.of(inscripcion);
     when(alumnoRepository.findByUsername("jperez")).thenReturn(Optional.of(alumno));
     when(inscripcionRepository.findByAlumno(alumno)).thenReturn(inscripciones);
 
@@ -261,12 +260,12 @@ class InscripcionServiceTest {
 
     when(alumnoRepository.findByUsername("jperez")).thenReturn(Optional.of(alumno));
     when(cursoRepository.findByCodigo("CURSO-001")).thenReturn(Optional.of(curso));
-    when(cuatrimestreRepository.findByCodigo("2024-2")).thenReturn(Optional.of(cuatrimestreFuturo));
+    when(cuatrimestreRepository.findCuatrimestresActuales(any(LocalDate.class))).thenReturn(List.of(cuatrimestreFuturo));
     when(inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(
             alumno, curso, cuatrimestreFuturo))
         .thenReturn(false);
 
-    InscripcionRequestDTO inscripcionFutura = new InscripcionRequestDTO("CURSO-001", "2024-2");
+    InscripcionRequestDTO inscripcionFutura = new InscripcionRequestDTO("CURSO-001");
 
     assertThrows(
         PeriodoInscripcionInvalidoException.class,
@@ -289,12 +288,12 @@ class InscripcionServiceTest {
 
     when(alumnoRepository.findByUsername("jperez")).thenReturn(Optional.of(alumno));
     when(cursoRepository.findByCodigo("CURSO-001")).thenReturn(Optional.of(curso));
-    when(cuatrimestreRepository.findByCodigo("2023-2")).thenReturn(Optional.of(cuatrimestrePasado));
+    when(cuatrimestreRepository.findCuatrimestresActuales(any(LocalDate.class))).thenReturn(List.of(cuatrimestrePasado));
     when(inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(
             alumno, curso, cuatrimestrePasado))
         .thenReturn(false);
 
-    InscripcionRequestDTO inscripcionPasada = new InscripcionRequestDTO("CURSO-001", "2023-2");
+    InscripcionRequestDTO inscripcionPasada = new InscripcionRequestDTO("CURSO-001");
 
     assertThrows(
         PeriodoInscripcionInvalidoException.class,
@@ -308,7 +307,7 @@ class InscripcionServiceTest {
     // El cuatrimestre ya está configurado con período válido en setUp()
     when(alumnoRepository.findByUsername("jperez")).thenReturn(Optional.of(alumno));
     when(cursoRepository.findByCodigo("CURSO-001")).thenReturn(Optional.of(curso));
-    when(cuatrimestreRepository.findByCodigo("2024-1")).thenReturn(Optional.of(cuatrimestre));
+    when(cuatrimestreRepository.findCuatrimestresActuales(any(LocalDate.class))).thenReturn(List.of(cuatrimestre));
     when(inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(alumno, curso, cuatrimestre))
         .thenReturn(false);
     when(inscripcionRepository.save(any(Inscripcion.class))).thenReturn(inscripcion);

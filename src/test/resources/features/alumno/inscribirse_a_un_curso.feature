@@ -26,9 +26,9 @@ Característica: Inscribirse a un curso
     Y se le informa que ya está inscrito en ese curso
 
   Escenario: Inscribirse fuera del período de inscripción fracasa
-    Dado se registra un nuevo cuatrimestre con código "2024-1", fecha de inicio de clases "2024-02-01", fecha de fin de clases "2024-07-15", fecha de inicio de inscripción "2024-01-01", fecha de fin de inscripción "2024-01-31", fecha de inicio de integradores "2024-07-16" y fecha de fin de integradores "2024-07-31"
+    Dado se registra un nuevo cuatrimestre con código "2024-1", fecha de inicio de clases "2024-02-01", fecha de fin de clases "3024-07-15", fecha de inicio de inscripción "2024-01-01", fecha de fin de inscripción "2024-01-31", fecha de inicio de integradores "3024-07-16" y fecha de fin de integradores "3024-07-31"
     Y se registra un nuevo curso con código "CURSO-003", máximo de alumnos 25, materia "999-M" y cuatrimestres "2024-1"
-    Cuando el alumno se inscribe al curso "CURSO-003" en el cuatrimestre "2024-1"
+    Cuando el alumno se inscribe al curso "CURSO-003" en el cuatrimestre actual
     Entonces no se puede realizar la inscripción exitosamente
     Y se le informa que las inscripciones están cerradas para este cuatrimestre
 

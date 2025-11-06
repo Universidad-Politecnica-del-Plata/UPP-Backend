@@ -51,15 +51,14 @@ public class InscripcionService {
       throw new CursoNoExisteException("No existe un curso con ese código.");
     }
 
-    Optional<Cuatrimestre> cuatrimestreOpt =
-        cuatrimestreRepository.findByCodigo(inscripcionDTO.getCodigoCuatrimestre());
+    List<Cuatrimestre> cuatrimestreOpt = cuatrimestreRepository.findCuatrimestresActuales(LocalDate.now());
     if (cuatrimestreOpt.isEmpty()) {
       throw new CuatrimestreNoExisteException("No existe un cuatrimestre con ese código.");
     }
 
     Alumno alumno = alumnoOpt.get();
     Curso curso = cursoOpt.get();
-    Cuatrimestre cuatrimestre = cuatrimestreOpt.get();
+    Cuatrimestre cuatrimestre = cuatrimestreOpt.get(0);
 
     if (inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(alumno, curso, cuatrimestre)) {
       throw new InscripcionExisteException(

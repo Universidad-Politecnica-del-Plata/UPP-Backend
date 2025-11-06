@@ -80,13 +80,12 @@ public class inscribirse_a_un_curso_steps {
     tokenHolder.setToken(token);
   }
 
-  @Cuando("el alumno se inscribe al curso {string} en el cuatrimestre {string}")
-  public void elAlumnoSeInscribeAlCurso(String codigoCurso, String codigoCuatrimestre) {
+  @Cuando("el alumno se inscribe al curso {string} en el cuatrimestre actual")
+  public void elAlumnoSeInscribeAlCurso(String codigoCurso) {
 
     Map<String, String> inscripcionData =
         Map.of(
-            "codigoCurso", codigoCurso,
-            "codigoCuatrimestre", codigoCuatrimestre);
+            "codigoCurso", codigoCurso);
 
     inscripcionResult =
         webTestClient
@@ -125,7 +124,7 @@ public class inscribirse_a_un_curso_steps {
   @Dado("que el alumno ya está inscrito al curso {string} en el cuatrimestre {string}")
   public void queElAlumnoYaEstaInscritoAlCurso(String codigoCurso, String codigoCuatrimestre) {
     // Primero inscribir al alumno
-    elAlumnoSeInscribeAlCurso(codigoCurso, codigoCuatrimestre);
+    elAlumnoSeInscribeAlCurso(codigoCurso);
 
     // Verificar que la inscripción fue exitosa
     assertEquals(HttpStatus.CREATED, inscripcionResult.getStatus());

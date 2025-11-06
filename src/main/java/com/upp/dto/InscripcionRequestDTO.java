@@ -14,7 +14,4 @@ public class InscripcionRequestDTO {
 
   @NotBlank(message = "El código del curso es obligatorio")
   private String codigoCurso;
-
-  @NotBlank(message = "El código del cuatrimestre es obligatorio")
-  private String codigoCuatrimestre;
 }
