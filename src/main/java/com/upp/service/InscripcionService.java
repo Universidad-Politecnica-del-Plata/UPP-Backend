@@ -51,7 +51,8 @@ public class InscripcionService {
       throw new CursoNoExisteException("No existe un curso con ese código.");
     }
 
-    List<Cuatrimestre> cuatrimestreOpt = cuatrimestreRepository.findCuatrimestresActuales(LocalDate.now());
+    List<Cuatrimestre> cuatrimestreOpt =
+        cuatrimestreRepository.findCuatrimestresActuales(LocalDate.now());
     if (cuatrimestreOpt.isEmpty()) {
       throw new CuatrimestreNoExisteException("No existe un cuatrimestre con ese código.");
     }

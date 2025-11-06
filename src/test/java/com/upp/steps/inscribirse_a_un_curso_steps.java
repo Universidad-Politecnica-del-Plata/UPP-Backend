@@ -83,9 +83,7 @@ public class inscribirse_a_un_curso_steps {
   @Cuando("el alumno se inscribe al curso {string} en el cuatrimestre actual")
   public void elAlumnoSeInscribeAlCurso(String codigoCurso) {
 
-    Map<String, String> inscripcionData =
-        Map.of(
-            "codigoCurso", codigoCurso);
+    Map<String, String> inscripcionData = Map.of("codigoCurso", codigoCurso);
 
     inscripcionResult =
         webTestClient
