@@ -21,4 +21,6 @@ public interface AlumnoRepository extends JpaRepository<Alumno, Long> {
   List<Alumno> findByHabilitadoTrue();
 
   Optional<Alumno> findByUsername(String username);
+
+  Optional<Alumno> findByDni(long l);
 }

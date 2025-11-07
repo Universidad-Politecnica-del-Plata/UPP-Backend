@@ -13,6 +13,7 @@ import com.upp.exception.AlumnoNoInscriptoException;
 import com.upp.exception.CuatrimestreNoExisteException;
 import com.upp.exception.CursoNoExisteException;
 import com.upp.exception.InscripcionExisteException;
+import com.upp.exception.NotaInvalidaException;
 import com.upp.exception.NotaNoExisteException;
 import com.upp.model.Acta;
 import com.upp.model.Alumno;
@@ -118,6 +119,11 @@ public class ActaService {
   }
 
   public NotaDTO agregarNota(Long numeroCorrelativo, NotaRequestDTO notaRequestDTO) {
+    // Validar que la nota sea aprobatoria (entre 4 y 10)
+    if (notaRequestDTO.getValor() < 4 || notaRequestDTO.getValor() > 10) {
+      throw new NotaInvalidaException("Solo se pueden cargar notas aprobatorias (entre 4 y 10).");
+    }
+
     Optional<Acta> actaOpt = actaRepository.findById(numeroCorrelativo);
     if (actaOpt.isEmpty()) {
       throw new ActaNoExisteException("No existe un acta con ese número correlativo.");
@@ -161,6 +167,11 @@ public class ActaService {
   }
 
   public NotaDTO actualizarNota(Long notaId, NotaRequestDTO notaRequestDTO) {
+    // Validar que la nota sea aprobatoria (entre 4 y 10)
+    if (notaRequestDTO.getValor() < 4 || notaRequestDTO.getValor() > 10) {
+      throw new NotaInvalidaException("Solo se pueden cargar notas aprobatorias (entre 4 y 10).");
+    }
+
     Optional<Nota> notaOpt = notaRepository.findById(notaId);
     if (notaOpt.isEmpty()) {
       throw new NotaNoExisteException("No existe una nota con ese ID.");

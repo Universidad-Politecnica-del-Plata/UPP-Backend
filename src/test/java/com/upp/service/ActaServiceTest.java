@@ -17,6 +17,7 @@ import com.upp.exception.AlumnoNoInscriptoException;
 import com.upp.exception.CuatrimestreNoExisteException;
 import com.upp.exception.CursoNoExisteException;
 import com.upp.exception.InscripcionExisteException;
+import com.upp.exception.NotaInvalidaException;
 import com.upp.exception.NotaNoExisteException;
 import com.upp.model.Acta;
 import com.upp.model.Alumno;
@@ -423,6 +424,104 @@ class ActaServiceTest {
     assertThrows(
         CuatrimestreNoExisteException.class, () -> actaService.agregarNota(1L, notaRequestDTO));
 
+    verify(notaRepository, never()).save(any(Nota.class));
+  }
+
+  @Test
+  void agregarNotaConGradoBajoLanzaExcepcion() {
+    NotaRequestDTO notaInvalida = new NotaRequestDTO(3, 1L); // Nota menor a 4
+
+    assertThrows(NotaInvalidaException.class, () -> actaService.agregarNota(1L, notaInvalida));
+
+    verify(actaRepository, never()).findById(any());
+    verify(notaRepository, never()).save(any(Nota.class));
+  }
+
+  @Test
+  void agregarNotaConGradoAltoLanzaExcepcion() {
+    NotaRequestDTO notaInvalida = new NotaRequestDTO(11, 1L); // Nota mayor a 10
+
+    assertThrows(NotaInvalidaException.class, () -> actaService.agregarNota(1L, notaInvalida));
+
+    verify(actaRepository, never()).findById(any());
+    verify(notaRepository, never()).save(any(Nota.class));
+  }
+
+  @Test
+  void agregarNotaConGradoMinimoValidoExitoso() {
+    NotaRequestDTO notaMinima = new NotaRequestDTO(4, 1L); // Nota mínima válida
+    
+    when(actaRepository.findById(1L)).thenReturn(Optional.of(acta));
+    when(alumnoRepository.findById(1L)).thenReturn(Optional.of(alumno));
+    when(cuatrimestreRepository.findCuatrimestresActuales(any(LocalDate.class)))
+        .thenReturn(List.of(cuatrimestre));
+    when(inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(alumno, curso, cuatrimestre))
+        .thenReturn(true);
+    when(notaRepository.existsByActaAndAlumno(acta, alumno)).thenReturn(false);
+    when(notaRepository.save(any(Nota.class)))
+        .thenAnswer(
+            invocation -> {
+              Nota savedNota = invocation.getArgument(0);
+              savedNota.setId(2L);
+              return savedNota;
+            });
+
+    NotaDTO resultado = actaService.agregarNota(1L, notaMinima);
+
+    assertNotNull(resultado);
+    assertEquals(2L, resultado.getId());
+    assertEquals(4, resultado.getValor());
+    assertEquals(1L, resultado.getAlumnoId());
+
+    verify(notaRepository).save(any(Nota.class));
+  }
+
+  @Test
+  void agregarNotaConGradoMaximoValidoExitoso() {
+    NotaRequestDTO notaMaxima = new NotaRequestDTO(10, 1L); // Nota máxima válida
+    
+    when(actaRepository.findById(1L)).thenReturn(Optional.of(acta));
+    when(alumnoRepository.findById(1L)).thenReturn(Optional.of(alumno));
+    when(cuatrimestreRepository.findCuatrimestresActuales(any(LocalDate.class)))
+        .thenReturn(List.of(cuatrimestre));
+    when(inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(alumno, curso, cuatrimestre))
+        .thenReturn(true);
+    when(notaRepository.existsByActaAndAlumno(acta, alumno)).thenReturn(false);
+    when(notaRepository.save(any(Nota.class)))
+        .thenAnswer(
+            invocation -> {
+              Nota savedNota = invocation.getArgument(0);
+              savedNota.setId(3L);
+              return savedNota;
+            });
+
+    NotaDTO resultado = actaService.agregarNota(1L, notaMaxima);
+
+    assertNotNull(resultado);
+    assertEquals(3L, resultado.getId());
+    assertEquals(10, resultado.getValor());
+    assertEquals(1L, resultado.getAlumnoId());
+
+    verify(notaRepository).save(any(Nota.class));
+  }
+
+  @Test
+  void actualizarNotaConGradoBajoLanzaExcepcion() {
+    NotaRequestDTO notaInvalida = new NotaRequestDTO(2, 1L); // Nota menor a 4
+
+    assertThrows(NotaInvalidaException.class, () -> actaService.actualizarNota(1L, notaInvalida));
+
+    verify(notaRepository, never()).findById(any());
+    verify(notaRepository, never()).save(any(Nota.class));
+  }
+
+  @Test
+  void actualizarNotaConGradoAltoLanzaExcepcion() {
+    NotaRequestDTO notaInvalida = new NotaRequestDTO(12, 1L); // Nota mayor a 10
+
+    assertThrows(NotaInvalidaException.class, () -> actaService.actualizarNota(1L, notaInvalida));
+
+    verify(notaRepository, never()).findById(any());
     verify(notaRepository, never()).save(any(Nota.class));
   }
 }
