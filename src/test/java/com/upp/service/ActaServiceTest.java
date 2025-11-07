@@ -450,7 +450,7 @@ class ActaServiceTest {
   @Test
   void agregarNotaConGradoMinimoValidoExitoso() {
     NotaRequestDTO notaMinima = new NotaRequestDTO(4, 1L); // Nota mínima válida
-    
+
     when(actaRepository.findById(1L)).thenReturn(Optional.of(acta));
     when(alumnoRepository.findById(1L)).thenReturn(Optional.of(alumno));
     when(cuatrimestreRepository.findCuatrimestresActuales(any(LocalDate.class)))
@@ -479,7 +479,7 @@ class ActaServiceTest {
   @Test
   void agregarNotaConGradoMaximoValidoExitoso() {
     NotaRequestDTO notaMaxima = new NotaRequestDTO(10, 1L); // Nota máxima válida
-    
+
     when(actaRepository.findById(1L)).thenReturn(Optional.of(acta));
     when(alumnoRepository.findById(1L)).thenReturn(Optional.of(alumno));
     when(cuatrimestreRepository.findCuatrimestresActuales(any(LocalDate.class)))

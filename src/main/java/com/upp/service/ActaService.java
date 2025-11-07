@@ -83,7 +83,6 @@ public class ActaService {
     return convertToDTO(acta);
   }
 
-
   public ActaDTO obtenerActaPorId(Long numeroCorrelativo) {
     Optional<Acta> actaOpt = actaRepository.findById(numeroCorrelativo);
     if (actaOpt.isEmpty()) {
@@ -92,7 +91,6 @@ public class ActaService {
 
     return convertToDTO(actaOpt.get());
   }
-
 
   public List<ActaDTO> obtenerActasPorCurso(String codigoCurso) {
     Optional<Curso> cursoOpt = cursoRepository.findByCodigo(codigoCurso);
@@ -187,7 +185,6 @@ public class ActaService {
 
     return convertNotaToDTO(nota);
   }
-
 
   public List<NotaDTO> obtenerNotasPorActa(Long numeroCorrelativo) {
     Optional<Acta> actaOpt = actaRepository.findById(numeroCorrelativo);

@@ -14,9 +14,6 @@ import com.upp.steps.shared.TokenHolder;
 import io.cucumber.java.es.Cuando;
 import io.cucumber.java.es.Dado;
 import io.cucumber.java.es.Entonces;
-import io.cucumber.java.es.Y;
-import java.time.LocalDate;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -41,17 +38,18 @@ public class cargar_nota_de_alumno_en_acta_steps {
   public void elDocenteCargaLaNotaDeUnAlumnoConDniYNota(Long dni, Integer nota) {
     // Buscar alumno por DNI
     Alumno alumno = alumnoRepository.findByDni(dni).orElse(null);
-    
+
     if (alumno != null) {
       // Buscar el acta creada (asumir que hay una sola acta abierta)
       if (actaNumeroCorrelativo == null) {
         // Obtener actas del curso para encontrar el número correlativo
-        var resultActas = webTestClient
-            .get()
-            .uri("/api/actas/curso/CURSO-001")
-            .header("Authorization", "Bearer " + tokenHolder.getToken())
-            .exchange()
-            .returnResult(ActaDTO[].class);
+        var resultActas =
+            webTestClient
+                .get()
+                .uri("/api/actas/curso/CURSO-001")
+                .header("Authorization", "Bearer " + tokenHolder.getToken())
+                .exchange()
+                .returnResult(ActaDTO[].class);
 
         ActaDTO[] actas = resultActas.getResponseBody().blockFirst();
         if (actas != null && actas.length > 0) {
@@ -88,7 +86,9 @@ public class cargar_nota_de_alumno_en_acta_steps {
       this.resultNota =
           webTestClient
               .post()
-              .uri("/api/actas/{numeroCorrelativo}/notas", actaNumeroCorrelativo != null ? actaNumeroCorrelativo : 1L)
+              .uri(
+                  "/api/actas/{numeroCorrelativo}/notas",
+                  actaNumeroCorrelativo != null ? actaNumeroCorrelativo : 1L)
               .header("Authorization", "Bearer " + tokenHolder.getToken())
               .contentType(MediaType.APPLICATION_JSON)
               .bodyValue(notaRequest)
@@ -98,7 +98,8 @@ public class cargar_nota_de_alumno_en_acta_steps {
   }
 
   @Cuando("el docente intenta cargar nota para un acta inexistente con numero correlativo {long}")
-  public void elDocenteIntentaCargarNotaParaUnActaInexistenteConNumeroCorrelativo(Long numeroCorrelativo) {
+  public void elDocenteIntentaCargarNotaParaUnActaInexistenteConNumeroCorrelativo(
+      Long numeroCorrelativo) {
     // Buscar el primer alumno disponible
     Alumno alumno = alumnoRepository.findByDni(12345678L).orElse(null);
     assertNotNull(alumno, "Debe existir un alumno para la prueba");
@@ -121,12 +122,13 @@ public class cargar_nota_de_alumno_en_acta_steps {
   @Dado("que el acta está cerrada")
   public void queElActaEstaCerrada() {
     // Obtener el acta abierta y cerrarla
-    var resultActas = webTestClient
-        .get()
-        .uri("/api/actas/curso/CURSO-001")
-        .header("Authorization", "Bearer " + tokenHolder.getToken())
-        .exchange()
-        .returnResult(ActaDTO[].class);
+    var resultActas =
+        webTestClient
+            .get()
+            .uri("/api/actas/curso/CURSO-001")
+            .header("Authorization", "Bearer " + tokenHolder.getToken())
+            .exchange()
+            .returnResult(ActaDTO[].class);
 
     ActaDTO[] actas = resultActas.getResponseBody().blockFirst();
     if (actas != null && actas.length > 0) {
