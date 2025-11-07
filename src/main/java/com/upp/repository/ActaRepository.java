@@ -19,5 +19,6 @@ public interface ActaRepository extends JpaRepository<Acta, Long> {
 
   List<Acta> findByCursoAndTipoDeActa(Curso curso, TipoDeActa tipoDeActa);
 
-  boolean existsByCursoAndTipoDeActaAndEstado(Curso curso, TipoDeActa tipoDeActa, EstadoActa estado);
+  boolean existsByCursoAndTipoDeActaAndEstado(
+      Curso curso, TipoDeActa tipoDeActa, EstadoActa estado);
 }

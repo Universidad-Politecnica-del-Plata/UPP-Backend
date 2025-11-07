@@ -33,16 +33,14 @@ public class ActaController {
   }
 
   @GetMapping("/{numeroCorrelativo}")
-  @PreAuthorize(
-      "hasRole('DOCENTE')")
+  @PreAuthorize("hasRole('DOCENTE')")
   public ResponseEntity<ActaDTO> obtenerActaPorId(@PathVariable Long numeroCorrelativo) {
     ActaDTO acta = actaService.obtenerActaPorId(numeroCorrelativo);
     return ResponseEntity.ok(acta);
   }
 
   @GetMapping("/curso/{codigoCurso}")
-  @PreAuthorize(
-      "hasRole('DOCENTE')")
+  @PreAuthorize("hasRole('DOCENTE')")
   public ResponseEntity<List<ActaDTO>> obtenerActasPorCurso(@PathVariable String codigoCurso) {
     List<ActaDTO> actas = actaService.obtenerActasPorCurso(codigoCurso);
     return ResponseEntity.ok(actas);
@@ -66,8 +64,7 @@ public class ActaController {
   }
 
   @GetMapping("/{numeroCorrelativo}/notas")
-  @PreAuthorize(
-      "hasRole('DOCENTE')")
+  @PreAuthorize("hasRole('DOCENTE')")
   public ResponseEntity<List<NotaDTO>> obtenerNotasPorActa(@PathVariable Long numeroCorrelativo) {
     List<NotaDTO> notas = actaService.obtenerNotasPorActa(numeroCorrelativo);
     return ResponseEntity.ok(notas);

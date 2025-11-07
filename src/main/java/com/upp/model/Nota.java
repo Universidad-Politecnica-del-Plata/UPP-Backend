@@ -14,8 +14,7 @@ public class Nota {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @NotNull
-  private Integer valor;
+  @NotNull private Integer valor;
 
   @ManyToOne
   @JoinColumn(name = "alumno_id")

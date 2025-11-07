@@ -21,8 +21,7 @@ public class Acta {
   @NotNull
   private TipoDeActa tipoDeActa;
 
-  @NotNull
-  private LocalDateTime fechaDeCreacion;
+  @NotNull private LocalDateTime fechaDeCreacion;
 
   @Enumerated(EnumType.STRING)
   @NotNull

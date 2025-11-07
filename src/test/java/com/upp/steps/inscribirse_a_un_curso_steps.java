@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.upp.dto.InscripcionDTO;
 import com.upp.repository.*;
 import com.upp.steps.shared.TokenHolder;
-import io.cucumber.java.Before;
 import io.cucumber.java.es.Cuando;
 import io.cucumber.java.es.Dado;
 import io.cucumber.java.es.Entonces;
@@ -30,7 +29,6 @@ public class inscribirse_a_un_curso_steps {
   private FluxExchangeResult<List> consultaResult;
   private FluxExchangeResult<Map> eliminarResult;
   private Long codigoInscripcionGuardado;
-  
 
   @Dado("que hay un alumno logueado con username {string}, password {string}")
   public void crearAlumnoLogueado(String username, String password) {

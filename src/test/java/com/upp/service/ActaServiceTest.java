@@ -74,14 +74,15 @@ class ActaServiceTest {
 
     curso = new Curso("CURSO-001", 30, materia);
 
-    cuatrimestre = new Cuatrimestre(
-        "2024-1", 
-        LocalDate.of(2024, 3, 1),
-        LocalDate.of(2024, 7, 15),
-        LocalDate.of(2024, 2, 1),
-        LocalDate.of(2024, 3, 1),
-        LocalDate.of(2024, 7, 16),
-        LocalDate.of(2024, 8, 15));
+    cuatrimestre =
+        new Cuatrimestre(
+            "2024-1",
+            LocalDate.of(2024, 3, 1),
+            LocalDate.of(2024, 7, 15),
+            LocalDate.of(2024, 2, 1),
+            LocalDate.of(2024, 3, 1),
+            LocalDate.of(2024, 7, 16),
+            LocalDate.of(2024, 8, 15));
 
     alumno = new Alumno();
     alumno.setId(1L);
@@ -136,8 +137,7 @@ class ActaServiceTest {
   void crearActaCursoNoExisteLanzaExcepcion() {
     when(cursoRepository.findByCodigo("CURSO-001")).thenReturn(Optional.empty());
 
-    assertThrows(
-        CursoNoExisteException.class, () -> actaService.crearActa(actaRequestDTO));
+    assertThrows(CursoNoExisteException.class, () -> actaService.crearActa(actaRequestDTO));
 
     verify(actaRepository, never()).save(any(Acta.class));
   }
@@ -192,8 +192,7 @@ class ActaServiceTest {
   void obtenerActasPorCursoCursoNoExisteLanzaExcepcion() {
     when(cursoRepository.findByCodigo("CURSO-001")).thenReturn(Optional.empty());
 
-    assertThrows(
-        CursoNoExisteException.class, () -> actaService.obtenerActasPorCurso("CURSO-001"));
+    assertThrows(CursoNoExisteException.class, () -> actaService.obtenerActasPorCurso("CURSO-001"));
   }
 
   @Test
@@ -285,8 +284,7 @@ class ActaServiceTest {
     when(actaRepository.findById(1L)).thenReturn(Optional.of(acta));
     when(alumnoRepository.findById(1L)).thenReturn(Optional.empty());
 
-    assertThrows(
-        AlumnoNoExisteException.class, () -> actaService.agregarNota(1L, notaRequestDTO));
+    assertThrows(AlumnoNoExisteException.class, () -> actaService.agregarNota(1L, notaRequestDTO));
 
     verify(notaRepository, never()).save(any(Nota.class));
   }
@@ -334,8 +332,7 @@ class ActaServiceTest {
     acta.setEstado(EstadoActa.CERRADA);
     when(notaRepository.findById(1L)).thenReturn(Optional.of(nota));
 
-    assertThrows(
-        ActaCerradaException.class, () -> actaService.actualizarNota(1L, notaRequestDTO));
+    assertThrows(ActaCerradaException.class, () -> actaService.actualizarNota(1L, notaRequestDTO));
 
     verify(notaRepository, never()).save(any(Nota.class));
   }

@@ -70,5 +70,4 @@ public class Alumno extends Usuario {
     this.fechaIngreso = fechaIngreso;
     this.telefonos = telefonos;
   }
-
 }

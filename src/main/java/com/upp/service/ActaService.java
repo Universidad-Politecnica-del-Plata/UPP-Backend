@@ -76,8 +76,7 @@ public class ActaService {
           "Ya existe un acta abierta de este tipo para el curso especificado.");
     }
 
-    Acta acta =
-        new Acta(actaRequestDTO.getTipoDeActa(), actaRequestDTO.getEstado(), curso);
+    Acta acta = new Acta(actaRequestDTO.getTipoDeActa(), actaRequestDTO.getEstado(), curso);
     actaRepository.save(acta);
 
     return convertToDTO(acta);
@@ -104,7 +103,8 @@ public class ActaService {
     return actas.stream().map(this::convertToDTO).toList();
   }
 
-  public ActaDTO actualizarEstadoActa(Long numeroCorrelativo, EstadoActaRequestDTO estadoRequestDTO) {
+  public ActaDTO actualizarEstadoActa(
+      Long numeroCorrelativo, EstadoActaRequestDTO estadoRequestDTO) {
     Optional<Acta> actaOpt = actaRepository.findById(numeroCorrelativo);
     if (actaOpt.isEmpty()) {
       throw new ActaNoExisteException("No existe un acta con ese número correlativo.");
@@ -136,23 +136,22 @@ public class ActaService {
     Alumno alumno = alumnoOpt.get();
 
     // Verificar que el alumno esté inscripto en el curso para el cuatrimestre actual
-    List<Cuatrimestre> cuatrimestresActuales = 
+    List<Cuatrimestre> cuatrimestresActuales =
         cuatrimestreRepository.findCuatrimestresActuales(LocalDate.now());
     if (cuatrimestresActuales.isEmpty()) {
       throw new CuatrimestreNoExisteException("No hay cuatrimestres activos.");
     }
-    
+
     Cuatrimestre cuatrimestreActual = cuatrimestresActuales.get(0);
     if (!inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(
-            alumno, acta.getCurso(), cuatrimestreActual)) {
+        alumno, acta.getCurso(), cuatrimestreActual)) {
       throw new AlumnoNoInscriptoException(
           "El alumno no está inscripto en este curso para el cuatrimestre actual.");
     }
 
     // Verificar si ya existe una nota para este alumno en esta acta
     if (notaRepository.existsByActaAndAlumno(acta, alumno)) {
-      throw new InscripcionExisteException(
-          "Ya existe una nota para este alumno en esta acta.");
+      throw new InscripcionExisteException("Ya existe una nota para este alumno en esta acta.");
     }
 
     Nota nota = new Nota(notaRequestDTO.getValor(), alumno, acta);
