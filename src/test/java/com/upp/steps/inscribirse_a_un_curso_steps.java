@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.web.reactive.server.FluxExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,36 +25,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class inscribirse_a_un_curso_steps {
 
   @Autowired private WebTestClient webTestClient;
-  @Autowired private UsuarioRepository usuarioRepository;
-  @Autowired private RolRepository rolRepository;
-  @Autowired private AlumnoRepository alumnoRepository;
-  @Autowired private InscripcionRepository inscripcionRepository;
-  @Autowired private CursoRepository cursoRepository;
-  @Autowired private MateriaRepository materiaRepository;
-  @Autowired private CuatrimestreRepository cuatrimestreRepository;
-  @Autowired private PlanDeEstudiosRepository planDeEstudiosRepository;
   @Autowired private TokenHolder tokenHolder;
-  @Autowired private JdbcTemplate jdbcTemplate;
   private FluxExchangeResult<InscripcionDTO> inscripcionResult;
   private FluxExchangeResult<List> consultaResult;
   private FluxExchangeResult<Map> eliminarResult;
   private Long codigoInscripcionGuardado;
-    @Autowired
-    private ActaRepository actaRepository;
-
-    @Before
-  public void limpiarBaseDeDatos() {
-    jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY FALSE");
-
-    inscripcionRepository.deleteAll();
-    actaRepository.deleteAll();
-    cursoRepository.deleteAll();
-    materiaRepository.deleteAll();
-    cuatrimestreRepository.deleteAll();
-
-    jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY TRUE");
-    codigoInscripcionGuardado = null;
-  }
+  
 
   @Dado("que hay un alumno logueado con username {string}, password {string}")
   public void crearAlumnoLogueado(String username, String password) {
