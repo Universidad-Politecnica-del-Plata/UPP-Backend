@@ -58,6 +58,7 @@ public class GlobalExceptionHandler {
     CursoExisteException.class,
     CuatrimestreExisteException.class,
     InscripcionExisteException.class,
+    ActaExisteException.class,
   })
   public ResponseEntity<Map<String, String>> handleEntityAlreadyExistsExceptions(
       RuntimeException ex) {

@@ -12,6 +12,7 @@ import com.upp.repository.ActaRepository;
 import com.upp.repository.RolRepository;
 import com.upp.repository.UsuarioRepository;
 import com.upp.steps.shared.TokenHolder;
+import io.cucumber.java.PendingException;
 import io.cucumber.java.es.Cuando;
 import io.cucumber.java.es.Dado;
 import io.cucumber.java.es.Entonces;
@@ -108,5 +109,12 @@ public class abrir_acta_steps {
     assertEquals(HttpStatus.CREATED, result.getStatus());
     assertNotNull(actaCreada);
     assertEquals(EstadoActa.valueOf(estadoEsperado.toUpperCase()), actaCreada.getEstado());
+  }
+
+  @Entonces("no se abre el acta")
+  public void noSeAbreElActa() {
+
+    assertTrue(result.getStatus().is4xxClientError());
+    assertEquals(HttpStatus.CONFLICT, result.getStatus());
   }
 }

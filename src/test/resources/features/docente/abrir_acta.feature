@@ -14,6 +14,11 @@ Característica: Abrir acta
     Cuando el docente abre un acta de "Cursada" para el curso "CURSO-001"
     Entonces el acta queda en estado "Abierta"
 
+  Escenario: : Abrir acta de el mismo tipo cuando ya hay una acta abierta lanza excepcion
+    Dado el docente abre un acta de "Cursada" para el curso "CURSO-001"
+    Cuando el docente abre un acta de "Cursada" para el curso "CURSO-001"
+    Entonces no se abre el acta
+
   Escenario: : Abrir acta de Final es exitoso
     Cuando el docente abre un acta de "Final" para el curso "CURSO-001"
     Entonces el acta queda en estado "Abierta"
