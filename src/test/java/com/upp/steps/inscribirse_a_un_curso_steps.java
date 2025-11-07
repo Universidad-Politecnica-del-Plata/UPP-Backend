@@ -40,12 +40,15 @@ public class inscribirse_a_un_curso_steps {
   private FluxExchangeResult<List> consultaResult;
   private FluxExchangeResult<Map> eliminarResult;
   private Long codigoInscripcionGuardado;
+    @Autowired
+    private ActaRepository actaRepository;
 
-  @Before
+    @Before
   public void limpiarBaseDeDatos() {
     jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY FALSE");
 
     inscripcionRepository.deleteAll();
+    actaRepository.deleteAll();
     cursoRepository.deleteAll();
     materiaRepository.deleteAll();
     cuatrimestreRepository.deleteAll();
