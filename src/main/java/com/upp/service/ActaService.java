@@ -2,9 +2,11 @@ package com.upp.service;
 
 import com.upp.dto.ActaDTO;
 import com.upp.dto.ActaRequestDTO;
+import com.upp.dto.AlumnoInscriptoDTO;
 import com.upp.dto.EstadoActaRequestDTO;
 import com.upp.dto.NotaDTO;
 import com.upp.dto.NotaRequestDTO;
+import com.upp.dto.NotasMasivasRequestDTO;
 import com.upp.exception.ActaCerradaException;
 import com.upp.exception.ActaExisteException;
 import com.upp.exception.ActaNoExisteException;
@@ -20,6 +22,7 @@ import com.upp.model.Alumno;
 import com.upp.model.Cuatrimestre;
 import com.upp.model.Curso;
 import com.upp.model.EstadoActa;
+import com.upp.model.Inscripcion;
 import com.upp.model.Nota;
 import com.upp.repository.ActaRepository;
 import com.upp.repository.AlumnoRepository;
@@ -28,6 +31,7 @@ import com.upp.repository.CursoRepository;
 import com.upp.repository.InscripcionRepository;
 import com.upp.repository.NotaRepository;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
@@ -146,7 +150,7 @@ public class ActaService {
 
     // Verificar que el alumno esté inscripto en el curso para el cuatrimestre actual
     List<Cuatrimestre> cuatrimestresActuales =
-        cuatrimestreRepository.findCuatrimestresActuales(LocalDate.now());
+        cuatrimestreRepository.findCuatrimestresByFecha(LocalDate.now());
     if (cuatrimestresActuales.isEmpty()) {
       throw new CuatrimestreNoExisteException("No hay cuatrimestres activos.");
     }
@@ -213,6 +217,91 @@ public class ActaService {
     }
 
     notaRepository.delete(nota);
+  }
+
+  public List<NotaDTO> agregarNotasMasivas(Long numeroCorrelativo, NotasMasivasRequestDTO notasMasivasRequestDTO) {
+    Optional<Acta> actaOpt = actaRepository.findById(numeroCorrelativo);
+    if (actaOpt.isEmpty()) {
+      throw new ActaNoExisteException("No existe un acta con ese número correlativo.");
+    }
+
+    Acta acta = actaOpt.get();
+    if (acta.getEstado() == EstadoActa.CERRADA) {
+      throw new ActaCerradaException("No se pueden agregar notas a un acta cerrada.");
+    }
+
+    // Obtener el cuatrimestre actual
+    List<Cuatrimestre> cuatrimestresActuales = cuatrimestreRepository.findCuatrimestresByFecha(acta.getFechaDeCreacion().toLocalDate());
+    if (cuatrimestresActuales.isEmpty()) {
+      throw new CuatrimestreNoExisteException("No hay cuatrimestres activos.");
+    }
+    Cuatrimestre cuatrimestreActual = cuatrimestresActuales.get(0);
+
+    List<NotaDTO> notasCreadas = new ArrayList<>();
+
+    for (NotaRequestDTO notaRequestDTO : notasMasivasRequestDTO.getNotas()) {
+      // Validar que la nota sea aprobatoria (entre 4 y 10)
+      if (notaRequestDTO.getValor() < 4 || notaRequestDTO.getValor() > 10) {
+        throw new NotaInvalidaException("Solo se pueden cargar notas aprobatorias (entre 4 y 10).");
+      }
+
+      Optional<Alumno> alumnoOpt = alumnoRepository.findById(notaRequestDTO.getAlumnoId());
+      if (alumnoOpt.isEmpty()) {
+        throw new AlumnoNoExisteException("No existe un alumno con ID: " + notaRequestDTO.getAlumnoId());
+      }
+
+      Alumno alumno = alumnoOpt.get();
+
+      // Verificar que el alumno esté inscripto en el curso para el cuatrimestre actual
+      if (!inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(alumno, acta.getCurso(), cuatrimestreActual)) {
+        throw new AlumnoNoInscriptoException(
+          "El alumno " + alumno.getNombre() + " " + alumno.getApellido() + 
+          " no está inscripto en este curso para el cuatrimestre actual.");
+      }
+
+      // Verificar si ya existe una nota para este alumno en esta acta
+      if (notaRepository.existsByActaAndAlumno(acta, alumno)) {
+        throw new InscripcionExisteException(
+          "Ya existe una nota para el alumno " + alumno.getNombre() + " " + alumno.getApellido() + 
+          " en esta acta.");
+      }
+
+      Nota nota = new Nota(notaRequestDTO.getValor(), alumno, acta);
+      notaRepository.save(nota);
+      notasCreadas.add(convertNotaToDTO(nota));
+    }
+
+    return notasCreadas;
+  }
+
+  public List<AlumnoInscriptoDTO> obtenerAlumnosInscriptosPorActa(Long numeroCorrelativo) {
+    Optional<Acta> actaOpt = actaRepository.findById(numeroCorrelativo);
+    if (actaOpt.isEmpty()) {
+      throw new ActaNoExisteException("No existe un acta con ese número correlativo.");
+    }
+
+    Acta acta = actaOpt.get();
+    Curso curso = acta.getCurso();
+
+    // Obtener el cuatrimestre que estaba activo cuando se creó el acta
+    List<Cuatrimestre> cuatrimestresActivos = cuatrimestreRepository.findCuatrimestresByFecha(acta.getFechaDeCreacion().toLocalDate());
+    if (cuatrimestresActivos.isEmpty()) {
+      throw new CuatrimestreNoExisteException("No había cuatrimestres activos en la fecha de creación del acta.");
+    }
+
+    Cuatrimestre cuatrimestreDelActa = cuatrimestresActivos.get(0);
+
+    // Obtener las inscripciones para ese curso y cuatrimestre
+    List<Inscripcion> inscripciones = inscripcionRepository.findByCursoAndCuatrimestre(curso, cuatrimestreDelActa);
+
+    return inscripciones.stream()
+        .map(inscripcion -> new AlumnoInscriptoDTO(
+            inscripcion.getAlumno().getId(),
+            inscripcion.getAlumno().getNombre(),
+            inscripcion.getAlumno().getApellido(),
+            inscripcion.getAlumno().getMatricula(),
+            inscripcion.getAlumno().getEmail()))
+        .toList();
   }
 
   private ActaDTO convertToDTO(Acta acta) {

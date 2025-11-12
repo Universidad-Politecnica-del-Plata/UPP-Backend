@@ -90,7 +90,7 @@ class InscripcionServiceTest {
   void crearInscripcionExitoso() {
     when(alumnoRepository.findByUsername("jperez")).thenReturn(Optional.of(alumno));
     when(cursoRepository.findByCodigo("CURSO-001")).thenReturn(Optional.of(curso));
-    when(cuatrimestreRepository.findCuatrimestresActuales(any(LocalDate.class)))
+    when(cuatrimestreRepository.findCuatrimestresByFecha(any(LocalDate.class)))
         .thenReturn(List.of(cuatrimestre));
     when(inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(alumno, curso, cuatrimestre))
         .thenReturn(false);
@@ -142,7 +142,7 @@ class InscripcionServiceTest {
   void crearInscripcionCuatrimestreNoExisteLanzaExcepcion() {
     when(alumnoRepository.findByUsername("jperez")).thenReturn(Optional.of(alumno));
     when(cursoRepository.findByCodigo("CURSO-001")).thenReturn(Optional.of(curso));
-    when(cuatrimestreRepository.findCuatrimestresActuales(any(LocalDate.class)))
+    when(cuatrimestreRepository.findCuatrimestresByFecha(any(LocalDate.class)))
         .thenReturn(new ArrayList<>());
 
     assertThrows(
@@ -156,7 +156,7 @@ class InscripcionServiceTest {
   void crearInscripcionYaExisteLanzaExcepcion() {
     when(alumnoRepository.findByUsername("jperez")).thenReturn(Optional.of(alumno));
     when(cursoRepository.findByCodigo("CURSO-001")).thenReturn(Optional.of(curso));
-    when(cuatrimestreRepository.findCuatrimestresActuales(any(LocalDate.class)))
+    when(cuatrimestreRepository.findCuatrimestresByFecha(any(LocalDate.class)))
         .thenReturn(List.of(cuatrimestre));
     when(inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(alumno, curso, cuatrimestre))
         .thenReturn(true);
@@ -263,7 +263,7 @@ class InscripcionServiceTest {
 
     when(alumnoRepository.findByUsername("jperez")).thenReturn(Optional.of(alumno));
     when(cursoRepository.findByCodigo("CURSO-001")).thenReturn(Optional.of(curso));
-    when(cuatrimestreRepository.findCuatrimestresActuales(any(LocalDate.class)))
+    when(cuatrimestreRepository.findCuatrimestresByFecha(any(LocalDate.class)))
         .thenReturn(List.of(cuatrimestreFuturo));
     when(inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(
             alumno, curso, cuatrimestreFuturo))
@@ -292,7 +292,7 @@ class InscripcionServiceTest {
 
     when(alumnoRepository.findByUsername("jperez")).thenReturn(Optional.of(alumno));
     when(cursoRepository.findByCodigo("CURSO-001")).thenReturn(Optional.of(curso));
-    when(cuatrimestreRepository.findCuatrimestresActuales(any(LocalDate.class)))
+    when(cuatrimestreRepository.findCuatrimestresByFecha(any(LocalDate.class)))
         .thenReturn(List.of(cuatrimestrePasado));
     when(inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(
             alumno, curso, cuatrimestrePasado))
@@ -312,7 +312,7 @@ class InscripcionServiceTest {
     // El cuatrimestre ya está configurado con período válido en setUp()
     when(alumnoRepository.findByUsername("jperez")).thenReturn(Optional.of(alumno));
     when(cursoRepository.findByCodigo("CURSO-001")).thenReturn(Optional.of(curso));
-    when(cuatrimestreRepository.findCuatrimestresActuales(any(LocalDate.class)))
+    when(cuatrimestreRepository.findCuatrimestresByFecha(any(LocalDate.class)))
         .thenReturn(List.of(cuatrimestre));
     when(inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(alumno, curso, cuatrimestre))
         .thenReturn(false);

@@ -52,7 +52,7 @@ public class InscripcionService {
     }
 
     List<Cuatrimestre> cuatrimestreOpt =
-        cuatrimestreRepository.findCuatrimestresActuales(LocalDate.now());
+        cuatrimestreRepository.findCuatrimestresByFecha(LocalDate.now());
     if (cuatrimestreOpt.isEmpty()) {
       throw new CuatrimestreNoExisteException("No existe un cuatrimestre con ese código.");
     }

@@ -2,9 +2,11 @@ package com.upp.controller;
 
 import com.upp.dto.ActaDTO;
 import com.upp.dto.ActaRequestDTO;
+import com.upp.dto.AlumnoInscriptoDTO;
 import com.upp.dto.EstadoActaRequestDTO;
 import com.upp.dto.NotaDTO;
 import com.upp.dto.NotaRequestDTO;
+import com.upp.dto.NotasMasivasRequestDTO;
 import com.upp.service.ActaService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -90,5 +92,22 @@ public class ActaController {
   public ResponseEntity<?> eliminarNota(@PathVariable Long notaId) {
     actaService.eliminarNota(notaId);
     return ResponseEntity.ok(Map.of("message", "Nota eliminada exitosamente"));
+  }
+
+  @PostMapping("/{numeroCorrelativo}/notas/masivas")
+  @PreAuthorize("hasRole('DOCENTE')")
+  public ResponseEntity<List<NotaDTO>> agregarNotasMasivas(
+      @PathVariable Long numeroCorrelativo,
+      @Valid @RequestBody NotasMasivasRequestDTO notasMasivasRequestDTO) {
+    List<NotaDTO> resultado = actaService.agregarNotasMasivas(numeroCorrelativo, notasMasivasRequestDTO);
+    return ResponseEntity.status(HttpStatus.CREATED).body(resultado);
+  }
+
+  @GetMapping("/{numeroCorrelativo}/alumnos-inscriptos")
+  @PreAuthorize("hasRole('DOCENTE')")
+  public ResponseEntity<List<AlumnoInscriptoDTO>> obtenerAlumnosInscriptosPorActa(
+      @PathVariable Long numeroCorrelativo) {
+    List<AlumnoInscriptoDTO> alumnos = actaService.obtenerAlumnosInscriptosPorActa(numeroCorrelativo);
+    return ResponseEntity.ok(alumnos);
   }
 }

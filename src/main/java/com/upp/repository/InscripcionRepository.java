@@ -15,4 +15,6 @@ public interface InscripcionRepository extends JpaRepository<Inscripcion, Long> 
 
   boolean existsByAlumnoAndCursoAndCuatrimestre(
       Alumno alumno, Curso curso, Cuatrimestre cuatrimestre);
+
+  List<Inscripcion> findByCursoAndCuatrimestre(Curso curso, Cuatrimestre cuatrimestre);
 }

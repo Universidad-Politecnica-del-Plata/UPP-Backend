@@ -186,7 +186,7 @@ public class CursoService {
     List<Materia> materias = materiaRepository.findByCodigoDeMateria_In(codigosMaterias);
 
     List<Cuatrimestre> cuatrimestresActuales =
-        cuatrimestreRepository.findCuatrimestresActuales(LocalDate.now());
+        cuatrimestreRepository.findCuatrimestresByFecha(LocalDate.now());
 
     return materias.stream()
         .flatMap(materia -> cursoRepository.findByMateria(materia).stream())

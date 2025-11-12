@@ -16,5 +16,5 @@ public interface CuatrimestreRepository extends JpaRepository<Cuatrimestre, Stri
 
   @Query(
       "SELECT c FROM Cuatrimestre c WHERE :fecha >= c.fechaInicioPeriodoDeInscripcion AND :fecha <= c.fechaFinPeriodoIntegradores")
-  List<Cuatrimestre> findCuatrimestresActuales(LocalDate fecha);
+  List<Cuatrimestre> findCuatrimestresByFecha(LocalDate fecha);
 }
