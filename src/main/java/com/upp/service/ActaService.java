@@ -102,6 +102,11 @@ public class ActaService {
     return actas.stream().map(this::convertToDTO).toList();
   }
 
+  public List<ActaDTO> obtenerTodasLasActas() {
+    List<Acta> actas = actaRepository.findAll();
+    return actas.stream().map(this::convertToDTO).toList();
+  }
+
   public ActaDTO actualizarEstadoActa(
       Long numeroCorrelativo, EstadoActaRequestDTO estadoRequestDTO) {
     Optional<Acta> actaOpt = actaRepository.findById(numeroCorrelativo);

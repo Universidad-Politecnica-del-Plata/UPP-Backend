@@ -39,6 +39,13 @@ public class ActaController {
     return ResponseEntity.ok(acta);
   }
 
+  @GetMapping
+  @PreAuthorize("hasRole('DOCENTE')")
+  public ResponseEntity<List<ActaDTO>> obtenerTodasLasActas() {
+    List<ActaDTO> actas = actaService.obtenerTodasLasActas();
+    return ResponseEntity.ok(actas);
+  }
+
   @GetMapping("/curso/{codigoCurso}")
   @PreAuthorize("hasRole('DOCENTE')")
   public ResponseEntity<List<ActaDTO>> obtenerActasPorCurso(@PathVariable String codigoCurso) {
