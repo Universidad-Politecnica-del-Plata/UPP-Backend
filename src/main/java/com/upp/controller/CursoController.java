@@ -47,6 +47,7 @@ public class CursoController {
   }
 
   @GetMapping
+  @PreAuthorize("hasRole('GESTOR_DE_PLANIFICACION') or hasRole('DOCENTE')")
   public ResponseEntity<List<CursoDTO>> obtenerTodosLosCursos() {
     List<CursoDTO> cursos = cursoService.obtenerTodosLosCursos();
     return ResponseEntity.ok(cursos);
