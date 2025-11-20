@@ -19,7 +19,6 @@ import com.upp.exception.AlumnoNoExisteException;
 import com.upp.exception.AlumnoNoInscriptoException;
 import com.upp.exception.CuatrimestreNoExisteException;
 import com.upp.exception.CursoNoExisteException;
-import com.upp.exception.InscripcionExisteException;
 import com.upp.exception.NotaInvalidaException;
 import com.upp.exception.NotaNoExisteException;
 import com.upp.model.Acta;
@@ -555,16 +554,18 @@ class ActaServiceTest {
         .thenReturn(List.of(cuatrimestre));
     when(alumnoRepository.findById(1L)).thenReturn(Optional.of(alumno));
     when(alumnoRepository.findById(2L)).thenReturn(Optional.of(alumno2));
-    when(inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(
-        alumno, curso, cuatrimestre)).thenReturn(true);
-    when(inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(
-        alumno2, curso, cuatrimestre)).thenReturn(true);
+    when(inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(alumno, curso, cuatrimestre))
+        .thenReturn(true);
+    when(inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(alumno2, curso, cuatrimestre))
+        .thenReturn(true);
     when(notaRepository.save(any(Nota.class)))
-        .thenAnswer(invocation -> {
-          Nota savedNota = invocation.getArgument(0);
-          savedNota.setId(savedNota.getAlumno().getId()); // ID de la nota = ID del alumno para test
-          return savedNota;
-        });
+        .thenAnswer(
+            invocation -> {
+              Nota savedNota = invocation.getArgument(0);
+              savedNota.setId(
+                  savedNota.getAlumno().getId()); // ID de la nota = ID del alumno para test
+              return savedNota;
+            });
 
     // Ejecución
     List<NotaDTO> resultado = actaService.agregarNotasMasivas(1L, notasMasivasRequest);
@@ -572,12 +573,12 @@ class ActaServiceTest {
     // Verificaciones
     assertNotNull(resultado);
     assertEquals(2, resultado.size());
-    
+
     assertEquals(1L, resultado.get(0).getId());
     assertEquals(8, resultado.get(0).getValor());
     assertEquals(1L, resultado.get(0).getAlumnoId());
     assertEquals("Juan", resultado.get(0).getNombreAlumno());
-    
+
     assertEquals(2L, resultado.get(1).getId());
     assertEquals(9, resultado.get(1).getValor());
     assertEquals(2L, resultado.get(1).getAlumnoId());
@@ -588,12 +589,13 @@ class ActaServiceTest {
 
   @Test
   void agregarNotasMasivasActaNoExisteLanzaExcepcion() {
-    NotasMasivasRequestDTO notasMasivasRequest = new NotasMasivasRequestDTO(
-        List.of(new NotaRequestDTO(8, 1L)));
-    
+    NotasMasivasRequestDTO notasMasivasRequest =
+        new NotasMasivasRequestDTO(List.of(new NotaRequestDTO(8, 1L)));
+
     when(actaRepository.findById(1L)).thenReturn(Optional.empty());
 
-    assertThrows(ActaNoExisteException.class, 
+    assertThrows(
+        ActaNoExisteException.class,
         () -> actaService.agregarNotasMasivas(1L, notasMasivasRequest));
 
     verify(notaRepository, never()).save(any(Nota.class));
@@ -602,27 +604,28 @@ class ActaServiceTest {
   @Test
   void agregarNotasMasivasActaCerradaLanzaExcepcion() {
     acta.setEstado(EstadoActa.CERRADA);
-    NotasMasivasRequestDTO notasMasivasRequest = new NotasMasivasRequestDTO(
-        List.of(new NotaRequestDTO(8, 1L)));
-    
+    NotasMasivasRequestDTO notasMasivasRequest =
+        new NotasMasivasRequestDTO(List.of(new NotaRequestDTO(8, 1L)));
+
     when(actaRepository.findById(1L)).thenReturn(Optional.of(acta));
 
-    assertThrows(ActaCerradaException.class, 
-        () -> actaService.agregarNotasMasivas(1L, notasMasivasRequest));
+    assertThrows(
+        ActaCerradaException.class, () -> actaService.agregarNotasMasivas(1L, notasMasivasRequest));
 
     verify(notaRepository, never()).save(any(Nota.class));
   }
 
   @Test
   void agregarNotasMasivasNotaInvalidaLanzaExcepcion() {
-    NotasMasivasRequestDTO notasMasivasRequest = new NotasMasivasRequestDTO(
-        List.of(new NotaRequestDTO(3, 1L))); // Nota inválida
+    NotasMasivasRequestDTO notasMasivasRequest =
+        new NotasMasivasRequestDTO(List.of(new NotaRequestDTO(3, 1L))); // Nota inválida
 
     when(cuatrimestreRepository.findCuatrimestresByFecha(any(LocalDate.class)))
-          .thenReturn(List.of(cuatrimestre));
+        .thenReturn(List.of(cuatrimestre));
     when(actaRepository.findById(1L)).thenReturn(Optional.of(acta));
 
-    assertThrows(NotaInvalidaException.class, 
+    assertThrows(
+        NotaInvalidaException.class,
         () -> actaService.agregarNotasMasivas(1L, notasMasivasRequest));
 
     verify(notaRepository, never()).save(any(Nota.class));
@@ -630,15 +633,16 @@ class ActaServiceTest {
 
   @Test
   void agregarNotasMasivasAlumnoNoExisteLanzaExcepcion() {
-    NotasMasivasRequestDTO notasMasivasRequest = new NotasMasivasRequestDTO(
-        List.of(new NotaRequestDTO(8, 999L))); // Alumno no existe
-    
+    NotasMasivasRequestDTO notasMasivasRequest =
+        new NotasMasivasRequestDTO(List.of(new NotaRequestDTO(8, 999L))); // Alumno no existe
+
     when(actaRepository.findById(1L)).thenReturn(Optional.of(acta));
     when(cuatrimestreRepository.findCuatrimestresByFecha(any(LocalDate.class)))
         .thenReturn(List.of(cuatrimestre));
     when(alumnoRepository.findById(999L)).thenReturn(Optional.empty());
 
-    assertThrows(AlumnoNoExisteException.class, 
+    assertThrows(
+        AlumnoNoExisteException.class,
         () -> actaService.agregarNotasMasivas(1L, notasMasivasRequest));
 
     verify(notaRepository, never()).save(any(Nota.class));
@@ -646,17 +650,18 @@ class ActaServiceTest {
 
   @Test
   void agregarNotasMasivasAlumnoNoInscriptoLanzaExcepcion() {
-    NotasMasivasRequestDTO notasMasivasRequest = new NotasMasivasRequestDTO(
-        List.of(new NotaRequestDTO(8, 1L)));
-    
+    NotasMasivasRequestDTO notasMasivasRequest =
+        new NotasMasivasRequestDTO(List.of(new NotaRequestDTO(8, 1L)));
+
     when(actaRepository.findById(1L)).thenReturn(Optional.of(acta));
     when(cuatrimestreRepository.findCuatrimestresByFecha(any(LocalDate.class)))
         .thenReturn(List.of(cuatrimestre));
     when(alumnoRepository.findById(1L)).thenReturn(Optional.of(alumno));
-    when(inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(
-        alumno, curso, cuatrimestre)).thenReturn(false);
+    when(inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(alumno, curso, cuatrimestre))
+        .thenReturn(false);
 
-    assertThrows(AlumnoNoInscriptoException.class, 
+    assertThrows(
+        AlumnoNoInscriptoException.class,
         () -> actaService.agregarNotasMasivas(1L, notasMasivasRequest));
 
     verify(notaRepository, never()).save(any(Nota.class));
@@ -697,14 +702,14 @@ class ActaServiceTest {
     // Verificaciones
     assertNotNull(resultado);
     assertEquals(2, resultado.size());
-    
+
     AlumnoInscriptoDTO alumnoDTO1 = resultado.get(0);
     assertEquals(1L, alumnoDTO1.getId());
     assertEquals("Juan", alumnoDTO1.getNombre());
     assertEquals("Pérez", alumnoDTO1.getApellido());
     assertEquals(100001L, alumnoDTO1.getMatricula());
     assertEquals("juan.perez@example.com", alumnoDTO1.getEmail());
-    
+
     AlumnoInscriptoDTO alumnoDTO2 = resultado.get(1);
     assertEquals(2L, alumnoDTO2.getId());
     assertEquals("María", alumnoDTO2.getNombre());
@@ -717,8 +722,8 @@ class ActaServiceTest {
   void obtenerAlumnosInscriptosPorActaNoExisteLanzaExcepcion() {
     when(actaRepository.findById(1L)).thenReturn(Optional.empty());
 
-    assertThrows(ActaNoExisteException.class, 
-        () -> actaService.obtenerAlumnosInscriptosPorActa(1L));
+    assertThrows(
+        ActaNoExisteException.class, () -> actaService.obtenerAlumnosInscriptosPorActa(1L));
   }
 
   @Test
@@ -727,8 +732,8 @@ class ActaServiceTest {
     when(cuatrimestreRepository.findCuatrimestresByFecha(acta.getFechaDeCreacion().toLocalDate()))
         .thenReturn(new ArrayList<>());
 
-    assertThrows(CuatrimestreNoExisteException.class, 
-        () -> actaService.obtenerAlumnosInscriptosPorActa(1L));
+    assertThrows(
+        CuatrimestreNoExisteException.class, () -> actaService.obtenerAlumnosInscriptosPorActa(1L));
   }
 
   @Test

@@ -99,7 +99,8 @@ public class ActaController {
   public ResponseEntity<List<NotaDTO>> agregarNotasMasivas(
       @PathVariable Long numeroCorrelativo,
       @Valid @RequestBody NotasMasivasRequestDTO notasMasivasRequestDTO) {
-    List<NotaDTO> resultado = actaService.agregarNotasMasivas(numeroCorrelativo, notasMasivasRequestDTO);
+    List<NotaDTO> resultado =
+        actaService.agregarNotasMasivas(numeroCorrelativo, notasMasivasRequestDTO);
     return ResponseEntity.status(HttpStatus.CREATED).body(resultado);
   }
 
@@ -107,7 +108,8 @@ public class ActaController {
   @PreAuthorize("hasRole('DOCENTE')")
   public ResponseEntity<List<AlumnoInscriptoDTO>> obtenerAlumnosInscriptosPorActa(
       @PathVariable Long numeroCorrelativo) {
-    List<AlumnoInscriptoDTO> alumnos = actaService.obtenerAlumnosInscriptosPorActa(numeroCorrelativo);
+    List<AlumnoInscriptoDTO> alumnos =
+        actaService.obtenerAlumnosInscriptosPorActa(numeroCorrelativo);
     return ResponseEntity.ok(alumnos);
   }
 }

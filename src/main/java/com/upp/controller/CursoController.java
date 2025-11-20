@@ -67,5 +67,4 @@ public class CursoController {
     List<CursoDTO> cursos = cursoService.obtenerCursosPorPlanDeEstudios(codigoPlan);
     return ResponseEntity.ok(cursos);
   }
-
 }
