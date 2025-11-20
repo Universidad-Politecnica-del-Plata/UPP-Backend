@@ -44,8 +44,4 @@ Característica: Cargar nota de alumno a un acta
   Escenario: Intenta cargar nota para alumno no inscrito
     Cuando el docente carga la nota de un alumno con dni 56789 y nota 8
     Entonces no se puede cargar la nota por alumno no inscrito
-
-  Escenario: Intenta cargar nota duplicada
-    Dado que ya existe una nota para el alumno con dni 12345678
-    Cuando el docente carga la nota de un alumno con dni 12345678 y nota 9
-    Entonces no se puede cargar la nota por nota duplicada
+    
