@@ -242,7 +242,6 @@ class ActaServiceTest {
         .thenReturn(List.of(cuatrimestre));
     when(inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(alumno, curso, cuatrimestre))
         .thenReturn(true);
-    when(notaRepository.existsByActaAndAlumno(acta, alumno)).thenReturn(false);
     when(notaRepository.save(any(Nota.class)))
         .thenAnswer(
             invocation -> {
@@ -290,22 +289,6 @@ class ActaServiceTest {
     when(alumnoRepository.findById(1L)).thenReturn(Optional.empty());
 
     assertThrows(AlumnoNoExisteException.class, () -> actaService.agregarNota(1L, notaRequestDTO));
-
-    verify(notaRepository, never()).save(any(Nota.class));
-  }
-
-  @Test
-  void agregarNotaYaExisteLanzaExcepcion() {
-    when(actaRepository.findById(1L)).thenReturn(Optional.of(acta));
-    when(alumnoRepository.findById(1L)).thenReturn(Optional.of(alumno));
-    when(cuatrimestreRepository.findCuatrimestresByFecha(any(LocalDate.class)))
-        .thenReturn(List.of(cuatrimestre));
-    when(inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(alumno, curso, cuatrimestre))
-        .thenReturn(true);
-    when(notaRepository.existsByActaAndAlumno(acta, alumno)).thenReturn(true);
-
-    assertThrows(
-        InscripcionExisteException.class, () -> actaService.agregarNota(1L, notaRequestDTO));
 
     verify(notaRepository, never()).save(any(Nota.class));
   }
@@ -461,7 +444,6 @@ class ActaServiceTest {
         .thenReturn(List.of(cuatrimestre));
     when(inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(alumno, curso, cuatrimestre))
         .thenReturn(true);
-    when(notaRepository.existsByActaAndAlumno(acta, alumno)).thenReturn(false);
     when(notaRepository.save(any(Nota.class)))
         .thenAnswer(
             invocation -> {
@@ -490,7 +472,6 @@ class ActaServiceTest {
         .thenReturn(List.of(cuatrimestre));
     when(inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(alumno, curso, cuatrimestre))
         .thenReturn(true);
-    when(notaRepository.existsByActaAndAlumno(acta, alumno)).thenReturn(false);
     when(notaRepository.save(any(Nota.class)))
         .thenAnswer(
             invocation -> {
@@ -578,8 +559,6 @@ class ActaServiceTest {
         alumno, curso, cuatrimestre)).thenReturn(true);
     when(inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(
         alumno2, curso, cuatrimestre)).thenReturn(true);
-    when(notaRepository.existsByActaAndAlumno(acta, alumno)).thenReturn(false);
-    when(notaRepository.existsByActaAndAlumno(acta, alumno2)).thenReturn(false);
     when(notaRepository.save(any(Nota.class)))
         .thenAnswer(invocation -> {
           Nota savedNota = invocation.getArgument(0);
@@ -678,25 +657,6 @@ class ActaServiceTest {
         alumno, curso, cuatrimestre)).thenReturn(false);
 
     assertThrows(AlumnoNoInscriptoException.class, 
-        () -> actaService.agregarNotasMasivas(1L, notasMasivasRequest));
-
-    verify(notaRepository, never()).save(any(Nota.class));
-  }
-
-  @Test
-  void agregarNotasMasivasNotaYaExisteLanzaExcepcion() {
-    NotasMasivasRequestDTO notasMasivasRequest = new NotasMasivasRequestDTO(
-        List.of(new NotaRequestDTO(8, 1L)));
-    
-    when(actaRepository.findById(1L)).thenReturn(Optional.of(acta));
-    when(cuatrimestreRepository.findCuatrimestresByFecha(any(LocalDate.class)))
-        .thenReturn(List.of(cuatrimestre));
-    when(alumnoRepository.findById(1L)).thenReturn(Optional.of(alumno));
-    when(inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(
-        alumno, curso, cuatrimestre)).thenReturn(true);
-    when(notaRepository.existsByActaAndAlumno(acta, alumno)).thenReturn(true);
-
-    assertThrows(InscripcionExisteException.class, 
         () -> actaService.agregarNotasMasivas(1L, notasMasivasRequest));
 
     verify(notaRepository, never()).save(any(Nota.class));

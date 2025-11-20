@@ -14,7 +14,6 @@ import com.upp.exception.AlumnoNoExisteException;
 import com.upp.exception.AlumnoNoInscriptoException;
 import com.upp.exception.CuatrimestreNoExisteException;
 import com.upp.exception.CursoNoExisteException;
-import com.upp.exception.InscripcionExisteException;
 import com.upp.exception.NotaInvalidaException;
 import com.upp.exception.NotaNoExisteException;
 import com.upp.model.Acta;
@@ -163,11 +162,18 @@ public class ActaService {
     }
 
     // Verificar si ya existe una nota para este alumno en esta acta
-    if (notaRepository.existsByActaAndAlumno(acta, alumno)) {
-      throw new InscripcionExisteException("Ya existe una nota para este alumno en esta acta.");
+    Optional<Nota> notaExistente = notaRepository.findByActaAndAlumno(acta, alumno);
+    Nota nota;
+    
+    if (notaExistente.isPresent()) {
+      // Si ya existe una nota, actualizarla
+      nota = notaExistente.get();
+      nota.setValor(notaRequestDTO.getValor());
+    } else {
+      // Si no existe, crear una nueva nota
+      nota = new Nota(notaRequestDTO.getValor(), alumno, acta);
     }
-
-    Nota nota = new Nota(notaRequestDTO.getValor(), alumno, acta);
+    
     notaRepository.save(nota);
 
     return convertNotaToDTO(nota);
@@ -260,13 +266,18 @@ public class ActaService {
       }
 
       // Verificar si ya existe una nota para este alumno en esta acta
-      if (notaRepository.existsByActaAndAlumno(acta, alumno)) {
-        throw new InscripcionExisteException(
-          "Ya existe una nota para el alumno " + alumno.getNombre() + " " + alumno.getApellido() + 
-          " en esta acta.");
+      Optional<Nota> notaExistente = notaRepository.findByActaAndAlumno(acta, alumno);
+      Nota nota;
+      
+      if (notaExistente.isPresent()) {
+        // Si ya existe una nota, actualizarla
+        nota = notaExistente.get();
+        nota.setValor(notaRequestDTO.getValor());
+      } else {
+        // Si no existe, crear una nueva nota
+        nota = new Nota(notaRequestDTO.getValor(), alumno, acta);
       }
-
-      Nota nota = new Nota(notaRequestDTO.getValor(), alumno, acta);
+      
       notaRepository.save(nota);
       notasCreadas.add(convertNotaToDTO(nota));
     }
