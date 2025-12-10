@@ -24,18 +24,15 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class cargar_nota_de_alumno_en_acta_steps {
   @Autowired private WebTestClient webTestClient;
-  @Autowired private ActaRepository actaRepository;
   @Autowired private AlumnoRepository alumnoRepository;
   @Autowired private TokenHolder tokenHolder;
 
   private FluxExchangeResult<NotaDTO> resultNota;
-  private FluxExchangeResult<ActaDTO> resultActa;
-  private ActaDTO actaCreada;
   private NotaDTO notaCreada;
   private Long actaNumeroCorrelativo;
 
-  @Cuando("el docente carga la nota de un alumno con dni {long} y nota {int}")
-  public void elDocenteCargaLaNotaDeUnAlumnoConDniYNota(Long dni, Integer nota) {
+  @Cuando("el docente carga la nota de un alumno con dni {long} y nota {int} para el curso {string}")
+  public void elDocenteCargaLaNotaDeUnAlumnoConDniYNota(Long dni, Integer nota, String curso) {
     // Buscar alumno por DNI
     Alumno alumno = alumnoRepository.findByDni(dni).orElse(null);
 
@@ -44,9 +41,12 @@ public class cargar_nota_de_alumno_en_acta_steps {
       if (actaNumeroCorrelativo == null) {
         // Obtener actas del curso para encontrar el número correlativo
         var resultActas =
-            webTestClient
-                .get()
-                .uri("/api/actas/curso/CURSO-001")
+                webTestClient.get()
+                        .uri(uriBuilder ->
+                                uriBuilder
+                                        .path("/api/actas/curso/{curso}")
+                                        .build(curso)
+                        )
                 .header("Authorization", "Bearer " + tokenHolder.getToken())
                 .exchange()
                 .returnResult(ActaDTO[].class);
@@ -150,13 +150,6 @@ public class cargar_nota_de_alumno_en_acta_steps {
     }
   }
 
-  @Dado("que ya existe una nota para el alumno con dni {long}")
-  public void queYaExisteUnaNotaParaElAlumnoConDni(Long dni) {
-    // Cargar una primera nota para el alumno
-    elDocenteCargaLaNotaDeUnAlumnoConDniYNota(dni, 7);
-    assertEquals(HttpStatus.CREATED, resultNota.getStatus());
-  }
-
   @Entonces("se guarda la información en el acta")
   public void seGuardaLaInformacionEnElActa() {
     assertEquals(HttpStatus.CREATED, resultNota.getStatus());
@@ -193,11 +186,5 @@ public class cargar_nota_de_alumno_en_acta_steps {
   public void noSePuedeCargarLaNotaPorAlumnoNoInscrito() {
     assertTrue(resultNota.getStatus().is4xxClientError());
     assertEquals(HttpStatus.BAD_REQUEST, resultNota.getStatus());
-  }
-
-  @Entonces("no se puede cargar la nota por nota duplicada")
-  public void noSePuedeCargarLaNotaPorNotaDuplicada() {
-    assertTrue(resultNota.getStatus().is4xxClientError());
-    assertEquals(HttpStatus.CONFLICT, resultNota.getStatus());
   }
 }

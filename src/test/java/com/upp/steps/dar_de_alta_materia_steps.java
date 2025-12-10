@@ -65,7 +65,7 @@ public class dar_de_alta_materia_steps {
 
   @Dado("que existe una materia con el código de materia {string} y nombre {string}")
   public void queExisteUnaMateria(String codigo, String nombre) {
-    this.darDeAltaMateria(codigo, nombre, "Contenido", "Optativa", 1, 1);
+    this.darDeAltaMateria(codigo, nombre, "Contenido", "Optativa", 1, 0);
   }
 
   @Cuando(

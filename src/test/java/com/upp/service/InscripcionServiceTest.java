@@ -7,6 +7,8 @@ import static org.mockito.Mockito.*;
 import com.upp.dto.InscripcionDTO;
 import com.upp.dto.InscripcionRequestDTO;
 import com.upp.exception.AlumnoNoExisteException;
+import com.upp.exception.CorrelativasNoAprobadasException;
+import com.upp.exception.CreditosInsuficientesException;
 import com.upp.exception.CuatrimestreNoExisteException;
 import com.upp.exception.CursoNoExisteException;
 import com.upp.exception.InscripcionExisteException;
@@ -40,22 +42,29 @@ class InscripcionServiceTest {
   @Mock private AlumnoRepository alumnoRepository;
   @Mock private CursoRepository cursoRepository;
   @Mock private CuatrimestreRepository cuatrimestreRepository;
+  @Mock private HistoriaAcademicaService historiaAcademicaService;
 
   @InjectMocks private InscripcionService inscripcionService;
 
   private InscripcionRequestDTO inscripcionRequestDTO;
+  private InscripcionRequestDTO inscripcionMuchosCreditosRequestDTO;
   private Inscripcion inscripcion;
   private Alumno alumno;
   private Curso curso;
+  private Curso cursoDeMuchosCreditosNecesarios;
   private Cuatrimestre cuatrimestre;
   private Materia materia;
+  private Materia materiaDeMuchosCreditosNecesarios;
 
   @BeforeEach
   void setUp() {
     materia =
         new Materia("123-M", "Análisis I", "Funciones y límites", 8, 0, TipoMateria.OBLIGATORIA);
 
+    materiaDeMuchosCreditosNecesarios =
+            new Materia("124-M", "Análisis II", "Funciones y límites", 8, 100, TipoMateria.OBLIGATORIA);
     curso = new Curso("CURSO-001", 30, materia);
+    cursoDeMuchosCreditosNecesarios = new Curso("CURSO-002", 30, materiaDeMuchosCreditosNecesarios);
 
     cuatrimestre =
         new Cuatrimestre(
@@ -81,6 +90,7 @@ class InscripcionServiceTest {
     alumno.setPlanesDeEstudio(new ArrayList<>());
 
     inscripcionRequestDTO = new InscripcionRequestDTO("CURSO-001");
+    inscripcionMuchosCreditosRequestDTO = new InscripcionRequestDTO("CURSO-002");
 
     inscripcion = new Inscripcion(curso, cuatrimestre, alumno);
     inscripcion.setCodigoDeInscripcion(1L);
@@ -94,6 +104,10 @@ class InscripcionServiceTest {
         .thenReturn(List.of(cuatrimestre));
     when(inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(alumno, curso, cuatrimestre))
         .thenReturn(false);
+    // Mock validaciones académicas (exitosas)
+    when(historiaAcademicaService.calcularCreditosAcumulados(alumno)).thenReturn(10);
+    when(historiaAcademicaService.obtenerCorrelativasNoAprobadas(alumno, materia))
+        .thenReturn(new ArrayList<>());
     when(inscripcionRepository.save(any(Inscripcion.class)))
         .thenAnswer(
             invocation -> {
@@ -316,6 +330,10 @@ class InscripcionServiceTest {
         .thenReturn(List.of(cuatrimestre));
     when(inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(alumno, curso, cuatrimestre))
         .thenReturn(false);
+    // Mock validaciones académicas (exitosas)
+    when(historiaAcademicaService.calcularCreditosAcumulados(alumno)).thenReturn(10);
+    when(historiaAcademicaService.obtenerCorrelativasNoAprobadas(alumno, materia))
+        .thenReturn(new ArrayList<>());
     when(inscripcionRepository.save(any(Inscripcion.class))).thenReturn(inscripcion);
 
     InscripcionDTO resultado = inscripcionService.crearInscripcion(inscripcionRequestDTO, "jperez");
@@ -324,5 +342,64 @@ class InscripcionServiceTest {
     assertEquals("CURSO-001", resultado.getCodigoCurso());
     assertEquals("2024-1", resultado.getCodigoCuatrimestre());
     verify(inscripcionRepository).save(any(Inscripcion.class));
+  }
+
+  @Test
+  void crearInscripcionCreditosInsuficientesLanzaExcepcion() {
+    when(alumnoRepository.findByUsername("jperez")).thenReturn(Optional.of(alumno));
+    when(cursoRepository.findByCodigo("CURSO-002")).thenReturn(Optional.of(cursoDeMuchosCreditosNecesarios));
+    when(cuatrimestreRepository.findCuatrimestresByFecha(any(LocalDate.class)))
+        .thenReturn(List.of(cuatrimestre));
+    when(inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(alumno, cursoDeMuchosCreditosNecesarios, cuatrimestre))
+        .thenReturn(false);
+    // Mock créditos insuficientes
+    when(historiaAcademicaService.calcularCreditosAcumulados(alumno)).thenReturn(5); // Menos de los 8 necesarios
+
+    assertThrows(
+        CreditosInsuficientesException.class,
+        () -> inscripcionService.crearInscripcion(inscripcionMuchosCreditosRequestDTO, "jperez"));
+
+    verify(inscripcionRepository, never()).save(any(Inscripcion.class));
+  }
+
+  @Test
+  void crearInscripcionCorrelativasNoAprobadasLanzaExcepcion() {
+    when(alumnoRepository.findByUsername("jperez")).thenReturn(Optional.of(alumno));
+    when(cursoRepository.findByCodigo("CURSO-001")).thenReturn(Optional.of(curso));
+    when(cuatrimestreRepository.findCuatrimestresByFecha(any(LocalDate.class)))
+        .thenReturn(List.of(cuatrimestre));
+    when(inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(alumno, curso, cuatrimestre))
+        .thenReturn(false);
+    // Mock correlativas no aprobadas
+    when(historiaAcademicaService.calcularCreditosAcumulados(alumno)).thenReturn(10);
+    when(historiaAcademicaService.obtenerCorrelativasNoAprobadas(alumno, materia))
+        .thenReturn(List.of("MAT001 - Matemática I", "FIS001 - Física I"));
+
+    assertThrows(
+        CorrelativasNoAprobadasException.class,
+        () -> inscripcionService.crearInscripcion(inscripcionRequestDTO, "jperez"));
+
+    verify(inscripcionRepository, never()).save(any(Inscripcion.class));
+  }
+
+  @Test
+  void crearInscripcionCreditosInsuficientesYCorrelativasNoAprobadasLanzaExcepcionCreditos() {
+    // Cuando faltan tanto créditos como correlativas, debe lanzar la excepción de créditos primero
+    when(alumnoRepository.findByUsername("jperez")).thenReturn(Optional.of(alumno));
+    when(cursoRepository.findByCodigo("CURSO-002")).thenReturn(Optional.of(cursoDeMuchosCreditosNecesarios));
+    when(cuatrimestreRepository.findCuatrimestresByFecha(any(LocalDate.class)))
+        .thenReturn(List.of(cuatrimestre));
+    when(inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(alumno, cursoDeMuchosCreditosNecesarios, cuatrimestre))
+        .thenReturn(false);
+    // Mock créditos insuficientes
+    when(historiaAcademicaService.calcularCreditosAcumulados(alumno)).thenReturn(3);
+
+    assertThrows(
+        CreditosInsuficientesException.class,
+        () -> inscripcionService.crearInscripcion(inscripcionMuchosCreditosRequestDTO, "jperez"));
+
+    verify(inscripcionRepository, never()).save(any(Inscripcion.class));
+    // No debería llamar a verificar correlativas si ya fallan los créditos
+    verify(historiaAcademicaService, never()).obtenerCorrelativasNoAprobadas(any(), any());
   }
 }

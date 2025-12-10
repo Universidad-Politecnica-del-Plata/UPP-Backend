@@ -3,6 +3,8 @@ package com.upp.service;
 import com.upp.dto.InscripcionDTO;
 import com.upp.dto.InscripcionRequestDTO;
 import com.upp.exception.AlumnoNoExisteException;
+import com.upp.exception.CorrelativasNoAprobadasException;
+import com.upp.exception.CreditosInsuficientesException;
 import com.upp.exception.CuatrimestreNoExisteException;
 import com.upp.exception.CursoNoExisteException;
 import com.upp.exception.InscripcionExisteException;
@@ -12,6 +14,7 @@ import com.upp.model.Alumno;
 import com.upp.model.Cuatrimestre;
 import com.upp.model.Curso;
 import com.upp.model.Inscripcion;
+import com.upp.model.Materia;
 import com.upp.repository.AlumnoRepository;
 import com.upp.repository.CuatrimestreRepository;
 import com.upp.repository.CursoRepository;
@@ -28,16 +31,19 @@ public class InscripcionService {
   private final AlumnoRepository alumnoRepository;
   private final CursoRepository cursoRepository;
   private final CuatrimestreRepository cuatrimestreRepository;
+  private final HistoriaAcademicaService historiaAcademicaService;
 
   public InscripcionService(
       InscripcionRepository inscripcionRepository,
       AlumnoRepository alumnoRepository,
       CursoRepository cursoRepository,
-      CuatrimestreRepository cuatrimestreRepository) {
+      CuatrimestreRepository cuatrimestreRepository,
+      HistoriaAcademicaService historiaAcademicaService) {
     this.inscripcionRepository = inscripcionRepository;
     this.alumnoRepository = alumnoRepository;
     this.cursoRepository = cursoRepository;
     this.cuatrimestreRepository = cuatrimestreRepository;
+    this.historiaAcademicaService = historiaAcademicaService;
   }
 
   public InscripcionDTO crearInscripcion(InscripcionRequestDTO inscripcionDTO, String username) {
@@ -67,6 +73,10 @@ public class InscripcionService {
     }
 
     validarPeriodoDeInscripcion(cuatrimestre);
+    
+    // Validaciones académicas: créditos y correlativas
+    Materia materia = curso.getMateria();
+    validarRequisitosAcademicos(alumno, materia);
 
     Inscripcion inscripcion = new Inscripcion(curso, cuatrimestre, alumno);
     inscripcionRepository.save(inscripcion);
@@ -136,6 +146,27 @@ public class InscripcionService {
           String.format(
               "Las inscripciones para este cuatrimestre están disponibles desde %s hasta %s.",
               fechaInicioInscripcion, fechaFinInscripcion));
+    }
+  }
+
+  private void validarRequisitosAcademicos(Alumno alumno, Materia materia) {
+    // Validar créditos suficientes
+    Integer creditosAcumulados = historiaAcademicaService.calcularCreditosAcumulados(alumno);
+    Integer creditosNecesarios = materia.getCreditosNecesarios();
+    
+    if (creditosAcumulados < creditosNecesarios) {
+      throw new CreditosInsuficientesException(
+          String.format("Créditos insuficientes. Tiene %d créditos, necesita %d para cursar %s.",
+              creditosAcumulados, creditosNecesarios, materia.getNombre()));
+    }
+
+    // Validar correlativas aprobadas
+    List<String> correlativasNoAprobadas = historiaAcademicaService.obtenerCorrelativasNoAprobadas(alumno, materia);
+    
+    if (!correlativasNoAprobadas.isEmpty()) {
+      throw new CorrelativasNoAprobadasException(
+          String.format("No se puede inscribir a %s. Correlativas no aprobadas: %s",
+              materia.getNombre(), String.join(", ", correlativasNoAprobadas)));
     }
   }
 }

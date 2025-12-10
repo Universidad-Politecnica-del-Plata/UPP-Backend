@@ -16,15 +16,15 @@ Característica: Cargar nota de alumno a un acta
     Y el docente abre un acta de "Cursada" para el curso "CURSO-001"
 
   Escenario: Cargar nota aprobatoria de alumno exitoso
-    Cuando el docente carga la nota de un alumno con dni 12345678 y nota 8
+    Cuando el docente carga la nota de un alumno con dni 12345678 y nota 8 para el curso "CURSO-001"
     Entonces se guarda la información en el acta
 
   Escenario: Cargar nota desaprobatoria de alumno lanza excepcion
-    Cuando el docente carga la nota de un alumno con dni 12345678 y nota 2
+    Cuando el docente carga la nota de un alumno con dni 12345678 y nota 2 para el curso "CURSO-001"
     Entonces no se guarda la información en el acta
 
   Escenario: Cargar nota de mayor a 10 alumno lanza excepcion
-    Cuando el docente carga la nota de un alumno con dni 12345678 y nota 12
+    Cuando el docente carga la nota de un alumno con dni 12345678 y nota 12 para el curso "CURSO-001"
     Entonces no se guarda la información en el acta
 
 
@@ -34,14 +34,14 @@ Característica: Cargar nota de alumno a un acta
 
   Escenario: Intenta cargar nota en acta cerrada
     Dado que el acta está cerrada
-    Cuando el docente carga la nota de un alumno con dni 12345678 y nota 8
+    Cuando el docente carga la nota de un alumno con dni 12345678 y nota 8 para el curso "CURSO-001"
     Entonces no se puede cargar la nota por acta cerrada
 
   Escenario: Intenta cargar nota para alumno inexistente
-    Cuando el docente carga la nota de un alumno con dni 99999999 y nota 8
+    Cuando el docente carga la nota de un alumno con dni 99999999 y nota 8 para el curso "CURSO-001"
     Entonces no se puede cargar la nota por alumno inexistente
 
   Escenario: Intenta cargar nota para alumno no inscrito
-    Cuando el docente carga la nota de un alumno con dni 56789 y nota 8
+    Cuando el docente carga la nota de un alumno con dni 56789 y nota 8 para el curso "CURSO-001"
     Entonces no se puede cargar la nota por alumno no inscrito
     
