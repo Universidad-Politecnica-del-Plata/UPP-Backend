@@ -23,7 +23,8 @@ public class HistoriaAcademicaService {
   }
 
   public Integer calcularCreditosAcumulados(Alumno alumno) {
-    List<Nota> notasAprobadas = notaRepository.findNotasAprobadasEnActasFinalesByAlumno(alumno, TipoDeActa.FINAL);
+    List<Nota> notasAprobadas =
+        notaRepository.findNotasAprobadasEnActasFinalesByAlumno(alumno, TipoDeActa.FINAL);
 
     return notasAprobadas.stream()
         .mapToInt(nota -> nota.getActa().getCurso().getMateria().getCreditosQueOtorga())
@@ -36,7 +37,8 @@ public class HistoriaAcademicaService {
   }
 
   public List<MateriaAprobadaDTO> obtenerMateriasAprobadas(Alumno alumno) {
-    List<Nota> notasAprobadas = notaRepository.findNotasAprobadasEnActasFinalesByAlumno(alumno, TipoDeActa.FINAL);
+    List<Nota> notasAprobadas =
+        notaRepository.findNotasAprobadasEnActasFinalesByAlumno(alumno, TipoDeActa.FINAL);
 
     return notasAprobadas.stream()
         .map(this::convertirNotaAMateriaAprobadaDTO)
