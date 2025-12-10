@@ -41,10 +41,9 @@ public interface NotaRepository extends JpaRepository<Nota, Long> {
       @Param("tipoDeActa") TipoDeActa tipoDeActa);
 
   // Obtener materias aprobadas en actas FINAL con sus créditos
-  @Query(
-      "SELECT n FROM Nota n "
-          + "WHERE n.alumno = :alumno "
-          + "AND n.acta.tipoDeActa = com.upp.model.TipoDeActa.FINAL "
-          + "AND n.valor >= 4")
-  List<Nota> findNotasAprobadasEnActasFinalesByAlumno(@Param("alumno") Alumno alumno);
+  @Query("SELECT n FROM Nota n " +
+         "WHERE n.alumno = :alumno " +
+         "AND n.acta.tipoDeActa = :tipoDeActa " +
+         "AND n.valor >= 4")
+  List<Nota> findNotasAprobadasEnActasFinalesByAlumno(@Param("alumno") Alumno alumno, @Param("tipoDeActa") TipoDeActa tipoDeActa);
 }

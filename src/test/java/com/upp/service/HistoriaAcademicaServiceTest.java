@@ -113,24 +113,24 @@ class HistoriaAcademicaServiceTest {
   @Test
   void calcularCreditosAcumuladosConNotasAprobadas() {
     List<Nota> notasAprobadas = Arrays.asList(notaMatematica, notaFisica);
-    when(notaRepository.findNotasAprobadasEnActasFinalesByAlumno(alumno))
+    when(notaRepository.findNotasAprobadasEnActasFinalesByAlumno(alumno, TipoDeActa.FINAL))
         .thenReturn(notasAprobadas);
 
     Integer creditos = historiaAcademicaService.calcularCreditosAcumulados(alumno);
 
     assertEquals(14, creditos); // 8 + 6
-    verify(notaRepository).findNotasAprobadasEnActasFinalesByAlumno(alumno);
+    verify(notaRepository).findNotasAprobadasEnActasFinalesByAlumno(alumno, TipoDeActa.FINAL);
   }
 
   @Test
   void calcularCreditosAcumuladosSinNotas() {
-    when(notaRepository.findNotasAprobadasEnActasFinalesByAlumno(alumno))
+    when(notaRepository.findNotasAprobadasEnActasFinalesByAlumno(alumno, TipoDeActa.FINAL))
         .thenReturn(new ArrayList<>());
 
     Integer creditos = historiaAcademicaService.calcularCreditosAcumulados(alumno);
 
     assertEquals(0, creditos);
-    verify(notaRepository).findNotasAprobadasEnActasFinalesByAlumno(alumno);
+    verify(notaRepository).findNotasAprobadasEnActasFinalesByAlumno(alumno, TipoDeActa.FINAL);
   }
 
   @Test
@@ -218,7 +218,7 @@ class HistoriaAcademicaServiceTest {
   @Test
   void obtenerMateriasAprobadas() {
     List<Nota> notasAprobadas = Arrays.asList(notaMatematica, notaFisica);
-    when(notaRepository.findNotasAprobadasEnActasFinalesByAlumno(alumno))
+    when(notaRepository.findNotasAprobadasEnActasFinalesByAlumno(alumno, TipoDeActa.FINAL))
         .thenReturn(notasAprobadas);
 
     List<MateriaAprobadaDTO> materiasAprobadas =
@@ -244,7 +244,7 @@ class HistoriaAcademicaServiceTest {
   @Test
   void obtenerHistoriaAcademica() {
     List<Nota> notasAprobadas = Arrays.asList(notaMatematica, notaFisica);
-    when(notaRepository.findNotasAprobadasEnActasFinalesByAlumno(alumno))
+    when(notaRepository.findNotasAprobadasEnActasFinalesByAlumno(alumno, TipoDeActa.FINAL))
         .thenReturn(notasAprobadas);
 
     HistoriaAcademicaDTO historia = historiaAcademicaService.obtenerHistoriaAcademica(alumno);
@@ -259,7 +259,7 @@ class HistoriaAcademicaServiceTest {
   @Test
   void evaluarEstadoParaInscripcionPuedeInscribirse() {
     List<Nota> notasAprobadas = Arrays.asList(notaMatematica);
-    when(notaRepository.findNotasAprobadasEnActasFinalesByAlumno(alumno))
+    when(notaRepository.findNotasAprobadasEnActasFinalesByAlumno(alumno, TipoDeActa.FINAL))
         .thenReturn(notasAprobadas);
     when(notaRepository.existsNotaAprobadaByAlumnoAndMateriaAndActaTipo(
             alumno, "MAT001", TipoDeActa.FINAL))
@@ -277,7 +277,7 @@ class HistoriaAcademicaServiceTest {
 
   @Test
   void evaluarEstadoParaInscripcionCreditosInsuficientes() {
-    when(notaRepository.findNotasAprobadasEnActasFinalesByAlumno(alumno))
+    when(notaRepository.findNotasAprobadasEnActasFinalesByAlumno(alumno, TipoDeActa.FINAL))
         .thenReturn(new ArrayList<>());
 
     EstadoAcademicoDTO estado =
@@ -293,7 +293,7 @@ class HistoriaAcademicaServiceTest {
   @Test
   void evaluarEstadoParaInscripcionCorrelativasNoAprobadas() {
     List<Nota> notasAprobadas = Arrays.asList(notaFisica);
-    when(notaRepository.findNotasAprobadasEnActasFinalesByAlumno(alumno))
+    when(notaRepository.findNotasAprobadasEnActasFinalesByAlumno(alumno, TipoDeActa.FINAL))
         .thenReturn(notasAprobadas);
     when(notaRepository.existsNotaAprobadaByAlumnoAndMateriaAndActaTipo(
             alumno, "MAT001", TipoDeActa.FINAL))
