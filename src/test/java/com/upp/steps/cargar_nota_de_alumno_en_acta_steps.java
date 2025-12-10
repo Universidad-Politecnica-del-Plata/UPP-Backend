@@ -8,7 +8,6 @@ import com.upp.dto.NotaDTO;
 import com.upp.dto.NotaRequestDTO;
 import com.upp.model.Alumno;
 import com.upp.model.EstadoActa;
-import com.upp.repository.ActaRepository;
 import com.upp.repository.AlumnoRepository;
 import com.upp.steps.shared.TokenHolder;
 import io.cucumber.java.es.Cuando;
@@ -31,7 +30,8 @@ public class cargar_nota_de_alumno_en_acta_steps {
   private NotaDTO notaCreada;
   private Long actaNumeroCorrelativo;
 
-  @Cuando("el docente carga la nota de un alumno con dni {long} y nota {int} para el curso {string}")
+  @Cuando(
+      "el docente carga la nota de un alumno con dni {long} y nota {int} para el curso {string}")
   public void elDocenteCargaLaNotaDeUnAlumnoConDniYNota(Long dni, Integer nota, String curso) {
     // Buscar alumno por DNI
     Alumno alumno = alumnoRepository.findByDni(dni).orElse(null);
@@ -41,12 +41,9 @@ public class cargar_nota_de_alumno_en_acta_steps {
       if (actaNumeroCorrelativo == null) {
         // Obtener actas del curso para encontrar el número correlativo
         var resultActas =
-                webTestClient.get()
-                        .uri(uriBuilder ->
-                                uriBuilder
-                                        .path("/api/actas/curso/{curso}")
-                                        .build(curso)
-                        )
+            webTestClient
+                .get()
+                .uri(uriBuilder -> uriBuilder.path("/api/actas/curso/{curso}").build(curso))
                 .header("Authorization", "Bearer " + tokenHolder.getToken())
                 .exchange()
                 .returnResult(ActaDTO[].class);

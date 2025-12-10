@@ -203,26 +203,33 @@ public class inscribirse_a_un_curso_steps {
   @Y("que el alumno tiene la materia {string} aprobada")
   public void queElAlumnoTieneLaMateriaAprobada(String codigoMateria) {
     // Obtener el alumno actual (último logueado)
-    Alumno alumno = alumnoRepository.findByUsername("12345678")
-        .orElseThrow(() -> new RuntimeException("Alumno no encontrado"));
+    Alumno alumno =
+        alumnoRepository
+            .findByUsername("12345678")
+            .orElseThrow(() -> new RuntimeException("Alumno no encontrado"));
 
     // Primero crear un curso para la materia correlativa
     String codigoCurso = "CURSO-CORRELATIVA-" + codigoMateria;
-    Map<String, Object> cursoRequest = Map.of(
-        "codigo", codigoCurso,
-        "maximoDeAlumnos", 25,
-        "codigoDeMateria", codigoMateria,
-        "codigoCuatrimestre", List.of("2025-2")
-    );
+    Map<String, Object> cursoRequest =
+        Map.of(
+            "codigo",
+            codigoCurso,
+            "maximoDeAlumnos",
+            25,
+            "codigoDeMateria",
+            codigoMateria,
+            "codigoCuatrimestre",
+            List.of("2025-2"));
 
-    var cursoResult = webTestClient
-        .post()
-        .uri("/api/cursos")
-        .header("Authorization", "Bearer " + tokenHolder.getToken())
-        .contentType(MediaType.APPLICATION_JSON)
-        .bodyValue(cursoRequest)
-        .exchange()
-        .returnResult(Map.class);
+    var cursoResult =
+        webTestClient
+            .post()
+            .uri("/api/cursos")
+            .header("Authorization", "Bearer " + tokenHolder.getToken())
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(cursoRequest)
+            .exchange()
+            .returnResult(Map.class);
 
     if (cursoResult.getStatus() == HttpStatus.CREATED) {
       // Crear un acta FINAL para la materia correlativa
@@ -232,14 +239,15 @@ public class inscribirse_a_un_curso_steps {
       actaRequest.setEstado(EstadoActa.ABIERTA);
 
       // Crear el acta
-      var actaResult = webTestClient
-          .post()
-          .uri("/api/actas")
-          .header("Authorization", "Bearer " + tokenHolder.getToken())
-          .contentType(MediaType.APPLICATION_JSON)
-          .bodyValue(actaRequest)
-          .exchange()
-          .returnResult(Map.class);
+      var actaResult =
+          webTestClient
+              .post()
+              .uri("/api/actas")
+              .header("Authorization", "Bearer " + tokenHolder.getToken())
+              .contentType(MediaType.APPLICATION_JSON)
+              .bodyValue(actaRequest)
+              .exchange()
+              .returnResult(Map.class);
 
       if (actaResult.getStatus() == HttpStatus.CREATED) {
         Map actaCreada = actaResult.getResponseBody().blockFirst();
@@ -263,20 +271,23 @@ public class inscribirse_a_un_curso_steps {
     }
   }
 
-  @Y("que existe una materia con el código de materia {string}, nombre {string} y correlativa {string}")
-  public void queExisteUnaMateriaConcorrelativa(String codigoMateria, String nombreMateria, String codigoCorrelativa) {
+  @Y(
+      "que existe una materia con el código de materia {string}, nombre {string} y correlativa {string}")
+  public void queExisteUnaMateriaConcorrelativa(
+      String codigoMateria, String nombreMateria, String codigoCorrelativa) {
     // Crear materia con correlativa
-    MateriaDTO materiaDTO = new MateriaDTO(
-        codigoMateria,
-        nombreMateria,
-        "Contenidos de " + nombreMateria,
-        8, // creditosQueOtorga
-        0,
-        TipoMateria.OBLIGATORIA,
-        null, // cuatrimestre
-        null, // codigoPlanDeEstudios
-        List.of(codigoCorrelativa) // correlativas
-    );
+    MateriaDTO materiaDTO =
+        new MateriaDTO(
+            codigoMateria,
+            nombreMateria,
+            "Contenidos de " + nombreMateria,
+            8, // creditosQueOtorga
+            0,
+            TipoMateria.OBLIGATORIA,
+            null, // cuatrimestre
+            null, // codigoPlanDeEstudios
+            List.of(codigoCorrelativa) // correlativas
+            );
 
     webTestClient
         .post()
@@ -289,55 +300,64 @@ public class inscribirse_a_un_curso_steps {
         .isCreated();
   }
 
-    @Y("que existe una materia con el código de materia {string}, nombre {string} y correlativas {string} y {string}")
-    public void queExisteUnaMateriaConcorrelativa(String codigoMateria, String nombreMateria, String codigoCorrelativa, String codigoCorrelativa2) {
-        // Crear materia con correlativa
-        MateriaDTO materiaDTO = new MateriaDTO(
-                codigoMateria,
-                nombreMateria,
-                "Contenidos de " + nombreMateria,
-                8, // creditosQueOtorga
-                0,
-                TipoMateria.OBLIGATORIA,
-                null, // cuatrimestre
-                null, // codigoPlanDeEstudios
-                List.of(codigoCorrelativa, codigoCorrelativa2) // correlativas
-        );
+  @Y(
+      "que existe una materia con el código de materia {string}, nombre {string} y correlativas {string} y {string}")
+  public void queExisteUnaMateriaConcorrelativa(
+      String codigoMateria,
+      String nombreMateria,
+      String codigoCorrelativa,
+      String codigoCorrelativa2) {
+    // Crear materia con correlativa
+    MateriaDTO materiaDTO =
+        new MateriaDTO(
+            codigoMateria,
+            nombreMateria,
+            "Contenidos de " + nombreMateria,
+            8, // creditosQueOtorga
+            0,
+            TipoMateria.OBLIGATORIA,
+            null, // cuatrimestre
+            null, // codigoPlanDeEstudios
+            List.of(codigoCorrelativa, codigoCorrelativa2) // correlativas
+            );
 
-        webTestClient
-                .post()
-                .uri("/api/materias")
-                .header("Authorization", "Bearer " + tokenHolder.getToken())
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(materiaDTO)
-                .exchange()
-                .expectStatus()
-                .isCreated();
-    }
+    webTestClient
+        .post()
+        .uri("/api/materias")
+        .header("Authorization", "Bearer " + tokenHolder.getToken())
+        .contentType(MediaType.APPLICATION_JSON)
+        .bodyValue(materiaDTO)
+        .exchange()
+        .expectStatus()
+        .isCreated();
+  }
 
-    @Y("que existe una materia con el código de materia {string}, nombre {string} y creditos necesarios {int}")
-    public void queExisteUnaMateriaConcorrelativa(String codigoMateria, String nombreMateria, int creditos) {
-        // Crear materia con correlativa
-        MateriaDTO materiaDTO = new MateriaDTO(
-                codigoMateria,
-                nombreMateria,
-                "Contenidos de " + nombreMateria,
-                8, // creditosQueOtorga
-                creditos,
-                TipoMateria.OBLIGATORIA,
-                null, // cuatrimestre
-                null, // codigoPlanDeEstudios
-                List.of() // correlativas
-        );
+  @Y(
+      "que existe una materia con el código de materia {string}, nombre {string} y creditos necesarios {int}")
+  public void queExisteUnaMateriaConcorrelativa(
+      String codigoMateria, String nombreMateria, int creditos) {
+    // Crear materia con correlativa
+    MateriaDTO materiaDTO =
+        new MateriaDTO(
+            codigoMateria,
+            nombreMateria,
+            "Contenidos de " + nombreMateria,
+            8, // creditosQueOtorga
+            creditos,
+            TipoMateria.OBLIGATORIA,
+            null, // cuatrimestre
+            null, // codigoPlanDeEstudios
+            List.of() // correlativas
+            );
 
-        webTestClient
-                .post()
-                .uri("/api/materias")
-                .header("Authorization", "Bearer " + tokenHolder.getToken())
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(materiaDTO)
-                .exchange()
-                .expectStatus()
-                .isCreated();
-    }
+    webTestClient
+        .post()
+        .uri("/api/materias")
+        .header("Authorization", "Bearer " + tokenHolder.getToken())
+        .contentType(MediaType.APPLICATION_JSON)
+        .bodyValue(materiaDTO)
+        .exchange()
+        .expectStatus()
+        .isCreated();
+  }
 }

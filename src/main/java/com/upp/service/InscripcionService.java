@@ -73,7 +73,7 @@ public class InscripcionService {
     }
 
     validarPeriodoDeInscripcion(cuatrimestre);
-    
+
     // Validaciones académicas: créditos y correlativas
     Materia materia = curso.getMateria();
     validarRequisitosAcademicos(alumno, materia);
@@ -153,19 +153,22 @@ public class InscripcionService {
     // Validar créditos suficientes
     Integer creditosAcumulados = historiaAcademicaService.calcularCreditosAcumulados(alumno);
     Integer creditosNecesarios = materia.getCreditosNecesarios();
-    
+
     if (creditosAcumulados < creditosNecesarios) {
       throw new CreditosInsuficientesException(
-          String.format("Créditos insuficientes. Tiene %d créditos, necesita %d para cursar %s.",
+          String.format(
+              "Créditos insuficientes. Tiene %d créditos, necesita %d para cursar %s.",
               creditosAcumulados, creditosNecesarios, materia.getNombre()));
     }
 
     // Validar correlativas aprobadas
-    List<String> correlativasNoAprobadas = historiaAcademicaService.obtenerCorrelativasNoAprobadas(alumno, materia);
-    
+    List<String> correlativasNoAprobadas =
+        historiaAcademicaService.obtenerCorrelativasNoAprobadas(alumno, materia);
+
     if (!correlativasNoAprobadas.isEmpty()) {
       throw new CorrelativasNoAprobadasException(
-          String.format("No se puede inscribir a %s. Correlativas no aprobadas: %s",
+          String.format(
+              "No se puede inscribir a %s. Correlativas no aprobadas: %s",
               materia.getNombre(), String.join(", ", correlativasNoAprobadas)));
     }
   }

@@ -44,28 +44,30 @@ public class HistoriaAcademicaController {
       throw new AlumnoNoExisteException("No se encontró el alumno actual.");
     }
 
-    HistoriaAcademicaDTO historia = historiaAcademicaService.obtenerHistoriaAcademica(alumnoOpt.get());
+    HistoriaAcademicaDTO historia =
+        historiaAcademicaService.obtenerHistoriaAcademica(alumnoOpt.get());
     return ResponseEntity.ok(historia);
   }
 
   @GetMapping("/alumno/{alumnoId}")
   @PreAuthorize("hasRole('DOCENTE') or hasRole('SECRETARIA_DE_PLANIFICACION')")
-  public ResponseEntity<HistoriaAcademicaDTO> obtenerHistoriaAcademicaPorId(@PathVariable Long alumnoId) {
+  public ResponseEntity<HistoriaAcademicaDTO> obtenerHistoriaAcademicaPorId(
+      @PathVariable Long alumnoId) {
     Optional<Alumno> alumnoOpt = alumnoRepository.findById(alumnoId);
     if (alumnoOpt.isEmpty()) {
       throw new AlumnoNoExisteException("No se encontró el alumno con ID: " + alumnoId);
     }
 
-    HistoriaAcademicaDTO historia = historiaAcademicaService.obtenerHistoriaAcademica(alumnoOpt.get());
+    HistoriaAcademicaDTO historia =
+        historiaAcademicaService.obtenerHistoriaAcademica(alumnoOpt.get());
     return ResponseEntity.ok(historia);
   }
 
   @GetMapping("/estado-inscripcion")
   @PreAuthorize("hasRole('ALUMNO')")
   public ResponseEntity<EstadoAcademicoDTO> evaluarEstadoParaInscripcion(
-      @RequestParam String codigoMateria,
-      Principal principal) {
-    
+      @RequestParam String codigoMateria, Principal principal) {
+
     Optional<Alumno> alumnoOpt = alumnoRepository.findByUsername(principal.getName());
     if (alumnoOpt.isEmpty()) {
       throw new AlumnoNoExisteException("No se encontró el alumno actual.");
@@ -76,9 +78,9 @@ public class HistoriaAcademicaController {
       throw new MateriaNoExisteException("No se encontró la materia con código: " + codigoMateria);
     }
 
-    EstadoAcademicoDTO estado = historiaAcademicaService.evaluarEstadoParaInscripcion(
-        alumnoOpt.get(), materiaOpt.get());
-    
+    EstadoAcademicoDTO estado =
+        historiaAcademicaService.evaluarEstadoParaInscripcion(alumnoOpt.get(), materiaOpt.get());
+
     return ResponseEntity.ok(estado);
   }
 }

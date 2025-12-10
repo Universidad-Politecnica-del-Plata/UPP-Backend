@@ -62,7 +62,7 @@ class InscripcionServiceTest {
         new Materia("123-M", "Análisis I", "Funciones y límites", 8, 0, TipoMateria.OBLIGATORIA);
 
     materiaDeMuchosCreditosNecesarios =
-            new Materia("124-M", "Análisis II", "Funciones y límites", 8, 100, TipoMateria.OBLIGATORIA);
+        new Materia("124-M", "Análisis II", "Funciones y límites", 8, 100, TipoMateria.OBLIGATORIA);
     curso = new Curso("CURSO-001", 30, materia);
     cursoDeMuchosCreditosNecesarios = new Curso("CURSO-002", 30, materiaDeMuchosCreditosNecesarios);
 
@@ -347,13 +347,16 @@ class InscripcionServiceTest {
   @Test
   void crearInscripcionCreditosInsuficientesLanzaExcepcion() {
     when(alumnoRepository.findByUsername("jperez")).thenReturn(Optional.of(alumno));
-    when(cursoRepository.findByCodigo("CURSO-002")).thenReturn(Optional.of(cursoDeMuchosCreditosNecesarios));
+    when(cursoRepository.findByCodigo("CURSO-002"))
+        .thenReturn(Optional.of(cursoDeMuchosCreditosNecesarios));
     when(cuatrimestreRepository.findCuatrimestresByFecha(any(LocalDate.class)))
         .thenReturn(List.of(cuatrimestre));
-    when(inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(alumno, cursoDeMuchosCreditosNecesarios, cuatrimestre))
+    when(inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(
+            alumno, cursoDeMuchosCreditosNecesarios, cuatrimestre))
         .thenReturn(false);
     // Mock créditos insuficientes
-    when(historiaAcademicaService.calcularCreditosAcumulados(alumno)).thenReturn(5); // Menos de los 8 necesarios
+    when(historiaAcademicaService.calcularCreditosAcumulados(alumno))
+        .thenReturn(5); // Menos de los 8 necesarios
 
     assertThrows(
         CreditosInsuficientesException.class,
@@ -386,10 +389,12 @@ class InscripcionServiceTest {
   void crearInscripcionCreditosInsuficientesYCorrelativasNoAprobadasLanzaExcepcionCreditos() {
     // Cuando faltan tanto créditos como correlativas, debe lanzar la excepción de créditos primero
     when(alumnoRepository.findByUsername("jperez")).thenReturn(Optional.of(alumno));
-    when(cursoRepository.findByCodigo("CURSO-002")).thenReturn(Optional.of(cursoDeMuchosCreditosNecesarios));
+    when(cursoRepository.findByCodigo("CURSO-002"))
+        .thenReturn(Optional.of(cursoDeMuchosCreditosNecesarios));
     when(cuatrimestreRepository.findCuatrimestresByFecha(any(LocalDate.class)))
         .thenReturn(List.of(cuatrimestre));
-    when(inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(alumno, cursoDeMuchosCreditosNecesarios, cuatrimestre))
+    when(inscripcionRepository.existsByAlumnoAndCursoAndCuatrimestre(
+            alumno, cursoDeMuchosCreditosNecesarios, cuatrimestre))
         .thenReturn(false);
     // Mock créditos insuficientes
     when(historiaAcademicaService.calcularCreditosAcumulados(alumno)).thenReturn(3);

@@ -28,11 +28,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class HistoriaAcademicaServiceTest {
 
-  @Mock
-  private NotaRepository notaRepository;
+  @Mock private NotaRepository notaRepository;
 
-  @InjectMocks
-  private HistoriaAcademicaService historiaAcademicaService;
+  @InjectMocks private HistoriaAcademicaService historiaAcademicaService;
 
   private Alumno alumno;
   private Materia matematica;
@@ -138,20 +136,20 @@ class HistoriaAcademicaServiceTest {
   @Test
   void verificarMateriaAprobadaExitoso() {
     when(notaRepository.existsNotaAprobadaByAlumnoAndMateriaAndActaTipo(
-        alumno, "MAT001", TipoDeActa.FINAL))
+            alumno, "MAT001", TipoDeActa.FINAL))
         .thenReturn(true);
 
     boolean resultado = historiaAcademicaService.verificarMateriaAprobada(alumno, "MAT001");
 
     assertTrue(resultado);
-    verify(notaRepository).existsNotaAprobadaByAlumnoAndMateriaAndActaTipo(
-        alumno, "MAT001", TipoDeActa.FINAL);
+    verify(notaRepository)
+        .existsNotaAprobadaByAlumnoAndMateriaAndActaTipo(alumno, "MAT001", TipoDeActa.FINAL);
   }
 
   @Test
   void verificarMateriaAprobadaNoAprobada() {
     when(notaRepository.existsNotaAprobadaByAlumnoAndMateriaAndActaTipo(
-        alumno, "MAT001", TipoDeActa.FINAL))
+            alumno, "MAT001", TipoDeActa.FINAL))
         .thenReturn(false);
 
     boolean resultado = historiaAcademicaService.verificarMateriaAprobada(alumno, "MAT001");
@@ -164,26 +162,27 @@ class HistoriaAcademicaServiceTest {
     boolean resultado = historiaAcademicaService.verificarCorrelativasAprobadas(alumno, matematica);
 
     assertTrue(resultado);
-    verify(notaRepository, never()).existsNotaAprobadaByAlumnoAndMateriaAndActaTipo(any(), any(), any());
+    verify(notaRepository, never())
+        .existsNotaAprobadaByAlumnoAndMateriaAndActaTipo(any(), any(), any());
   }
 
   @Test
   void verificarCorrelativasAprobadasTodasAprobadas() {
     when(notaRepository.existsNotaAprobadaByAlumnoAndMateriaAndActaTipo(
-        alumno, "MAT001", TipoDeActa.FINAL))
+            alumno, "MAT001", TipoDeActa.FINAL))
         .thenReturn(true);
 
     boolean resultado = historiaAcademicaService.verificarCorrelativasAprobadas(alumno, calculo);
 
     assertTrue(resultado);
-    verify(notaRepository).existsNotaAprobadaByAlumnoAndMateriaAndActaTipo(
-        alumno, "MAT001", TipoDeActa.FINAL);
+    verify(notaRepository)
+        .existsNotaAprobadaByAlumnoAndMateriaAndActaTipo(alumno, "MAT001", TipoDeActa.FINAL);
   }
 
   @Test
   void verificarCorrelativasAprobadasConPendientes() {
     when(notaRepository.existsNotaAprobadaByAlumnoAndMateriaAndActaTipo(
-        alumno, "MAT001", TipoDeActa.FINAL))
+            alumno, "MAT001", TipoDeActa.FINAL))
         .thenReturn(false);
 
     boolean resultado = historiaAcademicaService.verificarCorrelativasAprobadas(alumno, calculo);
@@ -194,10 +193,11 @@ class HistoriaAcademicaServiceTest {
   @Test
   void obtenerCorrelativasNoAprobadasConPendientes() {
     when(notaRepository.existsNotaAprobadaByAlumnoAndMateriaAndActaTipo(
-        alumno, "MAT001", TipoDeActa.FINAL))
+            alumno, "MAT001", TipoDeActa.FINAL))
         .thenReturn(false);
 
-    List<String> correlativasNoAprobadas = historiaAcademicaService.obtenerCorrelativasNoAprobadas(alumno, calculo);
+    List<String> correlativasNoAprobadas =
+        historiaAcademicaService.obtenerCorrelativasNoAprobadas(alumno, calculo);
 
     assertEquals(1, correlativasNoAprobadas.size());
     assertEquals("MAT001 - Matemática I", correlativasNoAprobadas.get(0));
@@ -206,10 +206,11 @@ class HistoriaAcademicaServiceTest {
   @Test
   void obtenerCorrelativasNoAprobadasTodasAprobadas() {
     when(notaRepository.existsNotaAprobadaByAlumnoAndMateriaAndActaTipo(
-        alumno, "MAT001", TipoDeActa.FINAL))
+            alumno, "MAT001", TipoDeActa.FINAL))
         .thenReturn(true);
 
-    List<String> correlativasNoAprobadas = historiaAcademicaService.obtenerCorrelativasNoAprobadas(alumno, calculo);
+    List<String> correlativasNoAprobadas =
+        historiaAcademicaService.obtenerCorrelativasNoAprobadas(alumno, calculo);
 
     assertTrue(correlativasNoAprobadas.isEmpty());
   }
@@ -220,10 +221,11 @@ class HistoriaAcademicaServiceTest {
     when(notaRepository.findNotasAprobadasEnActasFinalesByAlumno(alumno))
         .thenReturn(notasAprobadas);
 
-    List<MateriaAprobadaDTO> materiasAprobadas = historiaAcademicaService.obtenerMateriasAprobadas(alumno);
+    List<MateriaAprobadaDTO> materiasAprobadas =
+        historiaAcademicaService.obtenerMateriasAprobadas(alumno);
 
     assertEquals(2, materiasAprobadas.size());
-    
+
     MateriaAprobadaDTO materiaDTO1 = materiasAprobadas.get(0);
     assertEquals("MAT001", materiaDTO1.getCodigoMateria());
     assertEquals("Matemática I", materiaDTO1.getNombre());
@@ -260,10 +262,11 @@ class HistoriaAcademicaServiceTest {
     when(notaRepository.findNotasAprobadasEnActasFinalesByAlumno(alumno))
         .thenReturn(notasAprobadas);
     when(notaRepository.existsNotaAprobadaByAlumnoAndMateriaAndActaTipo(
-        alumno, "MAT001", TipoDeActa.FINAL))
+            alumno, "MAT001", TipoDeActa.FINAL))
         .thenReturn(true);
 
-    EstadoAcademicoDTO estado = historiaAcademicaService.evaluarEstadoParaInscripcion(alumno, calculo);
+    EstadoAcademicoDTO estado =
+        historiaAcademicaService.evaluarEstadoParaInscripcion(alumno, calculo);
 
     assertTrue(estado.isPuedeInscribirse());
     assertNull(estado.getMotivoNoInscripcion());
@@ -277,7 +280,8 @@ class HistoriaAcademicaServiceTest {
     when(notaRepository.findNotasAprobadasEnActasFinalesByAlumno(alumno))
         .thenReturn(new ArrayList<>());
 
-    EstadoAcademicoDTO estado = historiaAcademicaService.evaluarEstadoParaInscripcion(alumno, calculo);
+    EstadoAcademicoDTO estado =
+        historiaAcademicaService.evaluarEstadoParaInscripcion(alumno, calculo);
 
     assertFalse(estado.isPuedeInscribirse());
     assertNotNull(estado.getMotivoNoInscripcion());
@@ -292,10 +296,11 @@ class HistoriaAcademicaServiceTest {
     when(notaRepository.findNotasAprobadasEnActasFinalesByAlumno(alumno))
         .thenReturn(notasAprobadas);
     when(notaRepository.existsNotaAprobadaByAlumnoAndMateriaAndActaTipo(
-        alumno, "MAT001", TipoDeActa.FINAL))
+            alumno, "MAT001", TipoDeActa.FINAL))
         .thenReturn(false);
 
-    EstadoAcademicoDTO estado = historiaAcademicaService.evaluarEstadoParaInscripcion(alumno, calculo);
+    EstadoAcademicoDTO estado =
+        historiaAcademicaService.evaluarEstadoParaInscripcion(alumno, calculo);
 
     assertFalse(estado.isPuedeInscribirse());
     assertNotNull(estado.getMotivoNoInscripcion());
