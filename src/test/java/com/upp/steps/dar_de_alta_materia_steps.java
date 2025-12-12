@@ -8,7 +8,6 @@ import com.upp.model.TipoMateria;
 import com.upp.model.Usuario;
 import com.upp.repository.RolRepository;
 import com.upp.repository.UsuarioRepository;
-import com.upp.steps.shared.BaseStepDefinition;
 import com.upp.steps.shared.TokenHolder;
 import io.cucumber.java.ast.Cuando;
 import io.cucumber.java.es.Dado;
@@ -17,11 +16,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.FluxExchangeResult;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
-public class dar_de_alta_materia_steps extends BaseStepDefinition {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class dar_de_alta_materia_steps {
+  @Autowired private WebTestClient webTestClient;
   @Autowired private UsuarioRepository usuarioRepository;
   @Autowired private RolRepository rolRepository;
   @Autowired private TokenHolder tokenHolder;
@@ -50,7 +53,7 @@ public class dar_de_alta_materia_steps extends BaseStepDefinition {
   @Entonces("se registra la materia {string} exitosamente")
   public void seRegistraLaMateriaConCodigoExitosamente(String codigo) {
     var resultGetMateria =
-        getWebTestClient()
+        webTestClient
             .get()
             .uri("/api/materias/{codigo}", codigo)
             .header("Authorization", "Bearer " + tokenHolder.getToken())
@@ -96,7 +99,7 @@ public class dar_de_alta_materia_steps extends BaseStepDefinition {
             listaDeCorrelativas);
 
     this.result =
-        getWebTestClient()
+        webTestClient
             .post()
             .uri("/api/materias")
             .header("Authorization", "Bearer " + tokenHolder.getToken())
@@ -128,7 +131,7 @@ public class dar_de_alta_materia_steps extends BaseStepDefinition {
                 "password", "password",
                 "roles", List.of("ROLE_GESTION_ACADEMICA"));
 
-        getWebTestClient()
+        webTestClient
             .post()
             .uri("/api/auth/register")
             .contentType(MediaType.APPLICATION_JSON)
@@ -141,7 +144,7 @@ public class dar_de_alta_materia_steps extends BaseStepDefinition {
       Map<String, String> loginData = Map.of("username", "admin_gestion", "password", "password");
 
       String token =
-          getWebTestClient()
+          webTestClient
               .post()
               .uri("/api/auth/login")
               .contentType(MediaType.APPLICATION_JSON)
