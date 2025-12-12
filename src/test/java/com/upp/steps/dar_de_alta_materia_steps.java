@@ -3,9 +3,7 @@ package com.upp.steps;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.upp.dto.MateriaDTO;
-import com.upp.model.Rol;
 import com.upp.model.TipoMateria;
-import com.upp.model.Usuario;
 import com.upp.repository.RolRepository;
 import com.upp.repository.UsuarioRepository;
 import com.upp.steps.shared.TokenHolder;
@@ -19,17 +17,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.reactive.server.FluxExchangeResult;
+import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class dar_de_alta_materia_steps {
+
   @Autowired private WebTestClient webTestClient;
   @Autowired private UsuarioRepository usuarioRepository;
   @Autowired private RolRepository rolRepository;
   @Autowired private TokenHolder tokenHolder;
 
-  private FluxExchangeResult<MateriaDTO> result;
+  private EntityExchangeResult<MateriaDTO> result;
 
   @Cuando(
       "se registra una materia con código de materia {string}, nombre {string}, contenidos {string}, tipo de materia {string}, cantidad de créditos que otorga {int} y créditos necesarios {int}")
@@ -41,7 +40,7 @@ public class dar_de_alta_materia_steps {
       Integer creditosOtorga,
       Integer creditosNecesarios) {
 
-    this.darDeAltaMateriaConCorrelativa(
+    darDeAltaMateriaConCorrelativa(
         codigo, nombre, contenidos, tipoMateria, "", creditosOtorga, creditosNecesarios);
   }
 
@@ -52,20 +51,19 @@ public class dar_de_alta_materia_steps {
 
   @Entonces("se registra la materia {string} exitosamente")
   public void seRegistraLaMateriaConCodigoExitosamente(String codigo) {
-    var resultGetMateria =
-        webTestClient
-            .get()
-            .uri("/api/materias/{codigo}", codigo)
-            .header("Authorization", "Bearer " + tokenHolder.getToken())
-            .exchange()
-            .returnResult(MateriaDTO.class);
-
-    assertEquals(HttpStatus.OK, resultGetMateria.getStatus());
+    webTestClient
+        .get()
+        .uri("/api/materias/{codigo}", codigo)
+        .header("Authorization", "Bearer " + tokenHolder.getToken())
+        .exchange()
+        .expectStatus()
+        .isOk()
+        .expectBody(MateriaDTO.class);
   }
 
   @Dado("que existe una materia con el código de materia {string} y nombre {string}")
   public void queExisteUnaMateria(String codigo, String nombre) {
-    this.darDeAltaMateria(codigo, nombre, "Contenido", "Optativa", 1, 0);
+    darDeAltaMateria(codigo, nombre, "Contenido", "Optativa", 1, 0);
   }
 
   @Cuando(
@@ -78,6 +76,7 @@ public class dar_de_alta_materia_steps {
       String correlativas,
       Integer creditosOtorga,
       Integer creditosNecesarios) {
+
     List<String> listaDeCorrelativas =
         correlativas == null || correlativas.isBlank()
             ? List.of()
@@ -86,7 +85,7 @@ public class dar_de_alta_materia_steps {
                 .filter(s -> !s.isEmpty())
                 .toList();
 
-    MateriaDTO materiaEnviada =
+    MateriaDTO materia =
         new MateriaDTO(
             codigo,
             nombre,
@@ -94,8 +93,8 @@ public class dar_de_alta_materia_steps {
             creditosOtorga,
             creditosNecesarios,
             TipoMateria.valueOf(tipoMateria.toUpperCase()),
-            null, // cuatrimestre
-            null, // codigoPlanDeEstudios
+            null,
+            null,
             listaDeCorrelativas);
 
     this.result =
@@ -104,9 +103,10 @@ public class dar_de_alta_materia_steps {
             .uri("/api/materias")
             .header("Authorization", "Bearer " + tokenHolder.getToken())
             .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(materiaEnviada)
+            .bodyValue(materia)
             .exchange()
-            .returnResult(MateriaDTO.class);
+            .expectBody(MateriaDTO.class)
+            .returnResult();
   }
 
   @Entonces("no se registra la materia exitosamente")
@@ -116,49 +116,44 @@ public class dar_de_alta_materia_steps {
 
   @Dado("que hay un gestor academico logueado")
   public void queHayUnGestorAcademicoLogueado() {
-    {
-      Rol rolGestion =
-          rolRepository
-              .findById("ROLE_GESTION_ACADEMICA")
-              .orElseThrow(() -> new RuntimeException("ROLE_GESTION_ACADEMICA no encontrado"));
 
-      Usuario usuarioExistente = usuarioRepository.findByUsername("admin_gestion").orElse(null);
+    if (usuarioRepository.findByUsername("admin_gestion").isEmpty()) {
 
-      if (usuarioExistente == null) {
-        Map<String, Object> registroData =
-            Map.of(
-                "username", "admin_gestion",
-                "password", "password",
-                "roles", List.of("ROLE_GESTION_ACADEMICA"));
+      Map<String, Object> registroData =
+          Map.of(
+              "username", "admin_gestion",
+              "password", "password",
+              "roles", List.of("ROLE_GESTION_ACADEMICA"));
 
+      webTestClient
+          .post()
+          .uri("/api/auth/register")
+          .contentType(MediaType.APPLICATION_JSON)
+          .bodyValue(registroData)
+          .exchange()
+          .expectStatus()
+          .isCreated()
+          .expectBody();
+    }
+
+    Map<String, String> loginData =
+        Map.of(
+            "username", "admin_gestion",
+            "password", "password");
+
+    Map<String, Object> loginResponse =
         webTestClient
             .post()
-            .uri("/api/auth/register")
+            .uri("/api/auth/login")
             .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(registroData)
+            .bodyValue(loginData)
             .exchange()
             .expectStatus()
-            .isCreated();
-      }
+            .isOk()
+            .expectBody(Map.class)
+            .returnResult()
+            .getResponseBody();
 
-      Map<String, String> loginData = Map.of("username", "admin_gestion", "password", "password");
-
-      String token =
-          webTestClient
-              .post()
-              .uri("/api/auth/login")
-              .contentType(MediaType.APPLICATION_JSON)
-              .bodyValue(loginData)
-              .exchange()
-              .expectStatus()
-              .isOk()
-              .returnResult(Map.class)
-              .getResponseBody()
-              .blockFirst()
-              .get("token")
-              .toString();
-
-      tokenHolder.setToken(token);
-    }
+    tokenHolder.setToken(loginResponse.get("token").toString());
   }
 }
