@@ -120,7 +120,7 @@ done
 # Crear materias con correlativas
 echo "Creando materia: Algebra III (requiere Algebra II)..."
 hacer_peticion "POST" "/materias" '{
-    "codigoDeMateria": "NECESITA CORRELATIVA",
+    "codigoDeMateria": "NECESITA-CORRELATIVA",
     "nombre": "Algebra III", 
     "contenidos": "Contenido de Algebra III",
     "creditosQueOtorga": 4,
@@ -133,7 +133,7 @@ hacer_peticion "POST" "/materias" '{
 
 echo "Creando materia: Algebra 4D (requiere Algebra II + Algebra I)..."
 hacer_peticion "POST" "/materias" '{
-    "codigoDeMateria": "NECESITA 2 CORRELATIVAS",
+    "codigoDeMateria": "NECESITA-2-CORRELATIVAS",
     "nombre": "Algebra 4D",
     "contenidos": "Contenido de Algebra 4D", 
     "creditosQueOtorga": 4,
@@ -207,11 +207,11 @@ echo -e "${BLUE}Paso 7: Creando cursos de prueba...${NC}"
 cursos=(
     '{"codigo":"CURSO-001","maximoDeAlumnos":25,"codigoMateria":"997-MA","codigosCuatrimestres":["2025-2"]}'
     '{"codigo":"CURSO-002","maximoDeAlumnos":25,"codigoMateria":"998-MA","codigosCuatrimestres":["2025-2"]}'
-    '{"codigo":"CURSO-Correlativa inicial","maximoDeAlumnos":25,"codigoMateria":"CORRELATIVA","codigosCuatrimestres":["2025-2"]}'
+    '{"codigo":"CURSO-Correlativa-inicial","maximoDeAlumnos":25,"codigoMateria":"CORRELATIVA","codigosCuatrimestres":["2025-2"]}'
     '{"codigo":"CURSO-Correlativas","maximoDeAlumnos":25,"codigoMateria":"NECESITA CORRELATIVA","codigosCuatrimestres":["2025-2"]}'
     '{"codigo":"CURSO-que-necesita-creditos","maximoDeAlumnos":25,"codigoMateria":"MateriaQueNecesitaCredito","codigosCuatrimestres":["2025-2"]}'
     '{"codigo":"CURSO-que-necesita-un-millon-creditos","maximoDeAlumnos":25,"codigoMateria":"MateriaDeElMillonDeCreditos","codigosCuatrimestres":["2025-2"]}'
-    '{"codigo":"CURSO-NECESITA 2 CORRELATIVAS","maximoDeAlumnos":25,"codigoMateria":"NECESITA 2 CORRELATIVAS","codigosCuatrimestres":["2025-2"]}'
+    '{"codigo":"CURSO-NECESITA-2-CORRELATIVAS","maximoDeAlumnos":25,"codigoMateria":"NECESITA 2 CORRELATIVAS","codigosCuatrimestres":["2025-2"]}'
 )
 
 nombres_cursos=("CURSO-001 (Analisis I)" "CURSO-002 (Algebra I)" "CURSO-Correlativa inicial (Algebra II)" "CURSO-Correlativas (Algebra III)" "CURSO-que-necesita-creditos (Algebra Lineal)" "CURSO-que-necesita-un-millon-creditos (Algebra Imposible)" "CURSO-NECESITA 2 CORRELATIVAS (Algebra 4D)")
