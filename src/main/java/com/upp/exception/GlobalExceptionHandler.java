@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler({
     CarreraConPlanesException.class,
     CarreraConAlumnosException.class,
-    PlanConMateriasException.class
+    PlanConMateriasException.class,
   })
   public ResponseEntity<Map<String, String>> handleDeletionConstraintExceptions(
       RuntimeException ex) {
@@ -40,7 +40,10 @@ public class GlobalExceptionHandler {
     CarreraNoExisteException.class,
     PlanDeEstudiosNoExisteException.class,
     MateriaNoExisteException.class,
-    AlumnoNoExisteException.class
+    AlumnoNoExisteException.class,
+    CursoNoExisteException.class,
+    CuatrimestreNoExisteException.class,
+    ActaNoExisteException.class,
   })
   public ResponseEntity<Map<String, String>> handleEntityNotFoundExceptions(RuntimeException ex) {
     Map<String, String> error = new HashMap<>();
@@ -52,7 +55,11 @@ public class GlobalExceptionHandler {
     CarreraExisteException.class,
     PlanDeEstudiosExisteException.class,
     MateriaExisteException.class,
-    AlumnoExisteException.class
+    AlumnoExisteException.class,
+    CursoExisteException.class,
+    CuatrimestreExisteException.class,
+    InscripcionExisteException.class,
+    ActaExisteException.class,
   })
   public ResponseEntity<Map<String, String>> handleEntityAlreadyExistsExceptions(
       RuntimeException ex) {
@@ -83,6 +90,14 @@ public class GlobalExceptionHandler {
     Map<String, String> error = new HashMap<>();
     error.put("error", "No se puede guardar con campos vacios");
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+  }
+
+  @ExceptionHandler({CreditosInsuficientesException.class, CorrelativasNoAprobadasException.class})
+  public ResponseEntity<Map<String, String>> handleAcademicValidationExceptions(
+      RuntimeException ex) {
+    Map<String, String> error = new HashMap<>();
+    error.put("error", ex.getMessage());
+    return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(error);
   }
 
   @ExceptionHandler(Exception.class)

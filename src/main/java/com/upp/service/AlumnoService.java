@@ -235,6 +235,27 @@ public class AlumnoService {
         .collect(Collectors.toList());
   }
 
+  public AlumnoDTO obtenerAlumnoActual(String username) {
+    Optional<Alumno> alumnoOpt = alumnoRepository.findByUsername(username);
+    if (alumnoOpt.isEmpty()) {
+      throw new AlumnoNoExisteException("No existe un alumno con ese username.");
+    }
+    Alumno alumno = alumnoOpt.get();
+    return new AlumnoDTO(
+        alumno.getMatricula(),
+        alumno.getNombre(),
+        alumno.getApellido(),
+        alumno.getDni(),
+        alumno.getEmail(),
+        alumno.getDireccion(),
+        alumno.getFechaNacimiento(),
+        alumno.getFechaIngreso(),
+        alumno.getFechaEgreso(),
+        alumno.getTelefonos(),
+        obtenerCodigosCarreras(alumno.getCarreras()),
+        obtenerCodigosPlanesDeEstudio(alumno.getPlanesDeEstudio()));
+  }
+
   private Rol obtenerRolAlumno() {
     return rolRepository
         .findById(ID_ROL_ALUMNO)

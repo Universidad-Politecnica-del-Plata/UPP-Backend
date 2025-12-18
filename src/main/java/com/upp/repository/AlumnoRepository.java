@@ -19,4 +19,8 @@ public interface AlumnoRepository extends JpaRepository<Alumno, Long> {
   boolean existsByMatricula(Long matricula);
 
   List<Alumno> findByHabilitadoTrue();
+
+  Optional<Alumno> findByUsername(String username);
+
+  Optional<Alumno> findByDni(long l);
 }

@@ -70,24 +70,4 @@ public class Alumno extends Usuario {
     this.fechaIngreso = fechaIngreso;
     this.telefonos = telefonos;
   }
-
-  // inscripcionesService
-  //
-  // inscribirAlumnoEnMateria(materiaId, alumnoId):
-  // alumno = alumnoRepo.find(alumnoId)
-  // materia = materiaRepo.find(materiaId)
-  // validarInscripcion(materia,alumno)
-  // alumno.inscribirEnMateria(materia)
-  //
-  //
-  // -->
-  // inscribirEnMateria(materia)
-  //
-  // materias = this.getMaterias
-  // materias.append(materia)
-  //
-  //
-  //
-  //
-  //
 }
