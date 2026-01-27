@@ -5,7 +5,9 @@
 set -e  # Salir en caso de error
 
 # Configuración
-BASE_URL="${1:-http://localhost:8080}"
+# Puerto de la aplicacion (Render asigna via $PORT, default 8080 para local)
+APP_PORT=${PORT:-8080}
+BASE_URL="${1:-http://localhost:${APP_PORT}}"
 API_URL="$BASE_URL/api"
 
 echo "Inicializando Datos de Prueba"

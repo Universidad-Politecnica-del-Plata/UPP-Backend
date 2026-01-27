@@ -10,10 +10,14 @@ APP_PID=$!
 
 echo "Esperando a que la aplicacion este lista..."
 
+# Puerto de la aplicacion (Render asigna via $PORT, default 8080 para local)
+APP_PORT=${PORT:-8080}
+echo "Usando puerto: $APP_PORT"
+
 # Esperar a que la aplicacion este lista (maximo 120 segundos)
 MAX_WAIT=120
 WAIT_COUNT=0
-until curl -sf http://localhost:8080/api/ping > /dev/null 2>&1; do
+until curl -sf http://localhost:${APP_PORT}/api/ping > /dev/null 2>&1; do
     WAIT_COUNT=$((WAIT_COUNT + 2))
     if [ $WAIT_COUNT -ge $MAX_WAIT ]; then
         echo "La aplicacion no pudo iniciar en ${MAX_WAIT} segundos"
@@ -32,7 +36,7 @@ echo "Verificando si la base de datos necesita inicializacion..."
 LOGIN_RESPONSE=$(curl -sf -X POST \
     -H "Content-Type: application/json" \
     -d '{"username": "gestion_academica", "password": "password123"}' \
-    "http://localhost:8080/api/auth/login" 2>/dev/null || echo "")
+    "http://localhost:${APP_PORT}/api/auth/login" 2>/dev/null || echo "")
 
 # Si el login devuelve un token, los datos ya existen
 if echo "$LOGIN_RESPONSE" | grep -q '"token"'; then
@@ -45,7 +49,7 @@ if [ -z "$VERIFICACION_DATOS" ]; then
     echo "La base de datos esta vacia. Ejecutando script de inicializacion..."
     if [ -f /app/inicializar-datos.sh ]; then
         chmod +x /app/inicializar-datos.sh
-        /app/inicializar-datos.sh http://localhost:8080 || {
+        /app/inicializar-datos.sh http://localhost:${APP_PORT} || {
             echo "Advertencia: El script de inicializacion fallo, pero continuando..."
         }
         echo "Inicializacion de base de datos completada!"
