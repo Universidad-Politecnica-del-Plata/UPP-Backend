@@ -31,4 +31,4 @@ RUN chmod +x /app/checkear-si-hay-datos.sh /app/inicializar-datos.sh
 EXPOSE 8080
 
 # Ejecutar la aplicacion via script de punto de entrada
-ENTRYPOINT ["/app/punto-de-entrada.sh"]
+ENTRYPOINT ["/app/checkear-si-hay-datos.sh"]
