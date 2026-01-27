@@ -67,8 +67,16 @@ respuesta_planificacion=$(hacer_peticion "POST" "/auth/register" '{
 echo "Creando usuario de Gestión Estudiantil..."
 respuesta_estudiantil=$(hacer_peticion "POST" "/auth/register" '{
     "username": "gestion_estudiantil",
-    "password": "password123", 
+    "password": "password123",
     "roles": ["ROLE_GESTION_ESTUDIANTIL"]
+}')
+
+# Crear Usuario Docente
+echo "Creando usuario Docente..."
+respuesta_docente=$(hacer_peticion "POST" "/auth/register" '{
+    "username": "docente",
+    "password": "password123",
+    "roles": ["ROLE_DOCENTE"]
 }')
 
 echo -e "${GREEN}Usuarios del sistema creados correctamente${NC}"
@@ -269,7 +277,8 @@ echo -e "${BLUE}Cuatrimestre Activo:${NC} 2025-2 (período de inscripción abier
 echo ""
 echo -e "${BLUE}Usuarios del Sistema Creados:${NC}"
 echo "   - gestion_academica (contraseña: password123) - Gestión académica"
-echo "   - gestor_planificacion (contraseña: password123) - Gestión de planificación"  
+echo "   - gestor_planificacion (contraseña: password123) - Gestión de planificación"
 echo "   - gestion_estudiantil (contraseña: password123) - Gestión estudiantil"
+echo "   - docente (contraseña: password123) - Docente"
 echo ""
 echo -e "${BLUE}FIN${NC}"
