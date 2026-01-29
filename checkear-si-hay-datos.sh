@@ -13,7 +13,7 @@ inicializar_en_background() {
     echo "[Background] Esperando a que la aplicacion este lista..."
 
     # Esperar a que la aplicacion este lista (maximo 120 segundos)
-    MAX_WAIT=120
+    MAX_WAIT=300
     WAIT_COUNT=0
     until curl -sf http://localhost:${APP_PORT}/api/ping > /dev/null 2>&1; do
         WAIT_COUNT=$((WAIT_COUNT + 2))
