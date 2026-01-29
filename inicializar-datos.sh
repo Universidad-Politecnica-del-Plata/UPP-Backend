@@ -121,7 +121,7 @@ hacer_peticion "POST" "/planDeEstudios" '{
     "creditosElectivos": 10,
     "fechaEntradaEnVigencia": "2023-01-01", 
     "fechaVencimiento": "2030-12-31",
-    "codigosMaterias": ["997-MA", "998-MA", "999-MA", "CORRELATIVA", "MateriaQueNecesitaCredito", "MateriaDeElMillonDeCreditos", "NECESITA CORRELATIVA", "NECESITA 2 CORRELATIVAS"]
+    "codigosMaterias": ["997-MA", "998-MA", "999-MA", "CORRELATIVA", "MateriaQueNecesitaCredito", "MateriaDeElMillonDeCreditos", "NECESITA-CORRELATIVA", "NECESITA-2-CORRELATIVAS"]
 }' "$TOKEN_ACADEMICA" > /dev/null
 
 hacer_peticion "POST" "/planDeEstudios" '{
@@ -159,10 +159,10 @@ cursos=(
     '{"codigo":"CURSO-001","maximoDeAlumnos":25,"codigoMateria":"997-MA","codigosCuatrimestres":["2025-2"]}'
     '{"codigo":"CURSO-002","maximoDeAlumnos":25,"codigoMateria":"998-MA","codigosCuatrimestres":["2025-2"]}'
     '{"codigo":"CURSO-Correlativa-inicial","maximoDeAlumnos":25,"codigoMateria":"CORRELATIVA","codigosCuatrimestres":["2025-2"]}'
-    '{"codigo":"CURSO-Correlativas","maximoDeAlumnos":25,"codigoMateria":"NECESITA CORRELATIVA","codigosCuatrimestres":["2025-2"]}'
+    '{"codigo":"CURSO-Correlativas","maximoDeAlumnos":25,"codigoMateria":"NECESITA-CORRELATIVA","codigosCuatrimestres":["2025-2"]}'
     '{"codigo":"CURSO-que-necesita-creditos","maximoDeAlumnos":25,"codigoMateria":"MateriaQueNecesitaCredito","codigosCuatrimestres":["2025-2"]}'
     '{"codigo":"CURSO-que-necesita-un-millon-creditos","maximoDeAlumnos":25,"codigoMateria":"MateriaDeElMillonDeCreditos","codigosCuatrimestres":["2025-2"]}'
-    '{"codigo":"CURSO-NECESITA-2-CORRELATIVAS","maximoDeAlumnos":25,"codigoMateria":"NECESITA 2 CORRELATIVAS","codigosCuatrimestres":["2025-2"]}'
+    '{"codigo":"CURSO-NECESITA-2-CORRELATIVAS","maximoDeAlumnos":25,"codigoMateria":"NECESITA-2-CORRELATIVAS","codigosCuatrimestres":["2025-2"]}'
 )
 
 for i in "${!cursos[@]}"; do
