@@ -41,6 +41,7 @@ public class CursoController {
   }
 
   @GetMapping("/{codigo}")
+  @PreAuthorize("hasRole('GESTOR_DE_PLANIFICACION') or hasRole('DOCENTE') or hasRole('ALUMNO')")
   public ResponseEntity<?> obtenerCursoPorCodigo(@PathVariable String codigo) {
     CursoDTO curso = cursoService.obtenerCursoPorCodigo(codigo);
     return ResponseEntity.status(HttpStatus.OK).body(curso);
