@@ -24,6 +24,11 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 
+/**
+ * Gestiona las inscripciones de alumnos a cursos.
+ * Valida que el alumno tenga los créditos necesarios, las correlativas aprobadas,
+ * y que esté dentro del período de inscripción del cuatrimestre actual.
+ */
 @Service
 public class InscripcionService {
 

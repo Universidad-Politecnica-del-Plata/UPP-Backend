@@ -21,6 +21,11 @@ import java.util.stream.Collectors;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+/**
+ * Gestiona los alumnos del sistema: alta, baja (lógica), modificación y consultas.
+ * También valida fechas de nacimiento/ingreso/egreso y que los planes de estudio
+ * correspondan a las carreras asignadas.
+ */
 @Service
 public class AlumnoService {
   private final AlumnoRepository alumnoRepository;
