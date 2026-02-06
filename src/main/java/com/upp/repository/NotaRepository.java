@@ -22,12 +22,11 @@ public interface NotaRepository extends JpaRepository<Nota, Long> {
 
   boolean existsByActaAndAlumno(Acta acta, Alumno alumno);
 
-  // Métodos para consultar notas específicamente de actas FINAL
+  // Queries para actas FINAL
   @Query("SELECT n FROM Nota n WHERE n.alumno = :alumno AND n.acta.tipoDeActa = :tipoDeActa")
   List<Nota> findByAlumnoAndActaTipoDeActa(
       @Param("alumno") Alumno alumno, @Param("tipoDeActa") TipoDeActa tipoDeActa);
 
-  // Verificar si existe una nota aprobada (≥4) en acta FINAL para una materia específica
   @Query(
       "SELECT CASE WHEN COUNT(n) > 0 THEN true ELSE false END "
           + "FROM Nota n "
@@ -40,7 +39,6 @@ public interface NotaRepository extends JpaRepository<Nota, Long> {
       @Param("codigoMateria") String codigoMateria,
       @Param("tipoDeActa") TipoDeActa tipoDeActa);
 
-  // Obtener materias aprobadas en actas FINAL con sus créditos
   @Query(
       "SELECT n FROM Nota n "
           + "WHERE n.alumno = :alumno "

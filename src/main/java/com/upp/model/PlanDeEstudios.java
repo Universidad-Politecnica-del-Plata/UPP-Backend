@@ -46,20 +46,18 @@ public class PlanDeEstudios {
     this.codigoDePlanDeEstudios = codigoDePlanDeEstudios;
     this.creditosElectivos = creditosElectivos;
     this.fechaEntradaEnVigencia = fechaEntradaEnVigencia;
-    this.setMaterias(materias); // Usar setter para establecer relación bidireccional
+    this.setMaterias(materias);
     this.fechaVencimiento = fechaVencimiento;
   }
 
   public PlanDeEstudios() {}
 
   public void setMaterias(List<Materia> materias) {
-    // Limpiar relaciones bidireccionales existentes
     if (this.materias != null) {
       this.materias.forEach(materia -> materia.setPlanDeEstudios(null));
     }
 
     this.materias = materias;
-    // Establecer la relación bidireccional
     if (materias != null) {
       materias.forEach(materia -> materia.setPlanDeEstudios(this));
     }
