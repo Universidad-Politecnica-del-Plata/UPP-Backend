@@ -3,6 +3,7 @@ package com.upp.service;
 import com.upp.dto.AlumnoDTO;
 import com.upp.exception.AlumnoExisteException;
 import com.upp.exception.AlumnoNoExisteException;
+import com.upp.exception.FechasInvalidasException;
 import com.upp.model.Alumno;
 import com.upp.model.Carrera;
 import com.upp.model.PlanDeEstudios;
@@ -45,6 +46,7 @@ public class AlumnoService {
     if (alumnoRepository.existsByDniOrEmail(alumnoDTO.getDni(), alumnoDTO.getEmail())) {
       throw new AlumnoExisteException("Ya existe un alumno con ese DNI o email.");
     }
+    validarFechas(alumnoDTO);
     Alumno alumno = new Alumno();
     alumno.setNombre(alumnoDTO.getNombre());
     alumno.setApellido(alumnoDTO.getApellido());
@@ -82,6 +84,21 @@ public class AlumnoService {
             obtenerCodigosPlanesDeEstudio(alumnoGuardado.getPlanesDeEstudio()));
 
     return alumnoGuardadoDTO;
+  }
+
+  private void validarFechas(AlumnoDTO alumnoDTO) {
+    if (alumnoDTO.getFechaNacimiento() != null && alumnoDTO.getFechaIngreso() != null) {
+      if (!alumnoDTO.getFechaIngreso().isAfter(alumnoDTO.getFechaNacimiento())) {
+        throw new FechasInvalidasException(
+            "La fecha de ingreso debe ser posterior a la fecha de nacimiento.");
+      }
+    }
+    if (alumnoDTO.getFechaIngreso() != null && alumnoDTO.getFechaEgreso() != null) {
+      if (!alumnoDTO.getFechaEgreso().isAfter(alumnoDTO.getFechaIngreso())) {
+        throw new FechasInvalidasException(
+            "La fecha de egreso debe ser posterior a la fecha de ingreso.");
+      }
+    }
   }
 
   private Long obtenerUltimaMatricula() {
@@ -160,6 +177,7 @@ public class AlumnoService {
     if (alumnoOpt.isEmpty()) {
       throw new AlumnoNoExisteException("No existe un alumno con esa matrícula.");
     }
+    validarFechas(alumnoDTO);
 
     Alumno alumno = alumnoOpt.get();
 
