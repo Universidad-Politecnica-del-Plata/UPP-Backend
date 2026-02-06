@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/** DTO para crear un acta */
 @Getter
 @Setter
 @NoArgsConstructor

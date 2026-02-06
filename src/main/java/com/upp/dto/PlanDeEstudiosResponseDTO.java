@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
+/** Respuesta con datos del plan de estudios, incluyendo créditos obligatorios calculados y carrera. */
 @Getter
 @Setter
 public class PlanDeEstudiosResponseDTO extends PlanDeEstudiosRequestDTO {

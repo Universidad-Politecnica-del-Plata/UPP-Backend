@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/** Se utiliza para inscribir un alumno a un curso */
 @Getter
 @Setter
 @NoArgsConstructor

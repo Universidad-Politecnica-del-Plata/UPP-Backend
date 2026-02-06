@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/** Datos para cambiar el estado de un acta (ABIERTA/CERRADA). */
 @Getter
 @Setter
 @NoArgsConstructor
