@@ -4,6 +4,7 @@ import com.upp.dto.AlumnoDTO;
 import com.upp.exception.AlumnoExisteException;
 import com.upp.exception.AlumnoNoExisteException;
 import com.upp.exception.FechasInvalidasException;
+import com.upp.exception.PlanNoCorrespondeACarreraException;
 import com.upp.model.Alumno;
 import com.upp.model.Carrera;
 import com.upp.model.PlanDeEstudios;
@@ -57,8 +58,13 @@ public class AlumnoService {
     alumno.setFechaIngreso(alumnoDTO.getFechaIngreso());
     alumno.setFechaEgreso(alumnoDTO.getFechaEgreso());
     alumno.setTelefonos(alumnoDTO.getTelefonos());
-    alumno.setCarreras(obtenerCarreras(alumnoDTO.getCodigosCarreras()));
-    alumno.setPlanesDeEstudio(obtenerPlanesDeEstudio(alumnoDTO.getCodigosPlanesDeEstudio()));
+
+    List<Carrera> carreras = obtenerCarreras(alumnoDTO.getCodigosCarreras());
+    List<PlanDeEstudios> planes = obtenerPlanesDeEstudio(alumnoDTO.getCodigosPlanesDeEstudio());
+    validarPlanesCorrespondenACarreras(carreras, planes);
+
+    alumno.setCarreras(carreras);
+    alumno.setPlanesDeEstudio(planes);
 
     Long ultimaMatricula = obtenerUltimaMatricula();
     alumno.setMatricula(ultimaMatricula + 1);
@@ -97,6 +103,25 @@ public class AlumnoService {
       if (!alumnoDTO.getFechaEgreso().isAfter(alumnoDTO.getFechaIngreso())) {
         throw new FechasInvalidasException(
             "La fecha de egreso debe ser posterior a la fecha de ingreso.");
+      }
+    }
+  }
+
+  private void validarPlanesCorrespondenACarreras(
+      List<Carrera> carreras, List<PlanDeEstudios> planes) {
+    if (planes == null || planes.isEmpty()) {
+      return;
+    }
+    Set<String> codigosCarreras =
+        carreras.stream().map(Carrera::getCodigoDeCarrera).collect(Collectors.toSet());
+
+    for (PlanDeEstudios plan : planes) {
+      if (plan.getCarrera() == null
+          || !codigosCarreras.contains(plan.getCarrera().getCodigoDeCarrera())) {
+        throw new PlanNoCorrespondeACarreraException(
+            "El plan de estudios '"
+                + plan.getCodigoDePlanDeEstudios()
+                + "' no corresponde a ninguna carrera asignada al alumno.");
       }
     }
   }
@@ -191,8 +216,13 @@ public class AlumnoService {
     alumno.setFechaIngreso(alumnoDTO.getFechaIngreso());
     alumno.setFechaEgreso(alumnoDTO.getFechaEgreso());
     alumno.setTelefonos(alumnoDTO.getTelefonos());
-    alumno.setCarreras(obtenerCarreras(alumnoDTO.getCodigosCarreras()));
-    alumno.setPlanesDeEstudio(obtenerPlanesDeEstudio(alumnoDTO.getCodigosPlanesDeEstudio()));
+
+    List<Carrera> carreras = obtenerCarreras(alumnoDTO.getCodigosCarreras());
+    List<PlanDeEstudios> planes = obtenerPlanesDeEstudio(alumnoDTO.getCodigosPlanesDeEstudio());
+    validarPlanesCorrespondenACarreras(carreras, planes);
+
+    alumno.setCarreras(carreras);
+    alumno.setPlanesDeEstudio(planes);
 
     alumnoRepository.save(alumno);
     return alumnoDTO;

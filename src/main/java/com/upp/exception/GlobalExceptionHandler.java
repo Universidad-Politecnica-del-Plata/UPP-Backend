@@ -100,6 +100,13 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(error);
   }
 
+  @ExceptionHandler({FechasInvalidasException.class, PlanNoCorrespondeACarreraException.class})
+  public ResponseEntity<Map<String, String>> handleValidationExceptions(RuntimeException ex) {
+    Map<String, String> error = new HashMap<>();
+    error.put("error", ex.getMessage());
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+  }
+
   @ExceptionHandler(Exception.class)
   public ResponseEntity<Map<String, String>> handleGeneralException(Exception ex) {
     Map<String, String> error = new HashMap<>();
