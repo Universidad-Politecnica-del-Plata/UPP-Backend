@@ -37,9 +37,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Gestiona las actas de examen (parciales y finales).
- * Permite crear actas, cargar notas (solo aprobatorias 4-10), cerrar actas
- * y consultar los alumnos inscriptos en cada curso.
+ * Gestiona las actas de examen (parciales y finales). Permite crear actas, cargar notas (solo
+ * aprobatorias 4-10), cerrar actas y consultar los alumnos inscriptos en cada curso.
  */
 @Service
 @Transactional

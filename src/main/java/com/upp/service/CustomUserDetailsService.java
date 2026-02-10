@@ -15,8 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
- * carga usuarios por username para Spring Security
- * y permite crear nuevos usuarios con roles asignados (autenticaciòn).
+ * carga usuarios por username para Spring Security y permite crear nuevos usuarios con roles
+ * asignados (autenticaciòn).
  */
 @Service
 @RequiredArgsConstructor

@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 /**
- * Gestiona las materias: crear, modificar, eliminar y consultar.
- * Maneja las correlatividades entre materias y los créditos que otorgan y requieren.
+ * Gestiona las materias: crear, modificar, eliminar y consultar. Maneja las correlatividades entre
+ * materias y los créditos que otorgan y requieren.
  */
 @Service
 public class MateriaService {

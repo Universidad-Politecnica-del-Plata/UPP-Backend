@@ -15,9 +15,9 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 /**
- * Gestiona los cuatrimestres: crear, modificar, eliminar y consultar.
- * Define los períodos de inscripción, de clases y de examenes integradores, y valida que
- * las fechas sean vàlidas (inscripción antes de periodo de clases, integradores después).
+ * Gestiona los cuatrimestres: crear, modificar, eliminar y consultar. Define los períodos de
+ * inscripción, de clases y de examenes integradores, y valida que las fechas sean vàlidas
+ * (inscripción antes de periodo de clases, integradores después).
  */
 @Service
 public class CuatrimestreService {

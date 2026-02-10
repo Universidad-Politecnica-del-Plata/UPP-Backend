@@ -16,7 +16,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-/** Endpoints usado por docentes para crear actas, cargar notas, cerrar actas y ver alumnos inscriptos. */
+/**
+ * Endpoints usado por docentes para crear actas, cargar notas, cerrar actas y ver alumnos
+ * inscriptos.
+ */
 @RestController
 @RequestMapping("/api/actas")
 @PreAuthorize("isAuthenticated()")
