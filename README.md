@@ -1,6 +1,6 @@
 # UPP Backend
 
-Backend del sistema de gestión universitaria UPP (Universidad). Permite administrar alumnos, carreras, materias, planes de estudio, cursos, inscripciones y actas de examen.
+Backend del sistema de gestión universitaria UPP (Universidad Politécnica del Plata). Permite administrar alumnos, carreras, materias, planes de estudio, cursos, inscripciones y actas de examen.
 
 ## Tecnologías
 
