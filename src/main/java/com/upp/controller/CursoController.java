@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-/** ABM de cursos y consulta por materia o plan de estudios. */
+/** ABM de cursos y consulta de cursos disponibles por materia o por plan de estudios. */
 @RestController
 @RequestMapping("/api/cursos")
 @PreAuthorize("hasRole('GESTOR_DE_PLANIFICACION')")
