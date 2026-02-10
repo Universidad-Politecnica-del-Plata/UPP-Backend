@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+/** ABM de cuatrimestres con sus períodos de inscripción y clases. */
 @RestController
 @RequestMapping("/api/cuatrimestres")
 @PreAuthorize("hasRole('GESTOR_DE_PLANIFICACION')")

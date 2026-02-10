@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+/** ABM de planes de estudio */
 @RestController
 @RequestMapping("/api/planDeEstudios")
 public class PlanDeEstudiosController {

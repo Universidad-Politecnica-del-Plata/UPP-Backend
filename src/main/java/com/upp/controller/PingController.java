@@ -10,6 +10,6 @@ public class PingController {
 
   @GetMapping("/ping")
   public String ping() {
-    return "Backend is running";
+    return "El backend está activo";
   }
 }

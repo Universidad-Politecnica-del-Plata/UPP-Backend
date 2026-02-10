@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/** Endpoints para consultar la historia académica de un alumno (materias aprobadas, créditos y si esta habilitado para una inscripción en base a la historia. */
 @RestController
 @RequestMapping("/api/historia-academica")
 public class HistoriaAcademicaController {

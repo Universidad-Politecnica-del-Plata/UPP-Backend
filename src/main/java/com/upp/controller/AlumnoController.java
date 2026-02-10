@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/** ABM de alumnos y consulta del alumno logueado. */
 @RestController
 @PreAuthorize("hasRole('GESTION_ESTUDIANTIL')")
 @RequestMapping("/api/alumnos")

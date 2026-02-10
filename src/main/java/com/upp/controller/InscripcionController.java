@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+/** Endpoints para inscribirse a cursos (ABM de inscripciones del alumno). */
 @RestController
 @RequestMapping("/api/inscripciones")
 @PreAuthorize("isAuthenticated()")
