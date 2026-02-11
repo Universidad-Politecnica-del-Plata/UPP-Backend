@@ -1,6 +1,9 @@
 package com.upp.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.PastOrPresent;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -21,8 +24,15 @@ public class Alumno extends Usuario {
   private Long dni;
   private String email;
   private String direccion;
+
+  @NotNull(message = "La fecha de nacimiento es obligatoria")
+  @Past(message = "La fecha de nacimiento debe ser en el pasado")
   private LocalDate fechaNacimiento;
+
+  @NotNull(message = "La fecha de ingreso es obligatoria")
+  @PastOrPresent(message = "La fecha de ingreso no puede ser en el futuro")
   private LocalDate fechaIngreso;
+
   private LocalDate fechaEgreso;
 
   @ElementCollection(fetch = FetchType.EAGER)

@@ -3,6 +3,8 @@ package com.upp.service;
 import com.upp.dto.AlumnoDTO;
 import com.upp.exception.AlumnoExisteException;
 import com.upp.exception.AlumnoNoExisteException;
+import com.upp.exception.FechasInvalidasException;
+import com.upp.exception.PlanNoCorrespondeACarreraException;
 import com.upp.model.Alumno;
 import com.upp.model.Carrera;
 import com.upp.model.PlanDeEstudios;
@@ -19,6 +21,11 @@ import java.util.stream.Collectors;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+/**
+ * Gestiona los alumnos del sistema: alta, baja (lógica), modificación y consultas. También valida
+ * fechas de nacimiento/ingreso/egreso y que los planes de estudio correspondan a las carreras
+ * asignadas.
+ */
 @Service
 public class AlumnoService {
   private final AlumnoRepository alumnoRepository;
@@ -45,6 +52,7 @@ public class AlumnoService {
     if (alumnoRepository.existsByDniOrEmail(alumnoDTO.getDni(), alumnoDTO.getEmail())) {
       throw new AlumnoExisteException("Ya existe un alumno con ese DNI o email.");
     }
+    validarFechas(alumnoDTO);
     Alumno alumno = new Alumno();
     alumno.setNombre(alumnoDTO.getNombre());
     alumno.setApellido(alumnoDTO.getApellido());
@@ -55,8 +63,13 @@ public class AlumnoService {
     alumno.setFechaIngreso(alumnoDTO.getFechaIngreso());
     alumno.setFechaEgreso(alumnoDTO.getFechaEgreso());
     alumno.setTelefonos(alumnoDTO.getTelefonos());
-    alumno.setCarreras(obtenerCarreras(alumnoDTO.getCodigosCarreras()));
-    alumno.setPlanesDeEstudio(obtenerPlanesDeEstudio(alumnoDTO.getCodigosPlanesDeEstudio()));
+
+    List<Carrera> carreras = obtenerCarreras(alumnoDTO.getCodigosCarreras());
+    List<PlanDeEstudios> planes = obtenerPlanesDeEstudio(alumnoDTO.getCodigosPlanesDeEstudio());
+    validarPlanesCorrespondenACarreras(carreras, planes);
+
+    alumno.setCarreras(carreras);
+    alumno.setPlanesDeEstudio(planes);
 
     Long ultimaMatricula = obtenerUltimaMatricula();
     alumno.setMatricula(ultimaMatricula + 1);
@@ -82,6 +95,40 @@ public class AlumnoService {
             obtenerCodigosPlanesDeEstudio(alumnoGuardado.getPlanesDeEstudio()));
 
     return alumnoGuardadoDTO;
+  }
+
+  private void validarFechas(AlumnoDTO alumnoDTO) {
+    if (alumnoDTO.getFechaNacimiento() != null && alumnoDTO.getFechaIngreso() != null) {
+      if (!alumnoDTO.getFechaIngreso().isAfter(alumnoDTO.getFechaNacimiento())) {
+        throw new FechasInvalidasException(
+            "La fecha de ingreso debe ser posterior a la fecha de nacimiento.");
+      }
+    }
+    if (alumnoDTO.getFechaIngreso() != null && alumnoDTO.getFechaEgreso() != null) {
+      if (!alumnoDTO.getFechaEgreso().isAfter(alumnoDTO.getFechaIngreso())) {
+        throw new FechasInvalidasException(
+            "La fecha de egreso debe ser posterior a la fecha de ingreso.");
+      }
+    }
+  }
+
+  private void validarPlanesCorrespondenACarreras(
+      List<Carrera> carreras, List<PlanDeEstudios> planes) {
+    if (planes == null || planes.isEmpty()) {
+      return;
+    }
+    Set<String> codigosCarreras =
+        carreras.stream().map(Carrera::getCodigoDeCarrera).collect(Collectors.toSet());
+
+    for (PlanDeEstudios plan : planes) {
+      if (plan.getCarrera() == null
+          || !codigosCarreras.contains(plan.getCarrera().getCodigoDeCarrera())) {
+        throw new PlanNoCorrespondeACarreraException(
+            "El plan de estudios '"
+                + plan.getCodigoDePlanDeEstudios()
+                + "' no corresponde a ninguna carrera asignada al alumno.");
+      }
+    }
   }
 
   private Long obtenerUltimaMatricula() {
@@ -160,6 +207,7 @@ public class AlumnoService {
     if (alumnoOpt.isEmpty()) {
       throw new AlumnoNoExisteException("No existe un alumno con esa matrícula.");
     }
+    validarFechas(alumnoDTO);
 
     Alumno alumno = alumnoOpt.get();
 
@@ -173,8 +221,13 @@ public class AlumnoService {
     alumno.setFechaIngreso(alumnoDTO.getFechaIngreso());
     alumno.setFechaEgreso(alumnoDTO.getFechaEgreso());
     alumno.setTelefonos(alumnoDTO.getTelefonos());
-    alumno.setCarreras(obtenerCarreras(alumnoDTO.getCodigosCarreras()));
-    alumno.setPlanesDeEstudio(obtenerPlanesDeEstudio(alumnoDTO.getCodigosPlanesDeEstudio()));
+
+    List<Carrera> carreras = obtenerCarreras(alumnoDTO.getCodigosCarreras());
+    List<PlanDeEstudios> planes = obtenerPlanesDeEstudio(alumnoDTO.getCodigosPlanesDeEstudio());
+    validarPlanesCorrespondenACarreras(carreras, planes);
+
+    alumno.setCarreras(carreras);
+    alumno.setPlanesDeEstudio(planes);
 
     alumnoRepository.save(alumno);
     return alumnoDTO;

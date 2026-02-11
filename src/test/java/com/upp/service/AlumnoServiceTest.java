@@ -53,12 +53,19 @@ class AlumnoServiceTest {
     alumnoDTO.setCodigosCarreras(Arrays.asList("CS"));
     alumnoDTO.setCodigosPlanesDeEstudio(Arrays.asList("2023"));
 
+    Carrera carrera = new Carrera();
+    carrera.setCodigoDeCarrera("CS");
+
+    PlanDeEstudios plan = new PlanDeEstudios();
+    plan.setCodigoDePlanDeEstudios("2023");
+    plan.setCarrera(carrera);
+
     when(alumnoRepository.existsByDniOrEmail(alumnoDTO.getDni(), alumnoDTO.getEmail()))
         .thenReturn(false);
     when(rolRepository.findById("ROLE_ALUMNO")).thenReturn(Optional.of(new Rol("ROLE_ALUMNO")));
-    when(carreraRepository.findByCodigoDeCarrera("CS")).thenReturn(Optional.of(new Carrera()));
+    when(carreraRepository.findByCodigoDeCarrera("CS")).thenReturn(Optional.of(carrera));
     when(planDeEstudiosRepository.findByCodigoDePlanDeEstudios("2023"))
-        .thenReturn(Optional.of(new PlanDeEstudios()));
+        .thenReturn(Optional.of(plan));
     when(passwordEncoder.encode(any(CharSequence.class))).thenReturn("passwordEncriptado");
 
     Alumno alumnoGuardado = new Alumno();
@@ -70,8 +77,8 @@ class AlumnoServiceTest {
     alumnoGuardado.setFechaNacimiento(alumnoDTO.getFechaNacimiento());
     alumnoGuardado.setFechaIngreso(alumnoDTO.getFechaIngreso());
     alumnoGuardado.setTelefonos(alumnoDTO.getTelefonos());
-    alumnoGuardado.setCarreras(Arrays.asList(new Carrera()));
-    alumnoGuardado.setPlanesDeEstudio(Arrays.asList(new PlanDeEstudios()));
+    alumnoGuardado.setCarreras(Arrays.asList(carrera));
+    alumnoGuardado.setPlanesDeEstudio(Arrays.asList(plan));
     alumnoGuardado.setMatricula(1L);
 
     when(alumnoRepository.save(any(Alumno.class))).thenReturn(alumnoGuardado);
@@ -156,10 +163,17 @@ class AlumnoServiceTest {
     alumnoDTO.setCodigosCarreras(Arrays.asList("CS"));
     alumnoDTO.setCodigosPlanesDeEstudio(Arrays.asList("2023"));
 
+    Carrera carrera = new Carrera();
+    carrera.setCodigoDeCarrera("CS");
+
+    PlanDeEstudios plan = new PlanDeEstudios();
+    plan.setCodigoDePlanDeEstudios("2023");
+    plan.setCarrera(carrera);
+
     when(alumnoRepository.findByMatricula(matricula)).thenReturn(Optional.of(alumnoExistente));
-    when(carreraRepository.findByCodigoDeCarrera("CS")).thenReturn(Optional.of(new Carrera()));
+    when(carreraRepository.findByCodigoDeCarrera("CS")).thenReturn(Optional.of(carrera));
     when(planDeEstudiosRepository.findByCodigoDePlanDeEstudios("2023"))
-        .thenReturn(Optional.of(new PlanDeEstudios()));
+        .thenReturn(Optional.of(plan));
 
     AlumnoDTO resultado = alumnoService.modificarAlumno(matricula, alumnoDTO);
 

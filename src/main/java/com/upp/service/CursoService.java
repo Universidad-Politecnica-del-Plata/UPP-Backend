@@ -21,6 +21,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
+/**
+ * Gestiona los cursos: crear, modificar, eliminar y consultar. Un curso es una instancia de una
+ * materia que se dicta en uno o más cuatrimestres, con un cupo máximo de alumnos (lìmite de alumnos
+ * actualmente sin implementar).
+ */
 @Service
 public class CursoService {
   private final CursoRepository cursoRepository;

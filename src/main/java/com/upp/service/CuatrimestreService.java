@@ -14,6 +14,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
+/**
+ * Gestiona los cuatrimestres: crear, modificar, eliminar y consultar. Define los períodos de
+ * inscripción, de clases y de examenes integradores, y valida que las fechas sean vàlidas
+ * (inscripción antes de periodo de clases, integradores después).
+ */
 @Service
 public class CuatrimestreService {
   private final CuatrimestreRepository cuatrimestreRepository;
@@ -164,13 +169,12 @@ public class CuatrimestreService {
   }
 
   private void validarFechas(CuatrimestreDTO cuatrimestreDTO) {
-    // Validar que fecha de inicio de clases sea antes que fecha de fin de clases
+    // Chequeo de rangos de fechas para cada período
     if (cuatrimestreDTO.getFechaDeInicioClases().isAfter(cuatrimestreDTO.getFechaDeFinClases())) {
       throw new FechasInvalidasException(
           "La fecha de inicio de clases debe ser anterior a la fecha de fin de clases.");
     }
 
-    // Validar que fecha de inicio de inscripción sea antes que fecha de fin de inscripción
     if (cuatrimestreDTO
         .getFechaInicioPeriodoDeInscripcion()
         .isAfter(cuatrimestreDTO.getFechaFinPeriodoDeInscripcion())) {
@@ -178,7 +182,6 @@ public class CuatrimestreService {
           "La fecha de inicio del período de inscripción debe ser anterior a la fecha de fin del período de inscripción.");
     }
 
-    // Validar que fecha de inicio de integradores sea antes que fecha de fin de integradores
     if (cuatrimestreDTO
         .getFechaInicioPeriodoIntegradores()
         .isAfter(cuatrimestreDTO.getFechaFinPeriodoIntegradores())) {
@@ -186,7 +189,7 @@ public class CuatrimestreService {
           "La fecha de inicio del período de integradores debe ser anterior a la fecha de fin del período de integradores.");
     }
 
-    // Validar que el período de inscripción sea antes del período de clases
+    // Chequeo de orden cronológico: inscripción -> clases -> integradores
     if (cuatrimestreDTO
         .getFechaFinPeriodoDeInscripcion()
         .isAfter(cuatrimestreDTO.getFechaDeInicioClases())) {
@@ -194,7 +197,6 @@ public class CuatrimestreService {
           "El período de inscripción debe finalizar antes del inicio de clases.");
     }
 
-    // Validar que el período de integradores sea después del período de clases
     if (cuatrimestreDTO
         .getFechaInicioPeriodoIntegradores()
         .isBefore(cuatrimestreDTO.getFechaDeFinClases())) {

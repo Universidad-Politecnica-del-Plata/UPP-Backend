@@ -14,6 +14,10 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 
+/**
+ * Gestiona las carreras universitarias: crear, modificar, eliminar y consultar. Controla que no se
+ * pueda eliminar una carrera que tenga planes de estudio asociados.
+ */
 @Service
 public class CarreraService {
   private final CarreraRepository carreraRepository;

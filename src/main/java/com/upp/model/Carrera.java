@@ -41,12 +41,11 @@ public class Carrera {
   public Carrera() {}
 
   public void setPlanesDeEstudio(List<PlanDeEstudios> planesDeEstudio) {
-    // Limpiar relaciones bidireccionales existentes
+    // Mantengo la relación bidireccional con los planes
     if (this.planesDeEstudio != null) {
       this.planesDeEstudio.forEach(planDeEstudios -> planDeEstudios.setCarrera(null));
     }
     this.planesDeEstudio = planesDeEstudio;
-    // Establecer la relación bidireccional
     if (planesDeEstudio != null) {
       planesDeEstudio.forEach(planDeEstudios -> planDeEstudios.setCarrera(this));
     }

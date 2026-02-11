@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/** Se usa para crear y modificar un plan de estudios */
 @Data
 @NoArgsConstructor
 @Getter

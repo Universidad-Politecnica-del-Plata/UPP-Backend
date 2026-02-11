@@ -15,6 +15,11 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 
+/**
+ * Gestiona los planes de estudio: crear, modificar, eliminar y consultar. Asocia materias a cada
+ * plan y calcula los créditos obligatorios automáticamente. No permite eliminar planes que tengan
+ * materias asociadas.
+ */
 @Service
 public class PlanDeEstudiosService {
   private final PlanDeEstudiosRepository planDeEstudiosRepository;

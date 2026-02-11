@@ -13,6 +13,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
+/**
+ * Consulta la historia académica de un alumno: materias aprobadas, créditos acumulados, y si cumple
+ * los requisitos para inscribirse a una materia (créditos y correlativas).
+ */
 @Service
 public class HistoriaAcademicaService {
 
