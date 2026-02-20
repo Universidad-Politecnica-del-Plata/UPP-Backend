@@ -1,10 +1,8 @@
 #language: es
 Característica: Dar de alta curso
   Antecedentes:
-    Dado que hay un gestor academico logueado
-    Y que existe una materia con el código de materia "123-M" y nombre "Análisis I"
+    Dado que existe una materia con el código de materia "123-M" y nombre "Análisis I"
     Y que existe una materia con el código de materia "124-M" y nombre "Álgebra I"
-    Y que hay un gestor de planificacion logueado
     Y que existe un cuatrimestre con código "2024-1"
     Y que existe un cuatrimestre con código "2024-2"
 
