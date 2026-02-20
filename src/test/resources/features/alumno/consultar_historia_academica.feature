@@ -2,6 +2,8 @@
 @todo
 Característica: Consultar historia académica
 
+  #Como alumno quiero consultar mi historia académica para saber qué materias puedo cursar
+
   Escenario: : Consultar historia académica exitoso
     Dado que existe un alumno con nombre "Juan", apellido "Perez" y DNI "12345678"
     Y tiene "Fisica I", "Fisica II" aprobadas

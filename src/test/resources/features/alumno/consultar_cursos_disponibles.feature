@@ -1,6 +1,8 @@
 #language: es
 Característica: Consultar cursos disponibles
 
+  #Como alumno quiero consultar los cursos disponibles en el cuatrimestre para elegir qué materias cursar
+
   Antecedentes:
     Dado que existe una materia con el código de materia "997-M" y nombre "Analisis I"
     Y que existe una materia con el código de materia "998-M" y nombre "Algebra I"

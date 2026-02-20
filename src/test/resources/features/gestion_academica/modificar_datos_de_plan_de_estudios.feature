@@ -1,5 +1,6 @@
 #language: es
 Característica: Modificar datos de un plan de estudios
+#  Como responsable de Gestión Académica quiero modificar datos de un plan de estudios para tener la información actualizada
 
   Antecedentes:
     Dado que existe una materia con el código de materia "1234-M" y nombre "Analisis I"

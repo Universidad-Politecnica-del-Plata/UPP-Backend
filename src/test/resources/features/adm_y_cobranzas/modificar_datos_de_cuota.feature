@@ -1,6 +1,7 @@
 #language: es
 @todo
 Característica: Modificar datos de cuota
+#  Como responsable de Administración y Cobranzas quiero modificar la información de una cuota para reflejar el costo de la cursada
   Escenario: : Modificar cuota es exitoso
     Dado que existe un responsable de Administración y Cobranzas
     Y existe una cuota con "año", "mes" e "importe"

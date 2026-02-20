@@ -2,6 +2,8 @@
 @todo
 Característica: Consultar plan de estudios
 
+  #Como alumno quiero consultar mi plan de estudios para saber el orden de las materias
+
   Escenario: : Consultar plan de estudios es exitoso
     Dado que existe un alumno con nombre "Juan", apellido "Perez" y DNI "12345678"
     Y esta inscripto en la carrera "Ing. Informatica"

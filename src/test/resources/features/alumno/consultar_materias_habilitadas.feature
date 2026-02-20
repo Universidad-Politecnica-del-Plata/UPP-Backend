@@ -2,6 +2,7 @@
 @todo
 Característica: Consultar materias habilitadas
 
+  #Como alumno quiero consultar las materias habilitadas para saber que materias puedo cursar
 
   Escenario: : Consultar materias habilitadas es exitoso
     Dado que existe un alumno con nombre "Juan", apellido "Perez" y DNI "12345678"

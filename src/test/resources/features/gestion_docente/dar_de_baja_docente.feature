@@ -1,6 +1,7 @@
 #language: es
 @todo
 Característica: Dar de baja docente
+  # Como responsable de Gestión Docente quiero dar de baja un docente para que no figure en los registro de la facultad.
 
   Escenario: : Dar de baja docente es exitoso
     Dado que existe un responsable de Gestión Docente

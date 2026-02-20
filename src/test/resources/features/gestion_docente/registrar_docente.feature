@@ -1,6 +1,7 @@
 #language: es
 @todo
 Característica: Registrar docente
+  # Como responsable de Gestión Docente quiero registrar un docente para oficializar el ingreso
 
   Escenario: : Registrar docente es exitoso
     Dado que existe un responsable de Gestión Docente

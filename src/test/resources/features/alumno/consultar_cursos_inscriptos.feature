@@ -2,6 +2,8 @@
 @todo
 Característica: Consultar cursos inscriptos
 
+  #Como alumno quiero consultar en qué cursos estoy inscripto para organizar mi cuatrimestre
+
   Escenario: : Consultar cursos inscriptos exitoso
     Dado que existe un alumno con nombre "Juan", apellido "Perez" y DNI "12345678"
     Y esta inscripto en el curso "1" de "Fisica I"

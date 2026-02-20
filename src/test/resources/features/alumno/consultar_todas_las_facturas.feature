@@ -1,7 +1,7 @@
 #language: es
 @todo
 Característica: Consultar todas las facturas
-
+#Como alumno quiero consultar todas mis facturas para conocer mi historial de pagos
   Escenario: : Consultar todas las facturas es exitoso
     Dado que existe un alumno con nombre "Juan", apellido "Perez" y DNI "12345678"
     Y esta inscripto en la carrera "Ing. Informatica"

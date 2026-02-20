@@ -1,6 +1,9 @@
 #language: es
 
 Característica: Abrir acta
+
+  #Como docente quiero abrir un acta asociada a un curso para cargar las notas del curso
+
   Antecedentes:
     Dado que existe una materia con el código de materia "999-MA" y nombre "Algoritmos y Programacion I"
     Y se registra un nuevo cuatrimestre con código "2025-2", fecha de inicio de clases "9999-02-01", fecha de fin de clases "9999-07-15", fecha de inicio de inscripción "2025-01-01", fecha de fin de inscripción "9999-01-31", fecha de inicio de integradores "9999-07-16" y fecha de fin de integradores "9999-07-31"

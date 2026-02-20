@@ -1,5 +1,6 @@
 #language: es
 Característica: Dar de alta curso
+#  Como responsable de Secretaría de Planificación quiero registrar un curso para que se pueda dictar en la universidad
   Antecedentes:
     Dado que existe una materia con el código de materia "123-M" y nombre "Análisis I"
     Y que existe una materia con el código de materia "124-M" y nombre "Álgebra I"

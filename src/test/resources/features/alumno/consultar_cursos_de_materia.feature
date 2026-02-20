@@ -1,7 +1,7 @@
 #language: es
 @todo
 Característica: Consultar cursos de materia
-
+#Como alumno quiero consultar los cursos disponibles en el cuatrimestre para elegir qué materias cursar
   Escenario: : Consultar cursos de materia es exitoso
     Dado que existe un alumno con nombre "Juan", apellido "Perez" y DNI "12345678"
     Y esta inscripto en la carrera "Ing. Informatica"

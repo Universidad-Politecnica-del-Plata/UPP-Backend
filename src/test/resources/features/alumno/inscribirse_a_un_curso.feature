@@ -1,6 +1,8 @@
 #language: es
 Característica: Inscribirse a un curso
 
+  #Como alumno quiero inscribirme a un curso para cursar la materia
+
   Antecedentes:
     Dado que existe una materia con el código de materia "997-MA" y nombre "Analisis I"
     Y que existe una materia con el código de materia "998-MA" y nombre "Algebra I"

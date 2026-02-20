@@ -1,5 +1,6 @@
 #language: es
 Característica: Modificar datos del alumno
+#  Como responsable de Gestión Estudiantil quiero modificar los datos de un alumno para tener su información al día
   Escenario: Modificar datos del alumno exitosamente
     Y existe un alumno con matrícula 100001
     Cuando se modifican los datos del alumno con matrícula 100001 con nombre "Carlos", apellido "Rodriguez", dni 87654321, email "carlos.rodriguez@example.com", dirección "Av. Libertador 1234", teléfonos "987654321", fecha de nacimiento "1995-05-15", fecha de ingreso "2023-03-01" y fecha de egreso "2027-12-15"

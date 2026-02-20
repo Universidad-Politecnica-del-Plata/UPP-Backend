@@ -1,5 +1,6 @@
 #language: es
 Característica: Dar de baja alumno
+#  Como responsable de Gestión Estudiantil quiero dar de baja un alumno para que no figure en los alumnos inscriptos de la Universidad
   Escenario: Dar de baja alumno exitosamente
     Dado existe un alumno con matrícula 100001
     Cuando se da de baja el alumno con matrícula 100001

@@ -1,5 +1,6 @@
 #language: es
 Característica: Dar de baja curso
+#  Como responsable de Secretaría de Planificación quiero dar de baja un curso para que no figure en los cursos de una materia.
   Antecedentes:
     Dado que existe una materia con el código de materia "125-M" y nombre "Cálculo I"
     Y que existe una materia con el código de materia "126-M" y nombre "Física I"

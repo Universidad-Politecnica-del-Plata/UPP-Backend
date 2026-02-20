@@ -1,7 +1,7 @@
 #language: es
 @todo
 Característica: Consultar facturas impagas
-
+#Como alumno quiero consultar mis facturas impagas para ponerme al día con los pagos
   Escenario: : Consultar facturas impagas es exitoso
     Dado que existe un alumno con nombre "Juan", apellido "Perez" y DNI "12345678"
     Y esta inscripto en la carrera "Ing. Informatica"

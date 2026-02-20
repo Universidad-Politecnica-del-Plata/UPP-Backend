@@ -1,6 +1,7 @@
 #language: es
 @todo
 Característica: Dar de baja aula
+  # Como responsable de Logística y Mantenimiento quiero dar de baja una aula para mantener la información actualizada sobre las instalaciones de la sede
 
   Escenario: : Dar de baja aula es exitoso
     Dado que existe un responsable de Logística y Mantenimiento

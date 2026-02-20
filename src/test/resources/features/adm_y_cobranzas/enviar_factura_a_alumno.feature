@@ -1,6 +1,7 @@
 #language: es
 @todo
 Característica: Enviar factura a alumno
+#  Como responsable de Administración y Cobranzas quiero enviarle una factura a un alumno para que este pueda pagarla
   Escenario: : Enviar factura a alumno es exitoso
     Dado que existe un responsable de Administración y Cobranzas
     Y existe un alumno

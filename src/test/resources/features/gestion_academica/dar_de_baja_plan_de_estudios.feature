@@ -1,6 +1,7 @@
 #language: es
 
 Característica: Dar de baja plan de estudios
+#  Como responsable de Gestión Académica quiero dar de baja un plan de estudios para que no figure en los planes de estudios habilitados de las carreras de la Universidad
   Antecedentes:
     Dado que existe una materia con el código de materia "1997-M" y nombre "Analisis I"
     Y que existe una materia con el código de materia "1998-M" y nombre "Algebra I"

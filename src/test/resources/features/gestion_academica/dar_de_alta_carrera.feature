@@ -1,5 +1,6 @@
 #language: es
 Característica: Dar de alta carrera
+#  Como responsable de Gestión Académica quiero dar de alta una carrera para oficializar nuevas carreras
   Antecedentes:
     Dado que existe una materia con el código de materia "CAR997-M" y nombre "Analisis I"
     Y que existe una materia con el código de materia "CAR998-M" y nombre "Algebra I"

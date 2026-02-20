@@ -1,6 +1,9 @@
 #language: es
 
 Característica: Cargar nota de alumno a un acta
+
+  #Como docente quiero cargar la nota de un alumno en un acta para dejar constancia de la misma
+
   Antecedentes:
     Dado que existe una materia con el código de materia "997-MA" y nombre "Analisis I"
     Y se registra un nuevo cuatrimestre con código "2025-2", fecha de inicio de clases "9999-02-01", fecha de fin de clases "9999-07-15", fecha de inicio de inscripción "2025-01-01", fecha de fin de inscripción "9999-01-31", fecha de inicio de integradores "9999-07-16" y fecha de fin de integradores "9999-07-31"

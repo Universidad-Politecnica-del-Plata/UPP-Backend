@@ -1,5 +1,6 @@
 #language: es
 Característica: Modificar datos de una materia
+#  Como responsable de Gestión Académica quiero modificar datos de una materia para tener la información actualizada
   Escenario: : Modificar todos datos de una materia es exitoso
     Dado se registra una materia con código de materia "123-M", nombre "Literatura I", contenidos "Literatura Neoclasica", tipo de materia "Optativa", cantidad de créditos que otorga 4 y créditos necesarios 0
     Y que existe una materia con el código de materia "123-A" y nombre "Analisis I"

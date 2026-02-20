@@ -1,7 +1,7 @@
 #language: es
 @todo
 Característica: Consultar alumnos anotados a un curso
-
+#Como docente quiero consultar los alumnos anotados a un curso para hacer un seguimiento de los alumnos
   Escenario: Consultar alumnos anotados a un curso exitoso
     Dado que existe un docente con nombre "Luis", apellido "Gomez" y DNI "23456789"
     Y existen cursos a su nombre

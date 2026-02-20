@@ -2,6 +2,8 @@
 @todo
 Característica: Consultar detalles de carrera
 
+  #Como alumno quiero consultar los detalles de mi carrera para planear mejor mi trayectoria académica
+
   Escenario: : Consultar detalles de carrera es exitoso
   Dado que existe un alumno con nombre "Juan", apellido "Perez" y DNI "12345678"
   Y esta inscripto en la carrera "Ing. Informatica"
