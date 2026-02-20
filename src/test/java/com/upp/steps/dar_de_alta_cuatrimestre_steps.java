@@ -4,8 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import com.upp.dto.CuatrimestreDTO;
-import com.upp.repository.RolRepository;
-import com.upp.repository.UsuarioRepository;
+import com.upp.steps.shared.AuthHelper;
 import com.upp.steps.shared.TokenHolder;
 import io.cucumber.java.ast.Cuando;
 import io.cucumber.java.es.Entonces;
@@ -20,9 +19,8 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class dar_de_alta_cuatrimestre_steps {
   @Autowired private WebTestClient webTestClient;
-  @Autowired private UsuarioRepository usuarioRepository;
-  @Autowired private RolRepository rolRepository;
   @Autowired private TokenHolder tokenHolder;
+  @Autowired private AuthHelper authHelper;
 
   private FluxExchangeResult<CuatrimestreDTO> result;
 
@@ -36,6 +34,7 @@ public class dar_de_alta_cuatrimestre_steps {
       String fechaFinInscripcion,
       String fechaInicioIntegradores,
       String fechaFinIntegradores) {
+    authHelper.loginGestorPlanificacion();
 
     CuatrimestreDTO cuatrimestreEnviado =
         new CuatrimestreDTO(

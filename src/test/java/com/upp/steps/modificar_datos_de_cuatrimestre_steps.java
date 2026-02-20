@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.upp.dto.CuatrimestreDTO;
 import com.upp.dto.CursoDTO;
+import com.upp.steps.shared.AuthHelper;
 import com.upp.steps.shared.TokenHolder;
 import io.cucumber.java.es.Cuando;
 import io.cucumber.java.es.Dado;
@@ -25,7 +26,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 public class modificar_datos_de_cuatrimestre_steps {
   @Autowired private WebTestClient webTestClient;
   @Autowired private TokenHolder tokenHolder;
-
+  @Autowired private AuthHelper authHelper;
   private FluxExchangeResult<CuatrimestreDTO> result;
 
   @Cuando(
@@ -63,6 +64,7 @@ public class modificar_datos_de_cuatrimestre_steps {
   @Entonces("se actualiza la información del cuatrimestre {string} exitosamente")
   public void seActualizaLaInformacionDelCuatrimestreExitosamente(String codigo) {
     assertEquals(HttpStatus.OK, result.getStatus());
+    authHelper.loginGestorPlanificacion();
 
     var resultGetCuatrimestre =
         webTestClient
@@ -141,6 +143,7 @@ public class modificar_datos_de_cuatrimestre_steps {
 
   @Dado("que existe un curso con código {string} para la materia {string}")
   public void queExisteUnCursoConCodigoParaLaMateria(String codigoCurso, String codigoMateria) {
+    authHelper.loginGestorPlanificacion();
     CursoDTO cursoEnviado = new CursoDTO(codigoCurso, 30, codigoMateria, null);
 
     webTestClient
@@ -163,7 +166,7 @@ public class modificar_datos_de_cuatrimestre_steps {
       String fechaInicioIntegradores,
       String fechaFinIntegradores,
       String cursos) {
-
+    authHelper.loginGestorPlanificacion();
     List<String> codigosCursos =
         Arrays.stream(cursos.split(",")).map(String::trim).collect(Collectors.toList());
 
@@ -263,7 +266,7 @@ public class modificar_datos_de_cuatrimestre_steps {
 
   @Entonces("el cuatrimestre {string} tiene los cursos {string}")
   public void elCuatrimestreTieneLosCursos(String codigoCuatrimestre, String cursosEsperados) {
-    var response =
+      var response =
         webTestClient
             .get()
             .uri("/api/cuatrimestres/{codigo}", codigoCuatrimestre)
