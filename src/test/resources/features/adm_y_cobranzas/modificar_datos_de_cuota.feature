@@ -3,8 +3,7 @@
 Característica: Modificar datos de cuota
 #  Como responsable de Administración y Cobranzas quiero modificar la información de una cuota para reflejar el costo de la cursada
   Escenario: : Modificar cuota es exitoso
-    Dado que existe un responsable de Administración y Cobranzas
-    Y existe una cuota con "año", "mes" e "importe"
+    Dado existe una cuota con "año", "mes" e "importe"
     Cuando se modifica la cuota con "año", "mes" e "importe"
     Entonces se actualiza la informacion del cuota en el sistema
 

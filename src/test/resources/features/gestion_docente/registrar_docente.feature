@@ -4,7 +4,6 @@ Característica: Registrar docente
   # Como responsable de Gestión Docente quiero registrar un docente para oficializar el ingreso
 
   Escenario: : Registrar docente es exitoso
-    Dado que existe un responsable de Gestión Docente
     Cuando registra un nuevo docente con "número de matrícula", "DNI", "apellido", "nombre", "dirección", "teléfonos", "email", "fecha de nacimiento", "fecha de ingreso", "fecha de egreso", "categoria" y "titulos"
     Entonces se registra el docente
 
