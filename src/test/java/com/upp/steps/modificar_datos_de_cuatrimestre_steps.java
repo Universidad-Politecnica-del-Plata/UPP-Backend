@@ -266,7 +266,7 @@ public class modificar_datos_de_cuatrimestre_steps {
 
   @Entonces("el cuatrimestre {string} tiene los cursos {string}")
   public void elCuatrimestreTieneLosCursos(String codigoCuatrimestre, String cursosEsperados) {
-      var response =
+    var response =
         webTestClient
             .get()
             .uri("/api/cuatrimestres/{codigo}", codigoCuatrimestre)

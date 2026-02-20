@@ -11,9 +11,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 /**
- * Clase helper para manejar la autenticación en los tests de Cucumber.
- * Asegura que un usuario con un rol específico esté logueado antes de ejecutar
- * operaciones que requieran autenticación.
+ * Clase helper para manejar la autenticación en los tests de Cucumber. Asegura que un usuario con
+ * un rol específico esté logueado antes de ejecutar operaciones que requieran autenticación.
  */
 @Component
 @ScenarioScope
@@ -124,10 +123,8 @@ public class AuthHelper {
             .toString();
 
     tokenHolder.setToken(token);
-    currentRole = null; 
+    currentRole = null;
   }
-
-
 
   /** Asegura que haya un gestor académico logueado. */
   public void loginGestorAcademico() {

@@ -11,7 +11,6 @@ import io.cucumber.java.es.Dado;
 import io.cucumber.java.es.Entonces;
 import java.util.Arrays;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -113,5 +112,4 @@ public class dar_de_alta_materia_steps {
   public void noSeRegistraLaMateriaExitosamente() {
     assertEquals(HttpStatus.CONFLICT, result.getStatus());
   }
-
 }
