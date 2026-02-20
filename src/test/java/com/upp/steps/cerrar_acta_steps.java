@@ -8,6 +8,7 @@ import com.upp.dto.EstadoActaRequestDTO;
 import com.upp.model.EstadoActa;
 import com.upp.model.TipoDeActa;
 import com.upp.repository.ActaRepository;
+import com.upp.steps.shared.AuthHelper;
 import com.upp.steps.shared.TokenHolder;
 import io.cucumber.java.es.Cuando;
 import io.cucumber.java.es.Entonces;
@@ -24,6 +25,7 @@ public class cerrar_acta_steps {
   @Autowired private WebTestClient webTestClient;
   @Autowired private ActaRepository actaRepository;
   @Autowired private TokenHolder tokenHolder;
+  @Autowired private AuthHelper authHelper;
 
   private FluxExchangeResult<ActaDTO> resultCrear;
   private FluxExchangeResult<ActaDTO> resultCerrar;
@@ -32,6 +34,7 @@ public class cerrar_acta_steps {
 
   @Y("hay un acta de {string} abierta para el curso en el cuatrimiestre")
   public void hayUnActaDeAbiertaParaElCursoEnElCuatrimestre(String tipoActa) {
+    authHelper.loginDocente();
     // Crear un acta abierta para poder cerrarla después
     ActaRequestDTO actaRequest = new ActaRequestDTO();
     actaRequest.setTipoDeActa(TipoDeActa.valueOf(tipoActa.toUpperCase()));
@@ -58,6 +61,7 @@ public class cerrar_acta_steps {
 
   @Cuando("cierra un acta de {string} para el curso en el cuatrimestre")
   public void cierraUnActaDeParaElCursoEnElCuatrimestre(String tipoActa) {
+    authHelper.loginDocente();
     assertNotNull(actaCreada, "No hay acta creada para cerrar");
 
     // Actualizar el estado del acta a CERRADA
