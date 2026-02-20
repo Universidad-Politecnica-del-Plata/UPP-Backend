@@ -2,8 +2,7 @@
 Característica: Modificar datos de un plan de estudios
 
   Antecedentes:
-    Dado que hay un gestor academico logueado
-    Y que existe una materia con el código de materia "1234-M" y nombre "Analisis I"
+    Dado que existe una materia con el código de materia "1234-M" y nombre "Analisis I"
     Y que existe una materia con el código de materia "1235-M" y nombre "Algebra I"
     Y que existe una materia con el código de materia "1236-M" y nombre "Algoritmos y Programacion I"
     Y que existe una materia con el código de materia "1237-M" y nombre "Algoritmos y Programacion II"

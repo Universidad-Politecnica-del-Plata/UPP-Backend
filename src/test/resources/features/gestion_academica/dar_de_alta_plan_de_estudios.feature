@@ -1,8 +1,7 @@
 #language: es
 Característica: Dar de alta plan de estudios
   Antecedentes:
-    Dado que hay un gestor academico logueado
-    Y que existe una materia con el código de materia "997-M" y nombre "Analisis I"
+    Dado que existe una materia con el código de materia "997-M" y nombre "Analisis I"
     Y que existe una materia con el código de materia "998-M" y nombre "Algebra I"
     Y que existe una materia con el código de materia "999-M" y nombre "Algoritmos y Programacion I"
 
