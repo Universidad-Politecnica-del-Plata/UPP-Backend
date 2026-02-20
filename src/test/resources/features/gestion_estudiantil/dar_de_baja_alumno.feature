@@ -1,8 +1,5 @@
 #language: es
 Característica: Dar de baja alumno
-  Antecedentes:
-    Dado que hay un gestor estudiantil logueado
-
   Escenario: Dar de baja alumno exitosamente
     Dado existe un alumno con matrícula 100001
     Cuando se da de baja el alumno con matrícula 100001

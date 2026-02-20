@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.upp.model.Alumno;
 import com.upp.repository.AlumnoRepository;
+import com.upp.steps.shared.AuthHelper;
 import com.upp.steps.shared.TokenHolder;
 import io.cucumber.java.es.Cuando;
 import io.cucumber.java.es.Entonces;
@@ -22,6 +23,7 @@ public class dar_de_baja_alumno_steps {
   @Autowired private WebTestClient webTestClient;
   @Autowired private AlumnoRepository alumnoRepository;
   @Autowired private TokenHolder tokenHolder;
+  @Autowired private AuthHelper authHelper;
   private FluxExchangeResult<Map> result;
 
   @Cuando("se da de baja el alumno con matrícula {long}")
@@ -37,6 +39,7 @@ public class dar_de_baja_alumno_steps {
 
   @Cuando("se intenta dar de baja el alumno con matrícula {long}")
   public void seIntentaDarDeBajaElAlumnoConMatricula(Long matricula) {
+    authHelper.loginGestorEstudiantil();
     this.result =
         webTestClient
             .delete()
