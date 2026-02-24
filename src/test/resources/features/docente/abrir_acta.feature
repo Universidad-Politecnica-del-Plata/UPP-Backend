@@ -11,6 +11,7 @@ Característica: Abrir acta
 
 
   Escenario: : Abrir acta de Cursada es exitoso
+    Dado que no existe un acta de "Cursada" para el curso "CURSO-001"
     Cuando el docente abre un acta de "Cursada" para el curso "CURSO-001"
     Entonces el acta queda en estado "Abierta"
 
@@ -20,5 +21,6 @@ Característica: Abrir acta
     Entonces no se abre el acta
 
   Escenario: : Abrir acta de Final es exitoso
+    Dado que no existe un acta de "Final" para el curso "CURSO-001"
     Cuando el docente abre un acta de "Final" para el curso "CURSO-001"
     Entonces el acta queda en estado "Abierta"

@@ -8,10 +8,11 @@ Característica: Dar de baja alumno
     Y el alumno con matrícula 100001 está inhabilitado
 
   Escenario: Error al dar de baja alumno que no existe
+    Dado que no existe un alumno con matrícula 999999
     Cuando se intenta dar de baja el alumno con matrícula 999999
     Entonces no se puede dar de baja el alumno
 
   Escenario: Verificar que la baja es lógica (no elimina físicamente)
-    Y existe un alumno con matrícula 100001
+    Dado existe un alumno con matrícula 100001
     Cuando se da de baja el alumno con matrícula 100001
     Entonces el alumno con matrícula 100001 sigue existiendo en el sistema pero inhabilitado

@@ -10,7 +10,9 @@ import com.upp.repository.ActaRepository;
 import com.upp.steps.shared.AuthHelper;
 import com.upp.steps.shared.TokenHolder;
 import io.cucumber.java.es.Cuando;
+import io.cucumber.java.es.Dado;
 import io.cucumber.java.es.Entonces;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -27,6 +29,34 @@ public class abrir_acta_steps {
 
   private FluxExchangeResult<ActaDTO> result;
   private ActaDTO actaCreada;
+
+  @Dado("que no existe un acta de {string} para el curso {string}")
+  public void queNoExisteUnActaDeTipoParaCurso(String tipoActa, String codigoCurso) {
+    authHelper.loginDocente();
+
+    // Verificamos que no exista un acta de este tipo para el curso
+    List<ActaDTO> actas =
+        webTestClient
+            .get()
+            .uri("/api/actas/curso/{codigoCurso}", codigoCurso)
+            .header("Authorization", "Bearer " + tokenHolder.getToken())
+            .exchange()
+            .returnResult(ActaDTO.class)
+            .getResponseBody()
+            .collectList()
+            .block();
+
+    // Verificamos que no haya acta del tipo especificado
+    boolean existeActa =
+        actas != null
+            && actas.stream()
+                .anyMatch(
+                    acta -> acta.getTipoDeActa() == TipoDeActa.valueOf(tipoActa.toUpperCase()));
+
+    assertFalse(
+        existeActa,
+        "No debería existir un acta de tipo " + tipoActa + " para el curso " + codigoCurso);
+  }
 
   @Cuando("el docente abre un acta de {string} para el curso {string}")
   public void elDocenteAbreUnActaDeTipoParaElCurso(String tipoActa, String codigoCurso) {

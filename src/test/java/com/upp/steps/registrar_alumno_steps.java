@@ -26,6 +26,28 @@ public class registrar_alumno_steps {
   @Autowired private AuthHelper authHelper;
   private FluxExchangeResult<AlumnoDTO> result;
 
+  @Dado("que no existe un alumno con DNI {long}")
+  public void queNoExisteUnAlumnoConDni(Long dni) {
+    authHelper.loginGestorEstudiantil();
+
+    // Verificamos que no exista el alumno con ese DNI listando todos los alumnos
+    List<AlumnoDTO> alumnos =
+        webTestClient
+            .get()
+            .uri("/api/alumnos")
+            .header("Authorization", "Bearer " + tokenHolder.getToken())
+            .exchange()
+            .returnResult(AlumnoDTO.class)
+            .getResponseBody()
+            .collectList()
+            .block();
+
+    boolean existeAlumno =
+        alumnos != null && alumnos.stream().anyMatch(a -> dni.equals(a.getDni()));
+
+    assertFalse(existeAlumno, "No debería existir un alumno con DNI " + dni);
+  }
+
   @Cuando(
       "registra un nuevo alumno con DNI {long}, apellido {string}, nombre {string}, direccion {string}, telefono {string}, email {string}, fecha de nacimiento {string} y fecha de ingreso {string}")
   public void registraAlumnoConDatos(

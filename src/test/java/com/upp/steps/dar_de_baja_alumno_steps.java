@@ -2,18 +2,23 @@ package com.upp.steps;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.upp.dto.AlumnoDTO;
 import com.upp.model.Alumno;
 import com.upp.repository.AlumnoRepository;
 import com.upp.steps.shared.AuthHelper;
 import com.upp.steps.shared.TokenHolder;
 import io.cucumber.java.es.Cuando;
+import io.cucumber.java.es.Dado;
 import io.cucumber.java.es.Entonces;
 import io.cucumber.java.es.Y;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.FluxExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -25,6 +30,25 @@ public class dar_de_baja_alumno_steps {
   @Autowired private TokenHolder tokenHolder;
   @Autowired private AuthHelper authHelper;
   private FluxExchangeResult<Map> result;
+
+  @Dado("que no existe un alumno con matrícula {long}")
+  public void queNoExisteUnAlumnoConMatricula(Long matricula) {
+    authHelper.loginGestorEstudiantil();
+
+    // Verificamos que no exista el alumno con esa matrícula
+    var resultGet =
+        webTestClient
+            .get()
+            .uri("/api/alumnos/{matricula}", matricula)
+            .header("Authorization", "Bearer " + tokenHolder.getToken())
+            .exchange()
+            .returnResult(AlumnoDTO.class);
+
+    assertNotEquals(
+        HttpStatus.OK,
+        resultGet.getStatus(),
+        "No debería existir un alumno con matrícula " + matricula);
+  }
 
   @Cuando("se da de baja el alumno con matrícula {long}")
   public void seDaDeBajaElAlumnoConMatricula(Long matricula) {
