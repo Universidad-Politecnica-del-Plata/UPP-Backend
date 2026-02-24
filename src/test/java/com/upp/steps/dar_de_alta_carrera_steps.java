@@ -40,7 +40,9 @@ public class dar_de_alta_carrera_steps {
             .returnResult(CarreraDTO.class);
 
     assertNotEquals(
-        HttpStatus.OK, resultGet.getStatus(), "No debería existir una carrera con codigo " + codigo);
+        HttpStatus.OK,
+        resultGet.getStatus(),
+        "No debería existir una carrera con codigo " + codigo);
   }
 
   @Cuando(
