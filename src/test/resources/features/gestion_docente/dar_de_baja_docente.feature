@@ -8,3 +8,13 @@ Característica: Dar de baja docente
     Cuando se da de baja el docente
     Entonces se elimina el registro del docente
 
+  Escenario: Dar de baja docente inexistente falla
+    Dado que no existe un docente con matrícula 99999
+    Cuando se intenta dar de baja el docente con matrícula 99999
+    Entonces no se puede dar de baja el docente porque no existe
+
+  Escenario: Dar de baja docente con cursos activos asignados falla
+    Dado que existe un docente con cursos activos asignados
+    Cuando se intenta dar de baja el docente
+    Entonces no se puede dar de baja el docente porque tiene cursos activos
+

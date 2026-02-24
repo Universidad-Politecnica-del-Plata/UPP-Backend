@@ -7,3 +7,13 @@ Característica: Modificar datos de un aula
     Cuando modifica la "sede", "capacidad" o si "permite hibrido" del aula
     Entonces se actualiza la información del aula.
 
+  Escenario: : Modificar datos de aula inexistente falla
+    Dado que no existe un aula con id "AULA-999"
+    Cuando se intenta modificar los datos del aula con id "AULA-999"
+    Entonces no se puede modificar el aula porque no existe
+
+  Escenario: : Modificar aula con capacidad inválida falla
+    Dado que existe un aula con id "AULA-001"
+    Cuando se intenta modificar el aula con capacidad -1
+    Entonces no se puede modificar el aula porque la capacidad es inválida
+

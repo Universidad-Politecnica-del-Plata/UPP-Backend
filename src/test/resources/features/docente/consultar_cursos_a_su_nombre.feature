@@ -7,3 +7,9 @@ Característica: Consultar cursos a su nombre
     Y tiene cursos a su nombre
     Cuando consulta los cursos a su nombre
     Entonces se informa el "código de curso", "materia","código de materia", "cuatrimestre", "horarios", "modalidad", "cantidad máxima de alumnos" y "aulas" de cada curso
+
+  Escenario: : Consultar cursos a su nombre sin cursos asignados
+    Dado que existe un docente con nombre "Ana", apellido "Martinez" y DNI "34567890"
+    Y no tiene cursos a su nombre
+    Cuando consulta los cursos a su nombre
+    Entonces se le informa que no tiene cursos asignados
