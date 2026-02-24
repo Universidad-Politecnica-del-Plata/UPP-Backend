@@ -13,6 +13,7 @@ public class LimpiadorDeBaseDeDatos {
   @Autowired private InscripcionRepository inscripcionRepository;
   @Autowired private CursoRepository cursoRepository;
   @Autowired private MateriaRepository materiaRepository;
+  @Autowired private PlanDeEstudiosRepository planDeEstudiosRepository;
   @Autowired private CuatrimestreRepository cuatrimestreRepository;
   @Autowired private ActaRepository actaRepository;
   @Autowired private CarreraRepository carreraRepository;

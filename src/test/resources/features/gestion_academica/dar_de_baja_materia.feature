@@ -8,5 +8,6 @@ Característica: Dar de baja materia
     Entonces no existe la materia "123-M" en el registro
 
   Escenario: : Dar de baja materia que no existe
+    Dado que no existe una materia con el código de materia "123-B"
     Cuando se da de baja la materia "123-B"
     Entonces no se elimina la materia y se lanza error

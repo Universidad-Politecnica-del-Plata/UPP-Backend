@@ -25,6 +25,6 @@ Característica: Dar de baja curso
     Y los cuatrimestres "2024-1,2024-2" ya no tienen el curso "CURSO-DELETE-03" asignado
 
   Escenario: Dar de baja curso que no existe lanza error
-    Dado se registra un nuevo curso con código "CURSO-DELETE-04", máximo de alumnos 30 y materia "126-M"
+    Dado que no existe un curso con código "CURSO-INEXISTENTE"
     Cuando se da de baja el curso con código "CURSO-INEXISTENTE"
     Entonces no se elimina el curso y se lanza error

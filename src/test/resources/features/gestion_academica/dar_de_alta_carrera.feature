@@ -24,5 +24,6 @@ Característica: Dar de alta carrera
     Entonces no se registra la carrera exitosamente
 
   Escenario: Dar de alta carrera con plan de estudios inexistente fracasa
+    Dado que no existe una carrera con codigo "ARQ"
     Cuando se registra una nueva carrera con codigo "ARQ", nombre "Arquitectura", titulo "Arquitecto", incumbencias "Diseño y construcción" y planes de estudio "P-INEXISTENTE"
     Entonces no se registra la carrera exitosamente

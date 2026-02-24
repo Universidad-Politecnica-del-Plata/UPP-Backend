@@ -1,11 +1,14 @@
 package com.upp.steps;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.upp.dto.CarreraDTO;
+import com.upp.steps.shared.AuthHelper;
 import com.upp.steps.shared.TokenHolder;
 import io.cucumber.java.ast.Cuando;
+import io.cucumber.java.es.Dado;
 import io.cucumber.java.es.Entonces;
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +23,25 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 public class dar_de_alta_carrera_steps {
   @Autowired private WebTestClient webTestClient;
   @Autowired private TokenHolder tokenHolder;
+  @Autowired private AuthHelper authHelper;
   private FluxExchangeResult<CarreraDTO> result;
+
+  @Dado("que no existe una carrera con codigo {string}")
+  public void queNoExisteUnaCarreraConCodigo(String codigo) {
+    authHelper.loginGestorAcademico();
+
+    // Verificamos que no exista la carrera
+    var resultGet =
+        webTestClient
+            .get()
+            .uri("/api/carreras/{codigo}", codigo)
+            .header("Authorization", "Bearer " + tokenHolder.getToken())
+            .exchange()
+            .returnResult(CarreraDTO.class);
+
+    assertNotEquals(
+        HttpStatus.OK, resultGet.getStatus(), "No debería existir una carrera con codigo " + codigo);
+  }
 
   @Cuando(
       "se registra una nueva carrera con codigo {string}, nombre {string}, titulo {string}, incumbencias {string} y planes de estudio {string} y {string}")

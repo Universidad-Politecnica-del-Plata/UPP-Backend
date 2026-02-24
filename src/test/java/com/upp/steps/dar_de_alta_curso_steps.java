@@ -30,6 +30,23 @@ public class dar_de_alta_curso_steps {
 
   private FluxExchangeResult<CursoDTO> result;
 
+  @Dado("que no existe un curso con código {string}")
+  public void queNoExisteUnCursoConCodigo(String codigo) {
+    authHelper.loginGestorPlanificacion();
+
+    // Verificamos que no exista el curso
+    var resultGet =
+        webTestClient
+            .get()
+            .uri("/api/cursos/{codigo}", codigo)
+            .header("Authorization", "Bearer " + tokenHolder.getToken())
+            .exchange()
+            .returnResult(CursoDTO.class);
+
+    assertNotEquals(
+        HttpStatus.OK, resultGet.getStatus(), "No debería existir un curso con código " + codigo);
+  }
+
   @Dado("que existe un cuatrimestre con código {string}")
   public void queExisteUnCuatrimestreConCodigo(String codigo) {
     authHelper.loginGestorPlanificacion();
