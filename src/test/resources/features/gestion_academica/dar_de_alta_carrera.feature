@@ -9,10 +9,12 @@ Característica: Dar de alta carrera
     Y que existe un plan de estudios con codigo "PCAR2-2025", fecha de entrada en vigencia "01-01-2025", fecha de vencimiento "31-12-2035", materias en el plan "CAR997-M", "CAR998-M" y "CAR999-M" y total de créditos optativos 15
 
   Escenario: Dar de alta carrera con planes de estudio es exitoso
+    Dado que no existe una carrera con codigo "ING-SIS"
     Cuando se registra una nueva carrera con codigo "ING-SIS", nombre "Ingeniería en Sistemas", titulo "Ingeniero en Sistemas", incumbencias "Desarrollo de software, análisis de sistemas" y planes de estudio "PCAR1-2025" y "PCAR2-2025"
     Entonces se registra la carrera "ING-SIS" exitosamente
 
   Escenario: Dar de alta carrera sin planes de estudio es exitoso
+    Dado que no existe una carrera con codigo "MED"
     Cuando se registra una nueva carrera con codigo "MED", nombre "Medicina", titulo "Médico", incumbencias "Atención médica integral" y sin planes de estudio
     Entonces se registra la carrera "MED" exitosamente
 

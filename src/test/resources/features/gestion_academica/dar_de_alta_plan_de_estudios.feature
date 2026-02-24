@@ -7,7 +7,7 @@ Característica: Dar de alta plan de estudios
     Y que existe una materia con el código de materia "999-M" y nombre "Algoritmos y Programacion I"
 
   Escenario: Dar de alta plan de estudios es exitoso
-
+    Dado que no existe un plan de estudios con codigo "P1-2025"
     Cuando se registra un nuevo plan de estudios con codigo "P1-2025", fecha de entrada en vigencia "01-01-2025", fecha de vencimiento "31-12-2035", materias en el plan "997-M", "998-M" y "999-M" y total de créditos optativos 20
     Entonces se registra el plan de estudios "P1-2025" exitosamente
 

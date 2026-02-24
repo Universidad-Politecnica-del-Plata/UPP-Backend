@@ -13,6 +13,7 @@ Característica: Dar de baja carrera
     Entonces no se elimina el registro de la carrera por tener planes asociados
 
   Escenario: Dar de baja carrera inexistente fracasa
+    Dado que no existe una carrera con codigo "ING-INEXISTENTE"
     Cuando se da de baja la carrera con codigo "ING-INEXISTENTE"
     Entonces no se elimina el registro de la carrera exitosamente
 

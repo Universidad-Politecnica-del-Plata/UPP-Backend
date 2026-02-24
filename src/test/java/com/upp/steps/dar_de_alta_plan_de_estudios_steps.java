@@ -1,9 +1,11 @@
 package com.upp.steps;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import com.upp.dto.PlanDeEstudiosRequestDTO;
 import com.upp.dto.PlanDeEstudiosResponseDTO;
+import com.upp.steps.shared.AuthHelper;
 import com.upp.steps.shared.TokenHolder;
 import io.cucumber.java.ast.Cuando;
 import io.cucumber.java.es.Dado;
@@ -23,7 +25,27 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 public class dar_de_alta_plan_de_estudios_steps {
   @Autowired private WebTestClient webTestClient;
   @Autowired private TokenHolder tokenHolder;
+  @Autowired private AuthHelper authHelper;
   private FluxExchangeResult<PlanDeEstudiosResponseDTO> result;
+
+  @Dado("que no existe un plan de estudios con codigo {string}")
+  public void queNoExisteUnPlanDeEstudiosConCodigo(String codigo) {
+    authHelper.loginGestorAcademico();
+
+    // Verificamos que no exista el plan de estudios
+    var resultGet =
+        webTestClient
+            .get()
+            .uri("/api/planDeEstudios/{codigo}", codigo)
+            .header("Authorization", "Bearer " + tokenHolder.getToken())
+            .exchange()
+            .returnResult(PlanDeEstudiosResponseDTO.class);
+
+    assertNotEquals(
+        HttpStatus.OK,
+        resultGet.getStatus(),
+        "No debería existir un plan de estudios con codigo " + codigo);
+  }
 
   @Cuando(
       "se registra un nuevo plan de estudios con codigo {string}, fecha de entrada en vigencia {string}, fecha de vencimiento {string}, materias en el plan {string}, {string} y {string} y total de créditos optativos {int}")

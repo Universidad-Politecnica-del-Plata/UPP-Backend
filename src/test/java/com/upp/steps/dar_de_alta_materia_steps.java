@@ -58,6 +58,31 @@ public class dar_de_alta_materia_steps {
         .expectBody(MateriaDTO.class);
   }
 
+  @Dado("que no existe una materia con el código de materia {string}")
+  public void queNoExisteUnaMateria(String codigo) {
+    authHelper.loginGestorAcademico();
+
+    // Verificamos si la materia existe y la eliminamos si es necesario
+    var resultGet =
+        webTestClient
+            .get()
+            .uri("/api/materias/{codigo}", codigo)
+            .header("Authorization", "Bearer " + tokenHolder.getToken())
+            .exchange()
+            .returnResult(MateriaDTO.class);
+
+    if (resultGet.getStatus() == HttpStatus.OK) {
+      // La materia existe, la eliminamos
+      webTestClient
+          .delete()
+          .uri("/api/materias/{codigo}", codigo)
+          .header("Authorization", "Bearer " + tokenHolder.getToken())
+          .exchange()
+          .expectStatus()
+          .isOk();
+    }
+  }
+
   @Dado("que existe una materia con el código de materia {string} y nombre {string}")
   public void queExisteUnaMateria(String codigo, String nombre) {
     authHelper.loginGestorAcademico();
