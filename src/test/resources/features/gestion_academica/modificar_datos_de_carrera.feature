@@ -1,6 +1,6 @@
 #language: es
 Característica: Modificar datos de una carrera
-#  Como responsable de Gestión Académica quiero modificar datos de una carrera para tener la información actualizada
+#  Como responsable de Gestión Académica quiero modificar datos de una carrera para asegurar la correcta planificación académica
   Antecedentes:
     Dado que existe una materia con el código de materia "CAR997-M" y nombre "Analisis I"
     Y que existe una materia con el código de materia "CAR998-M" y nombre "Algebra I"

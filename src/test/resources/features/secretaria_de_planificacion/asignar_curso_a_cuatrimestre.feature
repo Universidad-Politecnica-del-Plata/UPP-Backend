@@ -1,7 +1,7 @@
 #language: es
 @todo
 Característica: Asignar curso a cuatrimestre
-#  Como responsable de Secretaría de Planificación quiero asignar un curso a un cuatrimestre para que los alumnos lo puedan cursar
+#  Como responsable de Secretaría de Planificación quiero asignar un curso a un cuatrimestre para planificar su dictado dentro del calendario académico
 
   Escenario: : Asignar curso a cuatrimestre es exitoso
     Dado existe un curso con "cod. curso"

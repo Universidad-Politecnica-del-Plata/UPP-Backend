@@ -1,7 +1,7 @@
 #language: es
 @todo
 Característica: Dar de baja sede
-  # Como responsable de Logística y Mantenimiento quiero dar de baja una sede para mantener la información actualizada sobre las instalaciones de la Universidad
+  # Como responsable de Logística y Mantenimiento quiero dar de baja una sede para asegurar que la estructura física registrada refleje únicamente sedes operativas.
 
   Escenario: : Dar de baja sede es exitoso
     Dado que existe una sede con "código de sede", "nombre", "dirección" y "teléfonos"

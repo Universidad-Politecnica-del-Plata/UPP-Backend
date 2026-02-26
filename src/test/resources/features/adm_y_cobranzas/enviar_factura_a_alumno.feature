@@ -1,7 +1,7 @@
 #language: es
 @todo
 Característica: Enviar factura a alumno
-#  Como responsable de Administración y Cobranzas quiero enviarle una factura a un alumno para que este pueda pagarla
+#  Como responsable de Administración y Cobranzas quiero emitir y enviar una factura a un alumno para registrar formalmente la obligación de pago
   Escenario: : Enviar factura a alumno es exitoso
     Dado que existe un alumno y una factura
     Cuando envía una factura para un alumno con "id", "fecha de emisión", "fecha de vencimiento", "número correlativo", "datos del alumno", "datos de la cuota", "recargo por facturas fuera de término" y "monto total"

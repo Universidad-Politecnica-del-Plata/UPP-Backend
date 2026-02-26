@@ -1,6 +1,6 @@
 #language: es
 Característica: Dar de baja cuatrimestre
-#  Como responsable de Secretaría de Planificación quiero dar de baja un cuatrimestre para eliminarlo del calendario de cursadas.
+#  Como responsable de Secretaría de Planificación quiero dar de baja un cuatrimestre para asegurar una correcta organización del calendario académico
   Antecedentes:
     Dado que existe una materia con el código de materia "125-M" y nombre "Cálculo I"
     Y que existe una materia con el código de materia "126-M" y nombre "Física I"

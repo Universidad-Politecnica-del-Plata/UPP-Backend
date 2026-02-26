@@ -1,6 +1,6 @@
 #language: es
 Característica: Modificar datos de un cuatrimestre
-#  Como responsable de Secretaría de Planificación quiero poder modificar datos de un cuatrimestre para tener la informacion actualizada
+#  Como responsable de Secretaría de Planificación quiero modificar datos de un cuatrimestre para asegurar una correcta organización del calendario académico
   Antecedentes:
     Dado que existe una materia con el código de materia "125-M" y nombre "Cálculo I"
     Y que existe una materia con el código de materia "126-M" y nombre "Física I"

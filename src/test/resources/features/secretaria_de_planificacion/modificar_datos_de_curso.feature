@@ -1,6 +1,6 @@
 #language: es
 Característica: Modificar datos de un curso
-#  Como responsable de Secretaría de Planificación quiero modificar los datos de un curso para que la informacion este actualizada
+#  Como responsable de Secretaría de Planificación quiero modificar los datos de un curso para asegurar la correcta planificación académica
   Antecedentes:
     Dado que existe una materia con el código de materia "125-M" y nombre "Cálculo I"
     Y que existe una materia con el código de materia "126-M" y nombre "Física I"

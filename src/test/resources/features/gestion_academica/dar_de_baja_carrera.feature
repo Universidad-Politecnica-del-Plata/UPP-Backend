@@ -1,6 +1,6 @@
 #language: es
 Característica: Dar de baja carrera
-#  Como responsable de Gestión Académica quiero dar de baja una carrera para que no figure en las carreras habilitadas de la Universidad
+#  Como responsable de Gestión Académica quiero dar de baja una carrera para evitar que continúe utilizándose cuando ha perdido vigencia.
   Antecedentes:
     Dado que existe una materia con el código de materia "CAR997-M" y nombre "Analisis I"
     Y que existe una materia con el código de materia "CAR998-M" y nombre "Algebra I"

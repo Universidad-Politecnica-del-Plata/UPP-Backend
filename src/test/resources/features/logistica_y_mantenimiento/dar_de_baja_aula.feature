@@ -1,7 +1,7 @@
 #language: es
 @todo
 Característica: Dar de baja aula
-  # Como responsable de Logística y Mantenimiento quiero dar de baja una aula para mantener la información actualizada sobre las instalaciones de la sede
+  # Como responsable de Logística y Mantenimiento quiero dar de baja una aula para asegurar que la estructura física registrada refleje únicamente aulas operativas.
 
   Escenario: : Dar de baja aula es exitoso
     Dado que existe un aula con "id de aula", "sede" a la que pertenece, "capacidad" y si "permite hibrido"

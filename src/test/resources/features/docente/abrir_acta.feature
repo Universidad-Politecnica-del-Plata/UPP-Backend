@@ -2,7 +2,7 @@
 
 Característica: Abrir acta
 
-  #Como docente quiero abrir un acta asociada a un curso para cargar las notas del curso
+  #Como docente quiero abrir un acta asociada a un curso para dejar constancia formal de las notas
 
   Antecedentes:
     Dado que existe una materia con el código de materia "999-MA" y nombre "Algoritmos y Programacion I"

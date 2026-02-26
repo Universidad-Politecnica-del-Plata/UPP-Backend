@@ -1,7 +1,7 @@
 #language: es
 Característica: Dar de alta cuatrimestre
 
-  #Como responsable de Secretaría de Planificación quiero dar de alta cuatrimestres para establecer un periodo de cursada
+  #Como responsable de Secretaría de Planificación quiero dar de alta cuatrimestres para estructurar el calendario académico
 
   Escenario: Dar de alta cuatrimestre es exitoso
     Dado que no existe un cuatrimestre con código "2024-1"

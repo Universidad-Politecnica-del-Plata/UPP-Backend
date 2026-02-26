@@ -2,7 +2,7 @@
 
 Característica: Cerrar acta
 
-  #Como docente quiero cerrar un acta asociada a un curso para asentar las notas
+  #Como docente quiero cerrar un acta asociada a un curso para asentar formalmente las notas
 
   Antecedentes:
     Dado que existe una materia con el código de materia "999-MA" y nombre "Algoritmos y Programacion I"
