@@ -184,3 +184,42 @@ curl -X POST http://localhost:8080/api/auth/login \
 curl http://localhost:8080/api/alumnos \
   -H "Authorization: Bearer eyJhbGciOiJIUzUxMiJ9..."
 ```
+
+## Datos iniciales
+
+El proyecto incluye scripts para cargar datos de prueba en la base de datos. Estos corren automáticamente cuando se levanta la app con Docker.
+
+### Scripts
+
+- **`inicializar-datos.sh`**: Carga usuarios, materias, planes de estudio, carreras, cuatrimestres, cursos y un alumno de ejemplo.
+- **`checkear-si-hay-datos.sh`**: Usado como entrypoint en Docker. Espera que la app levante, verifica si la DB ya tiene datos, y si está vacía ejecuta `inicializar-datos.sh`.
+
+### Usuarios creados
+
+| Usuario                | Contraseña    | Rol                          |
+|------------------------|---------------|------------------------------|
+| `gestion_academica`    | `password123` | ROLE_GESTION_ACADEMICA       |
+| `gestor_planificacion` | `password123` | ROLE_GESTOR_DE_PLANIFICACION |
+| `gestion_estudiantil`  | `password123` | ROLE_GESTION_ESTUDIANTIL     |
+| `docente`              | `password123` | ROLE_DOCENTE                 |
+| `12345`                | `12345`       | ROLE_ALUMNO                  |
+
+
+### Cómo ejecutar
+
+```bash
+# Asegurarse de que la app esté corriendo en localhost:8080
+./inicializar-datos.sh
+```
+
+## Pipeline de CI/CD (GitHub Actions)
+
+El proyecto tiene un pipeline configurada en `.github/workflows/pipeline.yml` que se ejecuta automáticamente en cada push a cualquier rama.
+
+### Jobs
+
+El pipeline tiene dos jobs que corren en secuencia:
+
+1. **test**: Levanta un contenedor de PostgreSQL 15, verifica el formato del código con Spotless (`mvn spotless:check`) y ejecuta todos los tests (`mvn clean test`).
+
+2. **release**: Solo se ejecuta si el job `test` pasa exitosamente. Empaqueta el proyecto (`mvn clean package`) y sube el archivo `.jar` generado como artifact de GitHub.
