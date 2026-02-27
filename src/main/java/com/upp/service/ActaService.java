@@ -44,6 +44,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ActaService {
 
+  private static final int NOTA_MINIMA_APROBATORIA = 4;
+  private static final int NOTA_MAXIMA = 10;
+
   private final ActaRepository actaRepository;
   private final NotaRepository notaRepository;
   private final CursoRepository cursoRepository;
@@ -129,9 +132,15 @@ public class ActaService {
   }
 
   public NotaDTO agregarNota(Long numeroCorrelativo, NotaRequestDTO notaRequestDTO) {
-    // Solo notas aprobatorias (4 a 10)
-    if (notaRequestDTO.getValor() < 4 || notaRequestDTO.getValor() > 10) {
-      throw new NotaInvalidaException("Solo se pueden cargar notas aprobatorias (entre 4 y 10).");
+    // Solo notas aprobatorias
+    if (notaRequestDTO.getValor() < NOTA_MINIMA_APROBATORIA
+        || notaRequestDTO.getValor() > NOTA_MAXIMA) {
+      throw new NotaInvalidaException(
+          "Solo se pueden cargar notas aprobatorias (entre "
+              + NOTA_MINIMA_APROBATORIA
+              + " y "
+              + NOTA_MAXIMA
+              + ").");
     }
 
     Optional<Acta> actaOpt = actaRepository.findById(numeroCorrelativo);
@@ -182,9 +191,15 @@ public class ActaService {
   }
 
   public NotaDTO actualizarNota(Long notaId, NotaRequestDTO notaRequestDTO) {
-    // Solo notas aprobatorias (4 a 10)
-    if (notaRequestDTO.getValor() < 4 || notaRequestDTO.getValor() > 10) {
-      throw new NotaInvalidaException("Solo se pueden cargar notas aprobatorias (entre 4 y 10).");
+    // Solo notas aprobatorias
+    if (notaRequestDTO.getValor() < NOTA_MINIMA_APROBATORIA
+        || notaRequestDTO.getValor() > NOTA_MAXIMA) {
+      throw new NotaInvalidaException(
+          "Solo se pueden cargar notas aprobatorias (entre "
+              + NOTA_MINIMA_APROBATORIA
+              + " y "
+              + NOTA_MAXIMA
+              + ").");
     }
 
     Optional<Nota> notaOpt = notaRepository.findById(notaId);
@@ -249,8 +264,14 @@ public class ActaService {
     List<NotaDTO> notasCreadas = new ArrayList<>();
 
     for (NotaRequestDTO notaRequestDTO : notasMasivasRequestDTO.getNotas()) {
-      if (notaRequestDTO.getValor() < 4 || notaRequestDTO.getValor() > 10) {
-        throw new NotaInvalidaException("Solo se pueden cargar notas aprobatorias (entre 4 y 10).");
+      if (notaRequestDTO.getValor() < NOTA_MINIMA_APROBATORIA
+          || notaRequestDTO.getValor() > NOTA_MAXIMA) {
+        throw new NotaInvalidaException(
+            "Solo se pueden cargar notas aprobatorias (entre "
+                + NOTA_MINIMA_APROBATORIA
+                + " y "
+                + NOTA_MAXIMA
+                + ").");
       }
 
       Optional<Alumno> alumnoOpt = alumnoRepository.findById(notaRequestDTO.getAlumnoId());
