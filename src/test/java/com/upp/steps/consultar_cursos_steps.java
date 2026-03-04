@@ -7,7 +7,6 @@ import com.upp.dto.CarreraDTO;
 import com.upp.dto.CursoDTO;
 import com.upp.dto.HistoriaAcademicaDTO;
 import com.upp.dto.InscripcionDTO;
-import com.upp.dto.MateriaAprobadaDTO;
 import com.upp.dto.MateriaDTO;
 import com.upp.model.TipoMateria;
 import com.upp.steps.shared.AuthHelper;
@@ -27,8 +26,8 @@ import org.springframework.test.web.reactive.server.FluxExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 /**
- * Steps para el feature de consultar cursos de una materia.
- * Permite a un alumno ver los cursos disponibles para una materia específica.
+ * Steps para el feature de consultar cursos de una materia. Permite a un alumno ver los cursos
+ * disponibles para una materia específica.
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class consultar_cursos_steps {
@@ -277,8 +276,7 @@ public class consultar_cursos_steps {
 
     boolean cursoEncontrado =
         cursosObtenidos.stream().anyMatch(c -> codigoCurso.equals(c.getCodigo()));
-    assertTrue(
-        cursoEncontrado, "Debería encontrarse el curso con código: " + codigoCurso);
+    assertTrue(cursoEncontrado, "Debería encontrarse el curso con código: " + codigoCurso);
   }
 
   @Entonces("se le informa que la materia no existe")
@@ -363,8 +361,7 @@ public class consultar_cursos_steps {
         "La consulta de inscripciones debería ser exitosa");
     assertNotNull(inscripcionesObtenidas, "La lista de inscripciones no debería ser null");
     assertTrue(
-        inscripcionesObtenidas.isEmpty(),
-        "El alumno no debería estar inscripto en ningún curso");
+        inscripcionesObtenidas.isEmpty(), "El alumno no debería estar inscripto en ningún curso");
   }
 
   // =====================================================
@@ -390,14 +387,11 @@ public class consultar_cursos_steps {
     }
   }
 
-  @Entonces(
-      "se le informa nombre {string}, titulo {string} e incumbencias {string}")
+  @Entonces("se le informa nombre {string}, titulo {string} e incumbencias {string}")
   public void seLeInformaNombreTituloEIncumbencias(
       String nombre, String titulo, String incumbencias) {
     assertEquals(
-        HttpStatus.OK,
-        carreraResult.getStatus(),
-        "La consulta de carrera debería ser exitosa");
+        HttpStatus.OK, carreraResult.getStatus(), "La consulta de carrera debería ser exitosa");
     assertNotNull(carreraObtenida, "Se debería haber obtenido la carrera");
 
     assertEquals(nombre, carreraObtenida.getNombre(), "El nombre de la carrera no coincide");
@@ -449,12 +443,12 @@ public class consultar_cursos_steps {
         "La consulta de historia académica debería ser exitosa");
     assertNotNull(historiaObtenida, "Se debería haber obtenido la historia académica");
     assertNotNull(
-        historiaObtenida.getMateriasAprobadas(), "La lista de materias aprobadas no debería ser null");
+        historiaObtenida.getMateriasAprobadas(),
+        "La lista de materias aprobadas no debería ser null");
 
     boolean materiaEncontrada =
         historiaObtenida.getMateriasAprobadas().stream()
-            .anyMatch(
-                m -> nombreMateria.equals(m.getNombre()) && nota.equals(m.getNota()));
+            .anyMatch(m -> nombreMateria.equals(m.getNombre()) && nota.equals(m.getNota()));
 
     assertTrue(
         materiaEncontrada,

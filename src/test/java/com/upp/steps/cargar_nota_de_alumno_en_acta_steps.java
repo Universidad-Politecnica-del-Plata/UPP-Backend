@@ -40,19 +40,19 @@ public class cargar_nota_de_alumno_en_acta_steps {
     Alumno alumno = alumnoRepository.findByDni(dni).orElse(null);
 
     if (alumno != null) {
-        // Obtener actas del curso para encontrar el número correlativo
-        var resultActas =
-            webTestClient
-                .get()
-                .uri(uriBuilder -> uriBuilder.path("/api/actas/curso/{curso}").build(curso))
-                .header("Authorization", "Bearer " + tokenHolder.getToken())
-                .exchange()
-                .returnResult(ActaDTO[].class);
+      // Obtener actas del curso para encontrar el número correlativo
+      var resultActas =
+          webTestClient
+              .get()
+              .uri(uriBuilder -> uriBuilder.path("/api/actas/curso/{curso}").build(curso))
+              .header("Authorization", "Bearer " + tokenHolder.getToken())
+              .exchange()
+              .returnResult(ActaDTO[].class);
 
-        ActaDTO[] actas = resultActas.getResponseBody().blockFirst();
-        if (actas != null && actas.length > 0) {
-          actaNumeroCorrelativo = actas[0].getNumeroCorrelativo();
-        }
+      ActaDTO[] actas = resultActas.getResponseBody().blockFirst();
+      if (actas != null && actas.length > 0) {
+        actaNumeroCorrelativo = actas[0].getNumeroCorrelativo();
+      }
 
       if (actaNumeroCorrelativo != null) {
         // Crear la nota
