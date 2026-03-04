@@ -40,8 +40,6 @@ public class cargar_nota_de_alumno_en_acta_steps {
     Alumno alumno = alumnoRepository.findByDni(dni).orElse(null);
 
     if (alumno != null) {
-      // Buscar el acta creada (asumir que hay una sola acta abierta)
-      if (actaNumeroCorrelativo == null) {
         // Obtener actas del curso para encontrar el número correlativo
         var resultActas =
             webTestClient
@@ -55,7 +53,6 @@ public class cargar_nota_de_alumno_en_acta_steps {
         if (actas != null && actas.length > 0) {
           actaNumeroCorrelativo = actas[0].getNumeroCorrelativo();
         }
-      }
 
       if (actaNumeroCorrelativo != null) {
         // Crear la nota

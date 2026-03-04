@@ -17,6 +17,7 @@ public class LimpiadorDeBaseDeDatos {
   @Autowired private CuatrimestreRepository cuatrimestreRepository;
   @Autowired private ActaRepository actaRepository;
   @Autowired private CarreraRepository carreraRepository;
+  @Autowired private NotaRepository notaRepository;
   @Autowired private JdbcTemplate jdbcTemplate;
 
   @Before
@@ -30,5 +31,6 @@ public class LimpiadorDeBaseDeDatos {
     planDeEstudiosRepository.deleteAll();
     carreraRepository.deleteAll();
     cuatrimestreRepository.deleteAll();
+    notaRepository.deleteAll();
   }
 }
