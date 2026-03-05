@@ -3,7 +3,6 @@ package com.upp.steps;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.upp.dto.ActaDTO;
-import com.upp.dto.NotaDTO;
 import com.upp.steps.shared.AuthHelper;
 import com.upp.steps.shared.TokenHolder;
 import io.cucumber.java.es.Cuando;
@@ -54,21 +53,16 @@ public class consultar_informacion_acta_steps {
   @Entonces("se le informa que el acta tiene numero correlativo")
   public void seLeInformaQueElActaTieneNumeroCorrelativo() {
     assertEquals(
-        HttpStatus.OK,
-        consultaActasResult.getStatus(),
-        "La consulta de actas debería ser exitosa");
+        HttpStatus.OK, consultaActasResult.getStatus(), "La consulta de actas debería ser exitosa");
     assertNotNull(actaActual, "Debería existir al menos un acta");
-    assertNotNull(
-        actaActual.getNumeroCorrelativo(), "El acta debería tener un número correlativo");
+    assertNotNull(actaActual.getNumeroCorrelativo(), "El acta debería tener un número correlativo");
   }
 
   @Entonces("se le informa que el tipo de acta es {string}")
   public void seLeInformaQueElTipoDeActaEs(String tipoActa) {
     assertNotNull(actaActual, "Debería existir al menos un acta");
     assertEquals(
-        tipoActa.toUpperCase(),
-        actaActual.getTipoDeActa().name(),
-        "El tipo de acta no coincide");
+        tipoActa.toUpperCase(), actaActual.getTipoDeActa().name(), "El tipo de acta no coincide");
   }
 
   @Entonces("se le informa que el estado del acta es {string}")
@@ -108,12 +102,9 @@ public class consultar_informacion_acta_steps {
   @Entonces("se le informa que no hay actas para el curso")
   public void seLeInformaQueNoHayActasParaElCurso() {
     assertEquals(
-        HttpStatus.OK,
-        consultaActasResult.getStatus(),
-        "La consulta de actas debería ser exitosa");
+        HttpStatus.OK, consultaActasResult.getStatus(), "La consulta de actas debería ser exitosa");
     assertTrue(
-        actasObtenidas == null || actasObtenidas.isEmpty(),
-        "No debería haber actas para el curso");
+        actasObtenidas == null || actasObtenidas.isEmpty(), "No debería haber actas para el curso");
   }
 
   @Entonces("se le informa que el curso buscado no existe")

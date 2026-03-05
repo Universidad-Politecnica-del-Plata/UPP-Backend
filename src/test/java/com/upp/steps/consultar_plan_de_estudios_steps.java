@@ -47,7 +47,8 @@ public class consultar_plan_de_estudios_steps {
     AlumnoDTO alumno = alumnoResult.getResponseBody().blockFirst();
     assertNotNull(alumno, "El alumno debería existir");
     assertNotNull(alumno.getCodigosCarreras(), "El alumno debería tener carreras asociadas");
-    assertFalse(alumno.getCodigosCarreras().isEmpty(), "El alumno debería tener al menos una carrera");
+    assertFalse(
+        alumno.getCodigosCarreras().isEmpty(), "El alumno debería tener al menos una carrera");
 
     // Obtenemos la carrera para conseguir el código del plan de estudios
     String codigoCarrera = alumno.getCodigosCarreras().get(0);
@@ -91,9 +92,7 @@ public class consultar_plan_de_estudios_steps {
     assertEquals(HttpStatus.OK, planResult.getStatus(), "La consulta debería ser exitosa");
     assertNotNull(planObtenido, "Se debería haber obtenido el plan de estudios");
     assertEquals(
-        codigoPlan,
-        planObtenido.getCodigoDePlanDeEstudios(),
-        "El código del plan no coincide");
+        codigoPlan, planObtenido.getCodigoDePlanDeEstudios(), "El código del plan no coincide");
   }
 
   @Y("se le informa que la fecha de entrada en vigencia es {string}")
@@ -120,16 +119,13 @@ public class consultar_plan_de_estudios_steps {
   public void seLeInformaQueElCodigoDeCarreraEs(String codigoCarrera) {
     assertNotNull(planObtenido, "Se debería haber obtenido el plan de estudios");
     assertEquals(
-        codigoCarrera,
-        planObtenido.getCodigoCarrera(),
-        "El código de carrera no coincide");
+        codigoCarrera, planObtenido.getCodigoCarrera(), "El código de carrera no coincide");
   }
 
   @Entonces("se le informa que la materia {string} esta en el plan")
   public void seLeInformaQueLaMateriaEstaEnElPlan(String codigoMateria) {
     assertNotNull(planObtenido, "Se debería haber obtenido el plan de estudios");
-    assertNotNull(
-        planObtenido.getCodigosMaterias(), "El plan debería tener materias asociadas");
+    assertNotNull(planObtenido.getCodigosMaterias(), "El plan debería tener materias asociadas");
     assertTrue(
         planObtenido.getCodigosMaterias().contains(codigoMateria),
         "La materia " + codigoMateria + " debería estar en el plan");
