@@ -1,9 +1,10 @@
 #language: es
 Característica: Dar de alta cuatrimestre
-  Antecedentes:
-    Dado que hay un gestor de planificacion logueado
+
+  #Como responsable de Secretaría de Planificación quiero dar de alta cuatrimestres para estructurar el calendario académico
 
   Escenario: Dar de alta cuatrimestre es exitoso
+    Dado que no existe un cuatrimestre con código "2024-1"
     Cuando se registra un nuevo cuatrimestre con código "2024-1", fecha de inicio de clases "2024-03-01", fecha de fin de clases "2024-07-15", fecha de inicio de inscripción "2024-02-01", fecha de fin de inscripción "2024-02-28", fecha de inicio de integradores "2024-07-16" y fecha de fin de integradores "2024-07-31"
     Entonces se registra el cuatrimestre "2024-1" exitosamente
 
@@ -13,6 +14,7 @@ Característica: Dar de alta cuatrimestre
     Entonces no se registra el cuatrimestre exitosamente
 
   Escenario: Dar de alta cuatrimestre con fechas inválidas fracasa
+    Dado que no existe un cuatrimestre con código "2024-2"
     Cuando se registra un nuevo cuatrimestre con código "2024-2", fecha de inicio de clases "2024-07-15", fecha de fin de clases "2024-03-01", fecha de inicio de inscripción "2024-02-01", fecha de fin de inscripción "2024-02-28", fecha de inicio de integradores "2024-07-16" y fecha de fin de integradores "2024-07-31"
     Entonces no se registra el cuatrimestre exitosamente
 

@@ -1,10 +1,9 @@
 #language: es
 Característica: Modificar datos de un curso
+#  Como responsable de Secretaría de Planificación quiero modificar los datos de un curso para asegurar la correcta planificación académica
   Antecedentes:
-    Dado que hay un gestor academico logueado
-    Y que existe una materia con el código de materia "125-M" y nombre "Cálculo I"
+    Dado que existe una materia con el código de materia "125-M" y nombre "Cálculo I"
     Y que existe una materia con el código de materia "126-M" y nombre "Física I"
-    Y que hay un gestor de planificacion logueado
     Y que existe un cuatrimestre con código "2024-1"
     Y que existe un cuatrimestre con código "2024-2"
     Y que existe un cuatrimestre con código "2024-3"

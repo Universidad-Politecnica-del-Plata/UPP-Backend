@@ -3,8 +3,7 @@ package com.upp.steps;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.upp.dto.AlumnoDTO;
-import com.upp.repository.RolRepository;
-import com.upp.repository.UsuarioRepository;
+import com.upp.steps.shared.AuthHelper;
 import com.upp.steps.shared.TokenHolder;
 import io.cucumber.java.ast.Cuando;
 import io.cucumber.java.es.Dado;
@@ -23,11 +22,31 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 public class registrar_alumno_steps {
 
   @Autowired private WebTestClient webTestClient;
-  @Autowired private UsuarioRepository usuarioRepository;
-  @Autowired private RolRepository rolRepository;
   @Autowired private TokenHolder tokenHolder;
-  private String token;
+  @Autowired private AuthHelper authHelper;
   private FluxExchangeResult<AlumnoDTO> result;
+
+  @Dado("que no existe un alumno con DNI {long}")
+  public void queNoExisteUnAlumnoConDni(Long dni) {
+    authHelper.loginGestorEstudiantil();
+
+    // Verificamos que no exista el alumno con ese DNI listando todos los alumnos
+    List<AlumnoDTO> alumnos =
+        webTestClient
+            .get()
+            .uri("/api/alumnos")
+            .header("Authorization", "Bearer " + tokenHolder.getToken())
+            .exchange()
+            .returnResult(AlumnoDTO.class)
+            .getResponseBody()
+            .collectList()
+            .block();
+
+    boolean existeAlumno =
+        alumnos != null && alumnos.stream().anyMatch(a -> dni.equals(a.getDni()));
+
+    assertFalse(existeAlumno, "No debería existir un alumno con DNI " + dni);
+  }
 
   @Cuando(
       "registra un nuevo alumno con DNI {long}, apellido {string}, nombre {string}, direccion {string}, telefono {string}, email {string}, fecha de nacimiento {string} y fecha de ingreso {string}")
@@ -40,6 +59,7 @@ public class registrar_alumno_steps {
       String email,
       String fechaNacimiento,
       String fechaIngreso) {
+    authHelper.loginGestorEstudiantil();
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
@@ -72,6 +92,7 @@ public class registrar_alumno_steps {
 
   @Dado("un alumno registrado con DNI {long}")
   public void unAlumnoRegistradoConDni(Long dni) {
+    authHelper.loginGestorEstudiantil();
     this.registraAlumnoConDatos(
         dni,
         "perez",
@@ -90,6 +111,7 @@ public class registrar_alumno_steps {
 
   @Dado("un alumno registrado con email {string}")
   public void unAlumnoRegistradoConEmail(String email) {
+    authHelper.loginGestorEstudiantil();
     this.registraAlumnoConDatos(
         1111111L,
         "perez",

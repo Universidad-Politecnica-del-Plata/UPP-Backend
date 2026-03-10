@@ -9,6 +9,7 @@ import com.upp.dto.NotaRequestDTO;
 import com.upp.model.Alumno;
 import com.upp.model.EstadoActa;
 import com.upp.repository.AlumnoRepository;
+import com.upp.steps.shared.AuthHelper;
 import com.upp.steps.shared.TokenHolder;
 import io.cucumber.java.es.Cuando;
 import io.cucumber.java.es.Dado;
@@ -25,6 +26,7 @@ public class cargar_nota_de_alumno_en_acta_steps {
   @Autowired private WebTestClient webTestClient;
   @Autowired private AlumnoRepository alumnoRepository;
   @Autowired private TokenHolder tokenHolder;
+  @Autowired private AuthHelper authHelper;
 
   private FluxExchangeResult<NotaDTO> resultNota;
   private NotaDTO notaCreada;
@@ -33,25 +35,23 @@ public class cargar_nota_de_alumno_en_acta_steps {
   @Cuando(
       "el docente carga la nota de un alumno con dni {long} y nota {int} para el curso {string}")
   public void elDocenteCargaLaNotaDeUnAlumnoConDniYNota(Long dni, Integer nota, String curso) {
+    authHelper.loginDocente();
     // Buscar alumno por DNI
     Alumno alumno = alumnoRepository.findByDni(dni).orElse(null);
 
     if (alumno != null) {
-      // Buscar el acta creada (asumir que hay una sola acta abierta)
-      if (actaNumeroCorrelativo == null) {
-        // Obtener actas del curso para encontrar el número correlativo
-        var resultActas =
-            webTestClient
-                .get()
-                .uri(uriBuilder -> uriBuilder.path("/api/actas/curso/{curso}").build(curso))
-                .header("Authorization", "Bearer " + tokenHolder.getToken())
-                .exchange()
-                .returnResult(ActaDTO[].class);
+      // Obtener actas del curso para encontrar el número correlativo
+      var resultActas =
+          webTestClient
+              .get()
+              .uri(uriBuilder -> uriBuilder.path("/api/actas/curso/{curso}").build(curso))
+              .header("Authorization", "Bearer " + tokenHolder.getToken())
+              .exchange()
+              .returnResult(ActaDTO[].class);
 
-        ActaDTO[] actas = resultActas.getResponseBody().blockFirst();
-        if (actas != null && actas.length > 0) {
-          actaNumeroCorrelativo = actas[0].getNumeroCorrelativo();
-        }
+      ActaDTO[] actas = resultActas.getResponseBody().blockFirst();
+      if (actas != null && actas.length > 0) {
+        actaNumeroCorrelativo = actas[0].getNumeroCorrelativo();
       }
 
       if (actaNumeroCorrelativo != null) {
@@ -97,6 +97,7 @@ public class cargar_nota_de_alumno_en_acta_steps {
   @Cuando("el docente intenta cargar nota para un acta inexistente con numero correlativo {long}")
   public void elDocenteIntentaCargarNotaParaUnActaInexistenteConNumeroCorrelativo(
       Long numeroCorrelativo) {
+    authHelper.loginDocente();
     // Buscar el primer alumno disponible
     Alumno alumno = alumnoRepository.findByDni(12345678L).orElse(null);
     assertNotNull(alumno, "Debe existir un alumno para la prueba");
@@ -118,6 +119,7 @@ public class cargar_nota_de_alumno_en_acta_steps {
 
   @Dado("que el acta está cerrada")
   public void queElActaEstaCerrada() {
+    authHelper.loginDocente();
     // Obtener el acta abierta y cerrarla
     var resultActas =
         webTestClient

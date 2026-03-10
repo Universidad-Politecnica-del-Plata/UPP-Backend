@@ -2,10 +2,13 @@ package com.upp.steps;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.upp.dto.AlumnoDTO;
 import com.upp.model.Alumno;
 import com.upp.repository.AlumnoRepository;
+import com.upp.steps.shared.AuthHelper;
 import com.upp.steps.shared.TokenHolder;
 import io.cucumber.java.es.Cuando;
+import io.cucumber.java.es.Dado;
 import io.cucumber.java.es.Entonces;
 import io.cucumber.java.es.Y;
 import java.util.Map;
@@ -22,7 +25,27 @@ public class dar_de_baja_alumno_steps {
   @Autowired private WebTestClient webTestClient;
   @Autowired private AlumnoRepository alumnoRepository;
   @Autowired private TokenHolder tokenHolder;
+  @Autowired private AuthHelper authHelper;
   private FluxExchangeResult<Map> result;
+
+  @Dado("que no existe un alumno con matrícula {long}")
+  public void queNoExisteUnAlumnoConMatricula(Long matricula) {
+    authHelper.loginGestorEstudiantil();
+
+    // Verificamos que no exista el alumno con esa matrícula
+    var resultGet =
+        webTestClient
+            .get()
+            .uri("/api/alumnos/{matricula}", matricula)
+            .header("Authorization", "Bearer " + tokenHolder.getToken())
+            .exchange()
+            .returnResult(AlumnoDTO.class);
+
+    assertNotEquals(
+        HttpStatus.OK,
+        resultGet.getStatus(),
+        "No debería existir un alumno con matrícula " + matricula);
+  }
 
   @Cuando("se da de baja el alumno con matrícula {long}")
   public void seDaDeBajaElAlumnoConMatricula(Long matricula) {
@@ -37,6 +60,7 @@ public class dar_de_baja_alumno_steps {
 
   @Cuando("se intenta dar de baja el alumno con matrícula {long}")
   public void seIntentaDarDeBajaElAlumnoConMatricula(Long matricula) {
+    authHelper.loginGestorEstudiantil();
     this.result =
         webTestClient
             .delete()

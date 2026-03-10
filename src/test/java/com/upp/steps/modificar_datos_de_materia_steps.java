@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.upp.dto.MateriaDTO;
 import com.upp.model.TipoMateria;
+import com.upp.steps.shared.AuthHelper;
 import com.upp.steps.shared.TokenHolder;
 import io.cucumber.java.ast.Cuando;
 import io.cucumber.java.es.Entonces;
@@ -20,6 +21,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 public class modificar_datos_de_materia_steps {
   @Autowired private WebTestClient webTestClient;
   @Autowired private TokenHolder tokenHolder;
+  @Autowired private AuthHelper authHelper;
 
   private FluxExchangeResult<MateriaDTO> result;
 
@@ -49,6 +51,8 @@ public class modificar_datos_de_materia_steps {
             null, // cuatrimestre
             null, // codigoPlanDeEstudios
             listaDeCorrelativas);
+
+    authHelper.loginGestorAcademico();
 
     this.result =
         webTestClient

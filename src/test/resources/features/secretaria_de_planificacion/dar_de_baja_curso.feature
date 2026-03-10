@@ -1,10 +1,9 @@
 #language: es
 Característica: Dar de baja curso
+#  Como responsable de Secretaría de Planificación quiero dar de baja un curso para asegurar que la planificación académica refleje únicamente cursos activos.
   Antecedentes:
-    Dado que hay un gestor academico logueado
-    Y que existe una materia con el código de materia "125-M" y nombre "Cálculo I"
+    Dado que existe una materia con el código de materia "125-M" y nombre "Cálculo I"
     Y que existe una materia con el código de materia "126-M" y nombre "Física I"
-    Y que hay un gestor de planificacion logueado
     Y que existe un cuatrimestre con código "2024-1"
     Y que existe un cuatrimestre con código "2024-2"
 
@@ -26,6 +25,6 @@ Característica: Dar de baja curso
     Y los cuatrimestres "2024-1,2024-2" ya no tienen el curso "CURSO-DELETE-03" asignado
 
   Escenario: Dar de baja curso que no existe lanza error
-    Dado se registra un nuevo curso con código "CURSO-DELETE-04", máximo de alumnos 30 y materia "126-M"
+    Dado que no existe un curso con código "CURSO-INEXISTENTE"
     Cuando se da de baja el curso con código "CURSO-INEXISTENTE"
     Entonces no se elimina el curso y se lanza error

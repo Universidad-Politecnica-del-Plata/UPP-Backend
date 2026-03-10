@@ -1,13 +1,13 @@
 #language: es
 Característica: Consultar cursos disponibles
 
+  #Como alumno quiero consultar los cursos disponibles en el cuatrimestre para elegir qué materias cursar
+
   Antecedentes:
-    Dado que hay un gestor academico logueado
-    Y que existe una materia con el código de materia "997-M" y nombre "Analisis I"
+    Dado que existe una materia con el código de materia "997-M" y nombre "Analisis I"
     Y que existe una materia con el código de materia "998-M" y nombre "Algebra I"
     Y que existe una materia con el código de materia "999-M" y nombre "Algoritmos y Programacion I"
     Y se registra un nuevo plan de estudios con codigo "P1-2025", fecha de entrada en vigencia "01-01-2025", fecha de vencimiento "31-12-9999", materias en el plan "997-M", "998-M" y "999-M" y total de créditos optativos 20
-    Y que hay un gestor de planificacion logueado
     Y se registra un nuevo cuatrimestre con código "2025-2", fecha de inicio de clases "2025-02-01", fecha de fin de clases "9999-07-15", fecha de inicio de inscripción "2025-01-01", fecha de fin de inscripción "2025-01-31", fecha de inicio de integradores "9999-07-16" y fecha de fin de integradores "9999-07-31"
 
   Escenario: Consultar cursos disponibles para un plan de estudios es exitoso

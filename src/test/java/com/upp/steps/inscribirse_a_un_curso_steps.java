@@ -11,6 +11,7 @@ import com.upp.model.EstadoActa;
 import com.upp.model.TipoDeActa;
 import com.upp.model.TipoMateria;
 import com.upp.repository.*;
+import com.upp.steps.shared.AuthHelper;
 import com.upp.steps.shared.TokenHolder;
 import io.cucumber.java.es.Cuando;
 import io.cucumber.java.es.Dado;
@@ -33,6 +34,7 @@ public class inscribirse_a_un_curso_steps {
   @Autowired private WebTestClient webTestClient;
   @Autowired private TokenHolder tokenHolder;
   @Autowired private AlumnoRepository alumnoRepository;
+  @Autowired private AuthHelper authHelper;
   private FluxExchangeResult<InscripcionDTO> inscripcionResult;
   private FluxExchangeResult<List> consultaResult;
   private FluxExchangeResult<Map> eliminarResult;
@@ -40,28 +42,7 @@ public class inscribirse_a_un_curso_steps {
 
   @Dado("que hay un alumno logueado con username {string}, password {string}")
   public void crearAlumnoLogueado(String username, String password) {
-    // Login del alumno para obtener token
-    Map<String, String> loginData =
-        Map.of(
-            "username", username,
-            "password", password);
-
-    String token =
-        webTestClient
-            .post()
-            .uri("/api/auth/login")
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(loginData)
-            .exchange()
-            .expectStatus()
-            .isOk()
-            .returnResult(Map.class)
-            .getResponseBody()
-            .blockFirst()
-            .get("token")
-            .toString();
-
-    tokenHolder.setToken(token);
+    authHelper.loginAlumno(username, password);
   }
 
   @Cuando("el alumno se inscribe al curso {string} en el cuatrimestre actual")
@@ -275,6 +256,7 @@ public class inscribirse_a_un_curso_steps {
       "que existe una materia con el código de materia {string}, nombre {string} y correlativa {string}")
   public void queExisteUnaMateriaConcorrelativa(
       String codigoMateria, String nombreMateria, String codigoCorrelativa) {
+    authHelper.loginGestorAcademico();
     // Crear materia con correlativa
     MateriaDTO materiaDTO =
         new MateriaDTO(
@@ -307,6 +289,7 @@ public class inscribirse_a_un_curso_steps {
       String nombreMateria,
       String codigoCorrelativa,
       String codigoCorrelativa2) {
+    authHelper.loginGestorAcademico();
     // Crear materia con correlativa
     MateriaDTO materiaDTO =
         new MateriaDTO(
@@ -336,7 +319,8 @@ public class inscribirse_a_un_curso_steps {
       "que existe una materia con el código de materia {string}, nombre {string} y creditos necesarios {int}")
   public void queExisteUnaMateriaConcorrelativa(
       String codigoMateria, String nombreMateria, int creditos) {
-    // Crear materia con correlativa
+    authHelper.loginGestorAcademico();
+    // Crear materia con creditos necesarios
     MateriaDTO materiaDTO =
         new MateriaDTO(
             codigoMateria,

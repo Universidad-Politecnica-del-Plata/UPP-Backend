@@ -3,6 +3,7 @@ package com.upp.steps;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.upp.dto.AlumnoDTO;
+import com.upp.steps.shared.AuthHelper;
 import com.upp.steps.shared.TokenHolder;
 import io.cucumber.java.es.Cuando;
 import io.cucumber.java.es.Entonces;
@@ -23,6 +24,7 @@ public class modificar_alumno_steps {
 
   @Autowired private WebTestClient webTestClient;
   @Autowired private TokenHolder tokenHolder;
+  @Autowired private AuthHelper authHelper;
   private FluxExchangeResult<AlumnoDTO> result;
   private FluxExchangeResult<Map> errorResult;
 
@@ -93,6 +95,7 @@ public class modificar_alumno_steps {
     alumnoDTO.setFechaIngreso(LocalDate.parse(fechaIngreso, formatter));
     alumnoDTO.setFechaEgreso(LocalDate.parse(fechaEgreso, formatter));
 
+    authHelper.loginGestorEstudiantil();
     this.errorResult =
         webTestClient
             .put()

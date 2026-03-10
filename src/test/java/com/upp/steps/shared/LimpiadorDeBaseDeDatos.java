@@ -13,8 +13,11 @@ public class LimpiadorDeBaseDeDatos {
   @Autowired private InscripcionRepository inscripcionRepository;
   @Autowired private CursoRepository cursoRepository;
   @Autowired private MateriaRepository materiaRepository;
+  @Autowired private PlanDeEstudiosRepository planDeEstudiosRepository;
   @Autowired private CuatrimestreRepository cuatrimestreRepository;
   @Autowired private ActaRepository actaRepository;
+  @Autowired private CarreraRepository carreraRepository;
+  @Autowired private NotaRepository notaRepository;
   @Autowired private JdbcTemplate jdbcTemplate;
 
   @Before
@@ -25,6 +28,9 @@ public class LimpiadorDeBaseDeDatos {
     actaRepository.deleteAll();
     cursoRepository.deleteAll();
     materiaRepository.deleteAll();
+    planDeEstudiosRepository.deleteAll();
+    carreraRepository.deleteAll();
     cuatrimestreRepository.deleteAll();
+    notaRepository.deleteAll();
   }
 }

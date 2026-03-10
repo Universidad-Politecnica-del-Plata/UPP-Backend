@@ -1,18 +1,17 @@
 #language: es
 
 Característica: Cargar nota de alumno a un acta
+
+  #Como docente quiero cargar la nota de un alumno en un acta para dejar constancia de la misma
+
   Antecedentes:
-    Dado que hay un gestor academico logueado
-    Y que existe una materia con el código de materia "997-MA" y nombre "Analisis I"
-    Y que hay un gestor de planificacion logueado
+    Dado que existe una materia con el código de materia "997-MA" y nombre "Analisis I"
     Y se registra un nuevo cuatrimestre con código "2025-2", fecha de inicio de clases "9999-02-01", fecha de fin de clases "9999-07-15", fecha de inicio de inscripción "2025-01-01", fecha de fin de inscripción "9999-01-31", fecha de inicio de integradores "9999-07-16" y fecha de fin de integradores "9999-07-31"
     Y se registra un nuevo curso con código "CURSO-001", máximo de alumnos 25, materia "997-MA" y cuatrimestres "2025-2"
-    Y que hay un gestor estudiantil logueado
     Y registra un nuevo alumno con DNI 56789, apellido "Perez", nombre "Juana", direccion "Calle Falsa 123", telefono "1234", email "juan2@mail.com", fecha de nacimiento "01-01-1990" y fecha de ingreso "01-03-2015"
     Y registra un nuevo alumno con DNI 12345678, apellido "Perez", nombre "Juan", direccion "Calle Falsa 123", telefono "1234", email "juan@mail.com", fecha de nacimiento "01-01-1990" y fecha de ingreso "01-03-2015"
     Y que hay un alumno logueado con username "12345678", password "12345678"
     Y el alumno se inscribe al curso "CURSO-001" en el cuatrimestre actual
-    Y que hay un docente logueado
     Y el docente abre un acta de "Cursada" para el curso "CURSO-001"
 
   Escenario: Cargar nota aprobatoria de alumno exitoso

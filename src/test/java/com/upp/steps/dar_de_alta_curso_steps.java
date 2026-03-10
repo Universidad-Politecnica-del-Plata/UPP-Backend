@@ -4,11 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.upp.dto.CuatrimestreDTO;
 import com.upp.dto.CursoDTO;
-import com.upp.model.Rol;
-import com.upp.model.Usuario;
 import com.upp.repository.CursoRepository;
-import com.upp.repository.RolRepository;
-import com.upp.repository.UsuarioRepository;
+import com.upp.steps.shared.AuthHelper;
 import com.upp.steps.shared.TokenHolder;
 import io.cucumber.java.ast.Cuando;
 import io.cucumber.java.es.Dado;
@@ -16,7 +13,6 @@ import io.cucumber.java.es.Entonces;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,62 +24,32 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class dar_de_alta_curso_steps {
   @Autowired private WebTestClient webTestClient;
-  @Autowired private UsuarioRepository usuarioRepository;
-  @Autowired private RolRepository rolRepository;
   @Autowired private TokenHolder tokenHolder;
   @Autowired private CursoRepository cursoRepository;
+  @Autowired private AuthHelper authHelper;
 
   private FluxExchangeResult<CursoDTO> result;
 
-  @Dado("que hay un gestor de planificacion logueado")
-  public void queHayUnGestorDePlanificacionLogueado() {
-    Rol rolGestor =
-        rolRepository
-            .findById("ROLE_GESTOR_DE_PLANIFICACION")
-            .orElseThrow(() -> new RuntimeException("ROLE_GESTOR_DE_PLANIFICACION no encontrado"));
+  @Dado("que no existe un curso con código {string}")
+  public void queNoExisteUnCursoConCodigo(String codigo) {
+    authHelper.loginGestorPlanificacion();
 
-    Usuario usuarioExistente = usuarioRepository.findByUsername("admin_planificacion").orElse(null);
-
-    if (usuarioExistente == null) {
-      Map<String, Object> registroData =
-          Map.of(
-              "username", "admin_planificacion",
-              "password", "password",
-              "roles", List.of("ROLE_GESTOR_DE_PLANIFICACION"));
-
-      webTestClient
-          .post()
-          .uri("/api/auth/register")
-          .contentType(MediaType.APPLICATION_JSON)
-          .bodyValue(registroData)
-          .exchange()
-          .expectStatus()
-          .isCreated();
-    }
-
-    Map<String, String> loginData =
-        Map.of("username", "admin_planificacion", "password", "password");
-
-    String token =
+    // Verificamos que no exista el curso
+    var resultGet =
         webTestClient
-            .post()
-            .uri("/api/auth/login")
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(loginData)
+            .get()
+            .uri("/api/cursos/{codigo}", codigo)
+            .header("Authorization", "Bearer " + tokenHolder.getToken())
             .exchange()
-            .expectStatus()
-            .isOk()
-            .returnResult(Map.class)
-            .getResponseBody()
-            .blockFirst()
-            .get("token")
-            .toString();
+            .returnResult(CursoDTO.class);
 
-    tokenHolder.setToken(token);
+    assertNotEquals(
+        HttpStatus.OK, resultGet.getStatus(), "No debería existir un curso con código " + codigo);
   }
 
   @Dado("que existe un cuatrimestre con código {string}")
   public void queExisteUnCuatrimestreConCodigo(String codigo) {
+    authHelper.loginGestorPlanificacion();
     CuatrimestreDTO cuatrimestreEnviado =
         new CuatrimestreDTO(
             codigo,
@@ -106,7 +72,7 @@ public class dar_de_alta_curso_steps {
   @Cuando(
       "se registra un nuevo curso con código {string}, máximo de alumnos {int} y materia {string}")
   public void darDeAltaCurso(String codigo, Integer maximoAlumnos, String codigoMateria) {
-
+    authHelper.loginGestorPlanificacion();
     CursoDTO cursoEnviado = new CursoDTO(codigo, maximoAlumnos, codigoMateria, null);
 
     this.result =
@@ -124,6 +90,7 @@ public class dar_de_alta_curso_steps {
       "se registra un nuevo curso con código {string}, máximo de alumnos {int}, materia {string} y cuatrimestres {string}")
   public void darDeAltaCursoConCuatrimestres(
       String codigo, Integer maximoAlumnos, String codigoMateria, String cuatrimestres) {
+    authHelper.loginGestorPlanificacion();
     List<String> codigosCuatrimestres = null;
     if (cuatrimestres != null && !cuatrimestres.trim().isEmpty()) {
       codigosCuatrimestres =

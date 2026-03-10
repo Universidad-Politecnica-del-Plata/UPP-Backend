@@ -1,9 +1,9 @@
 #language: es
 
 Característica: Dar de baja plan de estudios
+#  Como responsable de Gestión Académica quiero dar de baja un plan de estudios para evitar que continúe utilizándose cuando ha perdido vigencia.
   Antecedentes:
-    Dado que hay un gestor academico logueado
-    Y que existe una materia con el código de materia "1997-M" y nombre "Analisis I"
+    Dado que existe una materia con el código de materia "1997-M" y nombre "Analisis I"
     Y que existe una materia con el código de materia "1998-M" y nombre "Algebra I"
     Y que existe una materia con el código de materia "1999-M" y nombre "Algoritmos y Programacion I"
 
@@ -13,7 +13,7 @@ Característica: Dar de baja plan de estudios
     Entonces no se elimina el plan de estudios por tener materias asociadas
 
   Escenario: Dar de baja plan de estudios que no existe lanza error
-    Dado se registra un nuevo plan de estudios con codigo "P2-2026", fecha de entrada en vigencia "01-01-2025", fecha de vencimiento "31-12-2035", materias en el plan "1997-M", "1998-M" y "1999-M" y total de créditos optativos 20
+    Dado que no existe un plan de estudios con codigo "P2-2027"
     Cuando se da de baja el plan de estudios con codigo "P2-2027"
     Entonces no se elimina el plan de estudios y se lanza error
 
